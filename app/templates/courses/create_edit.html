@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if course %}Edit Course {{ course.course_id }}{% else %}Create New Course{% endif %} - Narayana Learning Hub{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('courses.list_courses') }}">Courses</a></li>
+            <li class="breadcrumb-item active">{% if course %}Edit Course{% else %}Create Course{% endif %}</li>
+        </ol>
+    </nav>
+    <h3 class="fw-bold text-navy mb-1">{% if course %}Edit Course ({{ course.course_id }}){% else %}Create New Course{% endif %}</h3>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        <form method="POST" enctype="multipart/form-data">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Course ID</label>
+                    <input type="text" class="form-control bg-light font-monospace" value="{{ auto_id }}" readonly>
+                    <small class="text-muted">Auto-generated format (CRS-XXXXXX)</small>
+                </div>
+
+                <div class="col-md-9">
+                    <label for="name" class="form-label fw-bold">Course Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="name" name="name" required value="{{ course.name if course else '' }}" placeholder="e.g. Advanced Java & Microservices Masterclass">
+                </div>
+
+                <div class="col-md-4">
+                    <label for="mode" class="form-label fw-bold">Course Mode <span class="text-danger">*</span></label>
+                    <select class="form-select" id="mode" name="mode" required>
+                        <option value="Self Paced" {% if course and course.mode == 'Self Paced' %}selected{% endif %}>Self Paced Course</option>
+                        <option value="Live In Person" {% if course and course.mode == 'Live In Person' or (course and course.mode == 'Live') %}selected{% endif %}>Live In Person Course</option>
+                        <option value="Live Online" {% if course and course.mode == 'Live Online' %}selected{% endif %}>Live Online Course (Google Meet)</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="duration_hours" class="form-label fw-bold">Course Duration (Hours)</label>
+                    <input type="number" step="0.25" class="form-control bg-light font-monospace" id="duration_hours" name="duration_hours" readonly value="{{ course.duration_hours if course else 0.0 }}">
+                    <small class="text-muted"><i class="fa-solid fa-lock me-1"></i> Auto-calculated from lesson durations (Read-Only)</small>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="pass_percentage" class="form-label fw-bold">Pass Percentage (%)</label>
+                    <input type="number" step="1" class="form-control" id="pass_percentage" name="pass_percentage" value="{{ course.pass_percentage if course else 80.0 }}">
+                    <small class="text-muted">Required pass score for certification</small>
+                </div>
+
+                <div class="col-12">
+                    <label for="description" class="form-label fw-bold">Brief Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3" placeholder="Provide overview of learning objectives...">{{ course.description if course else '' }}</textarea>
+                </div>
+
+                <hr class="my-4">
+                <h5 class="fw-bold text-navy mb-1"><i class="fa-solid fa-file-csv text-success me-2"></i> Assessment Questions CSV Upload <span class="badge bg-secondary font-monospace">Optional</span></h5>
+                <p class="text-muted small mb-3">Assessment CSV uploads are optional during course creation. For <strong>Self-Paced Courses</strong>, Pre & Post assessments are not required — only a Course-End Summative Assessment is used, which can be uploaded now or added later at any time.</p>
+
+                <div class="alert alert-info py-2 small">
+                    <i class="fa-solid fa-info-circle me-1"></i> <strong>CSV Column Structure:</strong> Column1: Serial Number, Column2: Question, Column3: Option1, Column4: Option2, Column5: Option3, Column6: Option4, Column7: Correct Option (e.g. Option1).
+                </div>
+
+                <div class="col-md-12">
+                    <div class="card bg-light border-warning p-3">
+                        <label for="summative_assessment_csv" class="form-label fw-bold text-navy">
+                            <i class="fa-solid fa-award text-warning me-1"></i> Course-End Summative Assessment CSV File <span class="badge bg-outline-secondary border text-muted">Optional</span>
+                        </label>
+                        <input type="file" class="form-control mb-2" id="summative_assessment_csv" name="summative_assessment_csv" accept=".csv,.xlsx,.xls">
+                        <small class="text-muted">Upload CSV for final Course-End Summative Assessment (recommended for Self-Paced courses). Can also be uploaded later from Course Details.</small>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card bg-light border-0 p-3">
+                        <label for="pre_assessment_csv" class="form-label fw-bold text-navy">Pre Assessment CSV File <span class="badge bg-outline-secondary border text-muted">Optional</span></label>
+                        <input type="file" class="form-control mb-2" id="pre_assessment_csv" name="pre_assessment_csv" accept=".csv,.xlsx,.xls">
+                        <small class="text-muted">Optional: Upload CSV for Pre-Assessment question bank (Live courses).</small>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card bg-light border-0 p-3">
+                        <label for="post_assessment_csv" class="form-label fw-bold text-navy">Post Assessment CSV File <span class="badge bg-outline-secondary border text-muted">Optional</span></label>
+                        <input type="file" class="form-control mb-2" id="post_assessment_csv" name="post_assessment_csv" accept=".csv,.xlsx,.xls">
+                        <small class="text-muted">Optional: Upload CSV for Post-Assessment question bank (Live courses).</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                <a href="{{ url_for('courses.list_courses') }}" class="btn btn-light border">Cancel</a>
+                <button type="submit" class="btn btn-navy bg-navy text-white px-4 fw-bold">
+                    <i class="fa-solid fa-floppy-disk me-1"></i> Save Course
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

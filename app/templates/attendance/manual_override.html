@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Manual Attendance Override - Narayana Learning Hub{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('attendance.list_attendance') }}">Attendance</a></li>
+            <li class="breadcrumb-item active">Manual Override</li>
+        </ol>
+    </nav>
+    <h3 class="fw-bold text-navy mb-1">Add Attendance (Exception Override)</h3>
+    <p class="text-muted">Business Rule: Manual attendance is only permitted if QR Code or SSO system fails, with mandatory reason logged in Audit History.</p>
+</div>
+
+<div class="row g-4">
+    <!-- Single Learner Exception Override -->
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white py-3">
+                <h5 class="fw-bold text-navy mb-0"><i class="fa-solid fa-user-pen me-2 text-primary"></i> Single Learner Exception</h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="global_id" class="form-label fw-bold">Learner Global ID <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control font-monospace" id="global_id" name="global_id" required placeholder="e.g. 10001">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="class_id" class="form-label fw-bold">Select Live Class <span class="text-danger">*</span></label>
+                        <select class="form-select" id="class_id" name="class_id" required>
+                            <option value="">-- Choose Live Class --</option>
+                            {% for c in live_classes %}
+                            <option value="{{ c.id }}">{{ c.class_name }} ({{ c.class_id }}) - {{ c.class_date.strftime('%d-%b-%Y') if c.class_date else '' }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="status" class="form-label fw-bold">Attendance Status <span class="text-danger">*</span></label>
+                        <select class="form-select" id="status" name="status" required>
+                            <option value="Present" selected>Present</option>
+                            <option value="Late">Late</option>
+                            <option value="Absent">Absent</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="reason" class="form-label fw-bold">Mandatory Exception Reason <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="reason" name="reason" rows="3" required placeholder="e.g. Mobile camera failed to scan QR code during morning check-in."></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                        <button type="submit" class="btn btn-navy bg-navy text-white fw-bold shadow-sm w-100">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> Save Single Attendance Override
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Attendance via CSV & Global ID Text Box -->
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white py-3">
+                <h5 class="fw-bold text-navy mb-0"><i class="fa-solid fa-file-csv me-2 text-success"></i> Bulk Attendance (CSV / Global ID Text Box)</h5>
+            </div>
+            <div class="card-body p-4">
+                <form action="{{ url_for('attendance.bulk_upload') }}" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="bulk_class_id" class="form-label fw-bold">Select Live Class <span class="text-danger">*</span></label>
+                        <select class="form-select" id="bulk_class_id" name="class_id" required>
+                            <option value="">-- Choose Live Class --</option>
+                            {% for c in live_classes %}
+                            <option value="{{ c.id }}">{{ c.class_name }} ({{ c.class_id }}) - {{ c.class_date.strftime('%d-%b-%Y') if c.class_date else '' }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="global_ids_text" class="form-label fw-bold"><i class="fa-solid fa-align-left me-1 text-primary"></i> Global IDs Text Box (Paste / Type)</label>
+                        <textarea class="form-control font-monospace" id="global_ids_text" name="global_ids_text" rows="4" placeholder="Paste Global IDs here (comma-separated or one per line)...&#10;e.g.&#10;10001&#10;10002&#10;10003"></textarea>
+                        <small class="text-muted">Type or paste multiple Global IDs separated by commas or newlines.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="attendance_csv" class="form-label fw-bold"><i class="fa-solid fa-upload me-1 text-success"></i> OR Upload Attendance CSV File</label>
+                        <input type="file" class="form-control" id="attendance_csv" name="attendance_csv" accept=".csv,.xlsx,.xls">
+                        <small class="text-muted">CSV column: <strong>Global ID</strong> (or first column).</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="bulk_status" class="form-label fw-bold">Mark Status As</label>
+                        <select class="form-select" id="bulk_status" name="status">
+                            <option value="Present" selected>Present</option>
+                            <option value="Late">Late</option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                        <button type="submit" class="btn btn-success fw-bold shadow-sm w-100">
+                            <i class="fa-solid fa-cloud-arrow-up me-1"></i> Submit Bulk Attendance
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

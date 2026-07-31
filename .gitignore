@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+*.db
+*.sqlite3
+instance/
+.pytest_cache/
+.vscode/
+.idea/
+uploads/certificates/*
+!uploads/certificates/.gitkeep
+static/qr_codes/*
+!static/qr_codes/.gitkeep

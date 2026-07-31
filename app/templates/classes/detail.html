@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block title %}Class {{ live_class.class_id }} - Narayana Learning Hub{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('classes.list_classes') }}">Classes</a></li>
+            <li class="breadcrumb-item active">{{ live_class.class_id }}</li>
+        </ol>
+    </nav>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h3 class="fw-bold text-navy mb-1">{{ live_class.class_name }}</h3>
+            <span class="badge font-monospace bg-dark text-gold fs-6 me-2">{{ live_class.class_id }}</span>
+            <span class="badge {% if live_class.class_mode == 'Online' %}bg-info{% else %}bg-success{% endif %} fs-6 me-2">{{ live_class.class_mode }}</span>
+            {% if live_class.is_locked %}
+            <span class="badge bg-danger fs-6"><i class="fa-solid fa-lock me-1"></i> Locked</span>
+            {% else %}
+            <span class="badge bg-success fs-6"><i class="fa-solid fa-lock-open me-1"></i> Active</span>
+            {% endif %}
+        </div>
+        <div>
+            {% if live_class.is_locked %}
+            <button type="button" class="btn btn-warning btn-sm fw-bold px-3 me-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#unlockModal">
+                <i class="fa-solid fa-key me-1"></i> Unlock Class
+            </button>
+            {% endif %}
+            <a href="{{ url_for('classes.edit_class', class_id=live_class.id) }}" class="btn btn-navy bg-navy text-white btn-sm px-3 shadow-sm me-2">
+                <i class="fa-solid fa-pen-to-square me-1"></i> Edit Class
+            </a>
+            <a href="{{ url_for('classes.list_classes') }}" class="btn btn-outline-secondary btn-sm px-3">Back</a>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- QR Code & Quick Scan Column -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm text-center p-3 mb-4">
+            <div class="card-body">
+                <h5 class="fw-bold text-navy mb-2"><i class="fa-solid fa-qrcode me-1 text-gold"></i> Learner Attendance QR</h5>
+                <p class="text-muted small mb-3">Learners scan this QR code to login & record attendance automatically.</p>
+                
+                <div class="p-3 bg-white border rounded-3 d-inline-block shadow-sm mb-3">
+                    <img src="{{ qr_url }}" alt="Class QR Code" class="img-fluid" style="max-width: 220px;">
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('classes.download_qr', class_id_str=live_class.class_id) }}" class="btn btn-navy bg-navy text-white fw-bold shadow-sm">
+                        <i class="fa-solid fa-download me-2"></i> Download QR Code (PNG)
+                    </a>
+                    <a href="http://localhost:5000/learner/login?classId={{ live_class.class_id }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                        <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Open Learner Link
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h6 class="fw-bold text-navy mb-0"><i class="fa-solid fa-clock-rotate-left me-1 text-primary"></i> Audit Trail</h6>
+            </div>
+            <div class="card-body p-3">
+                <div class="list-group list-group-flush small">
+                    {% for log in audit_logs %}
+                    <div class="list-group-item px-0">
+                        <div class="fw-bold text-dark">{{ log.action }}</div>
+                        <div class="text-muted">{{ log.reason }}</div>
+                        <div class="text-xs text-muted mt-1">{{ log.timestamp.strftime('%d-%b-%Y %H:%M') }} by {{ log.performed_by }}</div>
+                    </div>
+                    {% else %}
+                    <div class="text-muted text-center py-2">No audit log entries yet.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Column -->
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white py-3">
+                <h5 class="fw-bold text-navy mb-0"><i class="fa-solid fa-circle-info me-2"></i> Class Specification</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <span class="text-muted small d-block">Course:</span>
+                        <strong class="text-dark">{{ live_class.course.name }}</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted small d-block">Class Date & Slot:</span>
+                        <strong class="text-dark">{{ live_class.class_date.strftime('%d-%b-%Y') }} ({{ live_class.session_time }})</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted small d-block">Facilitator:</span>
+                        <strong class="text-dark">{{ live_class.facilitator_name }}</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted small d-block">Co-Facilitator:</span>
+                        <strong class="text-dark">{{ live_class.co_facilitator_name or 'None' }}</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted small d-block">Course Duration:</span>
+                        <strong class="text-dark">{{ live_class.duration_hours }} Hours</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted small d-block">Expected Attendance:</span>
+                        <strong class="text-dark">{{ live_class.expected_attendance }} Learners</strong>
+                    </div>
+
+                    {% if live_class.class_mode == 'In Person' %}
+                    <div class="col-md-6">
+                        <span class="text-muted small d-block">Location & Branch:</span>
+                        <strong class="text-dark">{{ live_class.location or 'HYD' }} - {{ live_class.branch or 'MAIN' }}</strong>
+                    </div>
+                    {% else %}
+                    <div class="col-md-12">
+                        <span class="text-muted small d-block">Google Meet Link:</span>
+                        <a href="{{ live_class.meet_link }}" target="_blank" class="fw-bold text-primary text-break">{{ live_class.meet_link or 'Not Provided' }}</a>
+                    </div>
+                    {% endif %}
+
+                    <div class="col-md-6">
+                        <span class="text-muted small d-block">Pre Assessment Status:</span>
+                        <span class="badge bg-light text-dark border">{{ pre_count }} Questions Link</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted small d-block">Post Assessment Status:</span>
+                        <span class="badge bg-light text-dark border">{{ post_count }} Questions Link</span>
+                    </div>
+                </div>
+            </div>
+        <!-- Bulk Attendance Entry Card -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white py-3">
+                <h5 class="fw-bold text-navy mb-0"><i class="fa-solid fa-user-check me-2 text-success"></i> Record Class Attendance (CSV / Global ID Text Box)</h5>
+            </div>
+            <div class="card-body p-4">
+                <form action="{{ url_for('attendance.bulk_upload') }}" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="class_id" value="{{ live_class.id }}">
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-navy mb-1"><i class="fa-solid fa-align-left me-1 text-primary"></i> Global IDs Text Box (Paste / Type)</label>
+                            <textarea class="form-control font-monospace" name="global_ids_text" rows="3" placeholder="Paste Global IDs here (comma-separated or one per line)...&#10;e.g. 10001, 10002, 10003"></textarea>
+                            <small class="text-muted">Type or paste Global IDs separated by commas or newlines.</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-navy mb-1"><i class="fa-solid fa-file-csv me-1 text-success"></i> OR Upload Attendance CSV File</label>
+                            <input type="file" class="form-control mb-2" name="attendance_csv" accept=".csv,.xlsx,.xls">
+                            <small class="text-muted font-monospace">CSV Column 1: Global ID</small>
+
+                            <div class="mt-2">
+                                <label class="form-label fw-bold text-navy mb-1">Status</label>
+                                <select class="form-select" name="status">
+                                    <option value="Present" selected>Present</option>
+                                    <option value="Late">Late</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-3 pt-3 border-top">
+                        <button type="submit" class="btn btn-success fw-bold px-4 shadow-sm">
+                            <i class="fa-solid fa-check me-1"></i> Save Class Attendance
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Unlock Modal -->
+<div class="modal fade" id="unlockModal" tabindex="-1" aria-labelledby="unlockModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title fw-bold" id="unlockModalLabel"><i class="fa-solid fa-lock-open me-2"></i> Unlock Live Class</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted small">Classes are automatically locked past 11:59 PM. Provide a mandatory administrative reason to unlock this class for attendance.</p>
+                <div class="mb-3">
+                    <label for="unlockReasonInput" class="form-label fw-bold">Mandatory Unlock Reason <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="unlockReasonInput" rows="3" placeholder="e.g. Technical delay during session, approved by L&D lead."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-warning fw-bold" onclick="submitUnlockClass('{{ live_class.class_id }}')">
+                    Confirm Unlock
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

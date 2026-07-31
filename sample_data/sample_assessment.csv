@@ -1,0 +1,6 @@
+Serial Number,Question,Option1,Option2,Option3,Option4,Correct Option
+1,What is the primary role of SQLAlchemy ORM in Python applications?,Database abstraction and object-relational mapping,HTML Templating,Frontend CSS Styling,CSV File Processing,Option1
+2,Which HTTP method is primarily used to submit form data in web applications?,GET,POST,DELETE,HEAD,Option2
+3,What is the maximum attempt limit for Self-Paced course final assessments in Narayana LMS?,1,2,3,5,Option3
+4,Which column format is required for assessment CSV question banks?,Serial Number Question Option1 Option2 Option3 Option4 Correct Option,ID Name Date,User Password Role,Title Body Author,Option1
+5,What auto-locking policy applies to Live Classes in the LMS?,Lock automatically after 11:59 PM,Lock after 5 PM,Never lock,Lock immediately after creation,Option1

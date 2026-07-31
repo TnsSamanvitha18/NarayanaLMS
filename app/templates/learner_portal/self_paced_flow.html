@@ -1,0 +1,455 @@
+{% extends 'base.html' %}
+
+{% block public_content %}
+<div class="bg-navy text-white py-3 px-4 shadow-sm mb-4">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="fw-bold mb-0"><i class="fa-solid fa-laptop-code text-gold me-2"></i> {{ course.name }}</h5>
+            <small class="text-white-50">Self-Paced Course | Pass Target: {{ course.pass_percentage }}%</small>
+        </div>
+        <div>
+            <span class="badge bg-gold text-dark me-2 font-monospace">{{ learner.global_id }}</span>
+            <a href="{{ url_for('learners.my_portal') }}" class="btn btn-outline-light btn-sm">My Portal</a>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5">
+    {% if has_pre_questions and not pre_attempt %}
+    <div class="alert alert-warning border-warning shadow-sm mb-4 p-4 rounded-3">
+        <div class="d-flex align-items-center">
+            <i class="fa-solid fa-lock text-warning fa-3x me-3"></i>
+            <div>
+                <h5 class="fw-bold text-navy mb-1">Pre-Assessment Required to Unlock Course</h5>
+                <p class="mb-0 small text-dark">Complete the mandatory Pre-Assessment test to unlock course lessons,
+                    non-downloadable courseware, downloadable resources, and the final Course-End Assessment.</p>
+            </div>
+        </div>
+        <div class="mt-3 text-end">
+            <a href="{{ url_for('learners.take_assessment', course_id=course.id, assessment_type='PRE') }}"
+                class="btn btn-navy bg-navy text-white fw-bold px-4 py-2 shadow-sm">
+                <i class="fa-solid fa-pen-nib me-1"></i> Take Pre-Assessment Test Now
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row g-4">
+        <!-- Main Progression Column -->
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="fw-bold text-navy mb-0"><i class="fa-solid fa-layer-group me-2 text-primary"></i> Course
+                        Lessons & Modules</h5>
+                </div>
+                <div class="card-body p-4">
+
+                    {% if has_pre_questions and not pre_attempt %}
+                    <div class="text-center py-5 text-muted border rounded-3 bg-light">
+                        <i class="fa-solid fa-lock text-warning fa-4x mb-3"></i>
+                        <h5 class="fw-bold text-navy">Course Lessons Locked</h5>
+                        <p class="small text-muted mb-3">Complete the Pre-Assessment test above to view lesson
+                            materials, videos, and slides.</p>
+                        <a href="{{ url_for('learners.take_assessment', course_id=course.id, assessment_type='PRE') }}"
+                            class="btn btn-navy bg-navy text-white fw-bold btn-sm shadow-sm">
+                            <i class="fa-solid fa-pen-nib me-1"></i> Start Pre-Assessment Test
+                        </a>
+                    </div>
+                    {% else %}
+                    <!-- Loop through Lessons -->
+                    {% for les in course.lessons %}
+                    {% set has_pre = les.assessments | selectattr('assessment_type', 'equalto', 'LESSON_PRE') | list |
+                    length > 0 %}
+                    {% set has_post = les.assessments | selectattr('assessment_type', 'equalto', 'LESSON_POST') | list |
+                    length > 0 %}
+                    <div class="card border border-light-subtle shadow-sm mb-4 rounded-3 overflow-hidden">
+                        <div
+                            class="card-header bg-navy text-white py-2.5 d-flex justify-content-between align-items-center">
+                            <h6 class="fw-bold mb-0">
+                                <span class="badge bg-gold text-dark me-2">Lesson {{ les.lesson_number }}</span> {{
+                                les.title }}
+                            </h6>
+                            <span class="badge bg-light text-dark font-monospace"><i
+                                    class="fa-regular fa-clock me-1 text-primary"></i>{{ (les.duration_hours or 1.0) |
+                                format_duration }}</span>
+                        </div>
+                        <div class="card-body p-4">
+                            <p class="text-muted small mb-3">{{ les.summary or 'No summary provided.' }}</p>
+
+                            {% if has_pre %}
+                            <!-- OPTIONAL STEP: LESSON PRE-ASSESSMENT -->
+                            <div class="p-3 border rounded-3 bg-light mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="fw-bold text-navy mb-0"><i
+                                                class="fa-solid fa-pen-nib me-2 text-primary"></i> Lesson Pre-Assessment
+                                        </h6>
+                                        <small class="text-muted">Take pre-quiz before reviewing lesson
+                                            courseware</small>
+                                    </div>
+                                    {% if pre_attempt %}
+                                    <span class="badge bg-success p-2"><i class="fa-solid fa-check me-1"></i> Passed ({{
+                                        pre_attempt.score_percentage }}%)</span>
+                                    {% else %}
+                                    <a href="{{ url_for('learners.take_assessment', course_id=course.id, assessment_type='LESSON_PRE') }}?lesson_id={{ les.id }}"
+                                        class="btn btn-sm btn-navy bg-navy text-white fw-bold">
+                                        Take Pre-Assessment Quiz
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- LESSON COURSEWARE (NON-DOWNLOADABLE MULTI-FILE FORMAT) -->
+                            <div class="p-3 border rounded-3 bg-white mb-3 shadow-sm">
+                                <h6 class="fw-bold text-navy mb-2"><i
+                                        class="fa-solid fa-book-open me-2 text-warning"></i> Lesson Content & Courseware
+                                </h6>
+                                <p class="text-muted small mb-3">View embedded video, inline PDF, PPT slides, and text
+                                    content directly.</p>
+
+                                {% if les.content %}
+                                <div class="bg-light p-3 rounded mb-3 small text-dark border">
+                                    {{ les.content|replace('\n', '<br>')|safe }}
+                                </div>
+                                {% endif %}
+
+                                {% for cw in les.courseware %}
+                                <div class="card bg-light border-0 p-3 mb-2">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <div class="d-flex align-items-center">
+                                            {% if cw.courseware_type == 'Video' or cw.courseware_type == 'Video URL' %}
+                                            <i class="fa-solid fa-file-video text-primary fa-2x me-3"></i>
+                                            {% elif cw.courseware_type == 'PDF' %}
+                                            <i class="fa-solid fa-file-pdf text-danger fa-2x me-3"></i>
+                                            {% elif cw.courseware_type == 'PPT' %}
+                                            <i class="fa-solid fa-file-powerpoint text-warning fa-2x me-3"></i>
+                                            {% else %}
+                                            <i class="fa-solid fa-file-lines text-info fa-2x me-3"></i>
+                                            {% endif %}
+                                            <div>
+                                                <h6 class="fw-bold text-dark mb-0">{{ cw.title }}</h6>
+                                                <small class="text-muted">Type: <strong>{{ cw.courseware_type
+                                                        }}</strong> <span
+                                                        class="badge bg-warning-subtle text-dark border ms-1"><i
+                                                            class="fa-solid fa-lock me-1"></i> Non-Downloadable
+                                                        Courseware</span></small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {% if cw.courseware_type == 'Video' and cw.filename %}
+                                    <div class="mt-2 rounded overflow-hidden shadow-sm">
+                                        <video controls class="w-100" style="max-height: 320px; background: #000;">
+                                            <source src="{{ url_for('courses.download_material', material_id=cw.id) }}"
+                                                type="video/mp4">
+                                            Your browser does not support video play.
+                                        </video>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if cw.external_url %}
+                                    <div class="mt-2 rounded overflow-hidden shadow-sm border bg-dark">
+                                        {% if 'youtube' in cw.external_url or 'youtu.be' in cw.external_url or 'embed'
+                                        in cw.external_url %}
+                                        <div class="ratio ratio-16x9">
+                                            <iframe src="{{ cw.external_url }}" title="Video Lecture" allowfullscreen
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                                        </div>
+                                        {% else %}
+                                        <video controls class="w-100" style="max-height: 360px;">
+                                            <source src="{{ cw.external_url }}" type="video/mp4">
+                                            Your browser does not support inline video playback.
+                                        </video>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+
+                                    {% if cw.content_text %}
+                                    <div class="small text-muted border p-2 bg-white rounded mt-2">
+                                        {{ cw.content_text }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+
+                                {% if les.video_url %}
+                                <div class="mt-3 rounded overflow-hidden shadow-sm border bg-dark">
+                                    {% if 'youtube' in les.video_url or 'youtu.be' in les.video_url or 'embed' in
+                                    les.video_url %}
+                                    <div class="ratio ratio-16x9">
+                                        <iframe src="{{ les.video_url }}" title="YouTube Video Lecture" allowfullscreen
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                                    </div>
+                                    {% else %}
+                                    <video controls class="w-100" style="max-height: 360px;">
+                                        <source src="{{ les.video_url }}" type="video/mp4">
+                                        Your browser does not support inline video playback.
+                                    </video>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+
+                                <!-- Automated Courseware Time Tracking Banner -->
+                                {% set is_cw_reviewed = (les.id in reviewed_lesson_ids) %}
+                                {% set required_secs = ((les.min_time_minutes or 1.0) * 60) | int %}
+                                <div id="cw_tracker_{{ les.id }}"
+                                    class="mt-3 p-3 rounded-3 border {% if is_cw_reviewed %}bg-success-subtle border-success-subtle{% else %}bg-warning-subtle border-warning-subtle{% endif %} d-flex justify-content-between align-items-center">
+                                    <div>
+                                        {% if is_cw_reviewed %}
+                                        <span class="fw-bold text-success"><i class="fa-solid fa-circle-check me-1"></i>
+                                            Minimum Viewing Time Completed!</span>
+                                        <div class="small text-muted">Required minimum viewing time ({{
+                                            (les.min_time_minutes or 1.0) }} min) completed. Post-Assessment is
+                                            unlocked!</div>
+                                        {% else %}
+                                        <span class="fw-bold text-navy"><i
+                                                class="fa-solid fa-stopwatch me-1 text-warning"></i> Automated Minimum
+                                            Time Tracking</span>
+                                        <div class="small text-muted">Admin requires minimum <strong>{{
+                                                (les.min_time_minutes or 1.0) }} min</strong> spent on courseware to
+                                            unlock Post-Assessment.</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-end">
+                                        {% if is_cw_reviewed %}
+                                        <span class="badge bg-success p-2 fs-6"><i class="fa-solid fa-unlock me-1"></i>
+                                            Unlocked</span>
+                                        {% else %}
+                                        <span id="timer_badge_{{ les.id }}"
+                                            class="badge bg-warning text-dark p-2 font-monospace fs-6 shadow-sm">
+                                            <i class="fa-solid fa-hourglass-half me-1"></i> <span
+                                                id="timer_text_{{ les.id }}">00:00 / {{ "%02d:%02d" |
+                                                format(required_secs // 60, required_secs % 60) }}</span>
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% if has_post %}
+                            <!-- LESSON POST-ASSESSMENT -->
+                            <div class="p-3 border rounded-3 bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="fw-bold text-navy mb-0"><i
+                                                class="fa-solid fa-list-check me-2 text-success"></i> Lesson
+                                            Post-Assessment</h6>
+                                        <small class="text-muted">Take post-quiz after completing required courseware
+                                            viewing time</small>
+                                    </div>
+                                    <div id="post_btn_container_{{ les.id }}">
+                                        {% if post_attempt %}
+                                        <span class="badge bg-success p-2.5 shadow-sm fs-6">
+                                            <i class="fa-solid fa-circle-check me-1"></i> Passed ({{
+                                            post_attempt.score_percentage }}%)
+                                        </span>
+                                        {% else %}
+                                        {% if is_cw_reviewed %}
+                                        <a href="{{ url_for('learners.take_assessment', course_id=course.id, assessment_type='LESSON_POST') }}?lesson_id={{ les.id }}"
+                                            class="btn btn-sm btn-warning fw-bold text-dark shadow-sm">
+                                            <i class="fa-solid fa-pen-to-square me-1"></i> Take Post-Assessment Quiz
+                                        </a>
+                                        {% else %}
+                                        <button id="post_lock_btn_{{ les.id }}"
+                                            class="btn btn-sm btn-secondary disabled" disabled>
+                                            <i class="fa-solid fa-lock me-1"></i> Spend Required Time on Courseware to
+                                            Unlock
+                                        </button>
+                                        <a id="post_active_btn_{{ les.id }}"
+                                            href="{{ url_for('learners.take_assessment', course_id=course.id, assessment_type='LESSON_POST') }}?lesson_id={{ les.id }}"
+                                            class="btn btn-sm btn-warning fw-bold text-dark shadow-sm d-none">
+                                            <i class="fa-solid fa-pen-to-square me-1"></i> Take Post-Assessment Quiz
+                                        </a>
+                                        {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                    {% else %}
+                    <!-- Fallback Lesson 1 if no custom lessons created yet -->
+                    <div class="p-3 border rounded-3 bg-light mb-4">
+                        <h6 class="fw-bold text-navy mb-1"><i class="fa-solid fa-book-open me-2"></i> Lesson 1: Core
+                            Fundamentals & Concepts</h6>
+                        <p class="text-muted small mb-0">Master key principles, operational framework, and
+                            implementation workflows. Complete the Course End Assessment below to finish the course.</p>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    <!-- COURSE END ASSESSMENT CARD -->
+                    <div class="p-4 border rounded-3 bg-white shadow-sm mt-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="fw-bold text-navy mb-0"><i class="fa-solid fa-award me-2 text-warning"></i>
+                                Course End Assessment</h5>
+                            <span class="badge bg-danger">Attempts: {{ enrollment.attempts_count }} / 3 Allowed</span>
+                        </div>
+                        <p class="text-muted small mb-3">Final comprehensive examination covering all course lessons.
+                            Requires {{ course.pass_percentage }}% pass mark to unlock certificate.</p>
+
+                        {% if has_pre_questions and not pre_attempt %}
+                        <div class="alert alert-warning py-2 mb-0">
+                            <i class="fa-solid fa-lock me-1"></i> Locked: Complete Pre-Assessment first to unlock the
+                            final examination.
+                        </div>
+                        {% else %}
+                        {% if course_end_attempt and course_end_attempt.passed %}
+                        <div class="alert alert-success d-flex align-items-center py-2 mb-0">
+                            <i class="fa-solid fa-circle-check fs-4 me-2"></i>
+                            <div>
+                                <strong>Course Passed!</strong> Final Score: {{ course_end_attempt.score_percentage }}%.
+                            </div>
+                        </div>
+                        {% else %}
+                        {% if enrollment.attempts_count < 3 %} <a
+                            href="{{ url_for('learners.take_assessment', course_id=course.id, assessment_type='COURSE_END') }}"
+                            class="btn btn-warning fw-bold text-dark w-100 shadow-sm">
+                            <i class="fa-solid fa-file-signature me-1"></i> Take Course End Assessment
+                            </a>
+                            {% else %}
+                            <div class="alert alert-danger py-2 mb-0">
+                                <i class="fa-solid fa-circle-xmark me-1"></i> Maximum 3 attempts limit exhausted.
+                            </div>
+                            {% endif %}
+                            {% endif %}
+                            {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Downloadable Resources & Certificate -->
+        <div class="col-md-4">
+            <!-- Downloadable Resources Card -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3">
+                    <h6 class="fw-bold text-navy mb-0"><i class="fa-solid fa-folder-open me-2 text-primary"></i> Course
+                        Downloadable Resources</h6>
+                </div>
+                <div class="card-body p-3">
+                    {% if has_pre_questions and not pre_attempt %}
+                    <div class="text-muted small border p-3 rounded bg-light text-center">
+                        <i class="fa-solid fa-lock me-1 text-warning"></i> Locked until Pre-Assessment completion.
+                    </div>
+                    {% else %}
+                    {% for mat in course.materials %}
+                    <div class="p-2 border rounded bg-light mb-2 d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="fw-bold d-block text-dark">{{ mat.title }}</small>
+                            <small class="text-muted">{{ mat.material_type }}</small>
+                        </div>
+                        {% if mat.allow_download %}
+                        <a href="{{ url_for('courses.download_material', material_id=mat.id) }}?download=1"
+                            target="_blank" class="btn btn-navy bg-navy text-white btn-sm px-2">
+                            <i class="fa-solid fa-download"></i> Download
+                        </a>
+                        {% else %}
+                        <span class="badge bg-secondary">View Only</span>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="text-muted small text-center py-2">No course-level downloadable resources attached.
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Certificate Card -->
+    <div class="card border-0 shadow-sm text-center p-3">
+        <div class="card-body">
+            <i class="fa-solid fa-certificate text-gold fa-4x mb-3"></i>
+            <h5 class="fw-bold text-navy">L&D Completion Certificate</h5>
+            <p class="text-muted small mb-3">Issued automatically upon passing the Course End Assessment.</p>
+
+            {% if certificate %}
+            <div class="alert alert-success py-2 small mb-3">
+                <i class="fa-solid fa-check me-1"></i> Issued: {{ certificate.certificate_id }}
+            </div>
+            <a href="{{ url_for('certificates.download_certificate', cert_id_str=certificate.certificate_id) }}"
+                class="btn btn-navy bg-navy text-white w-100 fw-bold shadow-sm">
+                <i class="fa-solid fa-download me-1"></i> Download PDF Certificate
+            </a>
+            {% else %}
+            <div class="text-muted small border p-3 rounded bg-light">
+                <i class="fa-solid fa-lock me-1"></i> Complete Course End Assessment to unlock certificate.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        {% for les in course.lessons %}
+        {% set is_cw_reviewed = (les.id in reviewed_lesson_ids) %}
+        {% if not is_cw_reviewed and not post_attempt %}
+        (function () {
+            let lessonId = {{ les.id }};
+            let reqSecs = {{ ((les.min_time_minutes or 1.0) * 60) | int }};
+    let elapsed = 0;
+
+    let interval = setInterval(function () {
+        if (document.hidden) return; // Count active visible viewing time
+        elapsed++;
+
+        let curMin = Math.floor(elapsed / 60);
+        let curSec = elapsed % 60;
+        let reqMin = Math.floor(reqSecs / 60);
+        let reqSec = reqSecs % 60;
+
+        let curStr = String(curMin).padStart(2, '0') + ':' + String(curSec).padStart(2, '0');
+        let reqStr = String(reqMin).padStart(2, '0') + ':' + String(reqSec).padStart(2, '0');
+
+        let timerTextElem = document.getElementById('timer_text_' + lessonId);
+        if (timerTextElem) {
+            timerTextElem.innerText = curStr + ' / ' + reqStr;
+        }
+
+        if (elapsed >= reqSecs) {
+            clearInterval(interval);
+
+            // Auto-record completion on server
+            fetch('/record_courseware_time/' + lessonId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            }).then(res => res.json()).then(data => {
+                if (data.status === 'success') {
+                    let tracker = document.getElementById('cw_tracker_' + lessonId);
+                    if (tracker) {
+                        tracker.className = 'mt-3 p-3 rounded-3 border bg-success-subtle border-success-subtle d-flex justify-content-between align-items-center';
+                        tracker.innerHTML = `
+                                <div>
+                                    <span class="fw-bold text-success"><i class="fa-solid fa-circle-check me-1"></i> Minimum Viewing Time Completed!</span>
+                                    <div class="small text-muted">Required minimum viewing time completed. Post-Assessment is unlocked!</div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-success p-2 fs-6"><i class="fa-solid fa-unlock me-1"></i> Unlocked</span>
+                                </div>`;
+                    }
+
+                    let lockBtn = document.getElementById('post_lock_btn_' + lessonId);
+                    let activeBtn = document.getElementById('post_active_btn_' + lessonId);
+                    if (lockBtn && activeBtn) {
+                        lockBtn.classList.add('d-none');
+                        activeBtn.classList.remove('d-none');
+                    }
+                }
+            }).catch(err => console.error('Failed to record time:', err));
+        }
+    }, 1000);
+    }) ();
+    {% endif %}
+    {% endfor %}
+});
+</script>
+{% endblock %}

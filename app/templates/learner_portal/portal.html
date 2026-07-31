@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block public_content %}
+<div class="bg-navy text-white py-4 px-4 shadow-sm mb-4">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="fw-bold mb-1"><i class="fa-solid fa-user-graduate text-gold me-2"></i> Welcome, {{ learner.name }}</h4>
+            <span class="badge bg-gold text-dark font-monospace">Global ID: {{ learner.global_id }}</span>
+        </div>
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-light btn-sm"><i class="fa-solid fa-right-from-bracket me-1"></i> Logout</a>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <h5 class="fw-bold text-navy mb-3">My Enrolled Training Courses & Classes</h5>
+    <div class="row g-4">
+        {% for en in enrollments %}
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-3 h-100">
+                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="fw-bold text-navy mb-0">{{ en.course.name }}</h5>
+                            <span class="badge {% if en.course.mode == 'Live' %}bg-success{% else %}bg-info{% endif %}">
+                                {{ en.course.mode }}
+                            </span>
+                        </div>
+                        <p class="text-muted small mb-3">{{ en.course.description or 'No course description.' }}</p>
+                        
+                        <div class="small text-muted mb-2">
+                            <i class="fa-solid fa-clock me-1"></i> Duration: {{ en.course.duration_hours }} Hours
+                        </div>
+                        <div class="small text-muted mb-3">
+                            <i class="fa-solid fa-flag-checkered me-1"></i> Status: 
+                            <strong class="text-dark">{{ en.completion_status }}</strong>
+                        </div>
+                    </div>
+
+                    <div>
+                        {% if en.course.mode == 'Live' and en.live_class %}
+                        <a href="{{ url_for('learners.class_flow', class_id_str=en.live_class.class_id) }}" class="btn btn-navy bg-navy text-white w-100 fw-bold shadow-sm">
+                            <i class="fa-solid fa-play me-1"></i> Enter Live Class Training
+                        </a>
+                        {% else %}
+                        <a href="{{ url_for('learners.self_paced_flow', course_id_str=en.course.course_id) }}" class="btn btn-primary w-100 fw-bold shadow-sm">
+                            <i class="fa-solid fa-book-reader me-1"></i> Launch Self-Paced Course
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 mb-3">
+            <div class="alert alert-info py-2"><i class="fa-solid fa-info-circle me-1"></i> You are logged in as <strong>{{ learner.global_id }}</strong>. Select any course below to begin learning:</div>
+        </div>
+        {% for crs in all_courses %}
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-3 h-100">
+                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="fw-bold text-navy mb-0">{{ crs.name }}</h5>
+                            <span class="badge {% if crs.mode == 'Live' %}bg-success{% else %}bg-info{% endif %}">
+                                {{ crs.mode }}
+                            </span>
+                        </div>
+                        <p class="text-muted small mb-3">{{ crs.description or 'No course description.' }}</p>
+                        
+                        <div class="small text-muted mb-2">
+                            <i class="fa-solid fa-clock me-1"></i> Duration: {{ crs.duration_hours }} Hours
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        {% if crs.mode == 'Live' %}
+                        <a href="{{ url_for('learners.class_flow', class_id_str='CRS-CLS-000001') }}" class="btn btn-navy bg-navy text-white w-100 fw-bold shadow-sm">
+                            <i class="fa-solid fa-play me-1"></i> Launch Training Session
+                        </a>
+                        {% else %}
+                        <a href="{{ url_for('learners.self_paced_flow', course_id_str=crs.course_id) }}" class="btn btn-primary w-100 fw-bold shadow-sm">
+                            <i class="fa-solid fa-book-reader me-1"></i> Launch Self-Paced Course
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

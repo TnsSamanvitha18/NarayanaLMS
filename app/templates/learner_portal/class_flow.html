@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+
+{% block public_content %}
+<div class="bg-navy text-white py-3 px-4 shadow-sm mb-4">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="fw-bold mb-0"><i class="fa-solid fa-chalkboard-user text-gold me-2"></i> {{ live_class.class_name }}</h5>
+            <small class="text-white-50">Course: {{ course.name }} | Facilitator: {{ live_class.facilitator_name }}</small>
+        </div>
+        <div>
+            <span class="badge bg-gold text-dark me-2 font-monospace">{{ learner.global_id }}</span>
+            <a href="{{ url_for('learners.my_portal') }}" class="btn btn-outline-light btn-sm">My Portal</a>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5">
+    {% if is_expired %}
+    <div class="alert alert-danger border-danger d-flex align-items-center shadow-sm mb-4" role="alert">
+        <i class="fa-solid fa-lock fs-2 me-3 text-danger"></i>
+        <div>
+            <h6 class="fw-bold mb-1 text-navy">Live Class Session Expired & Locked</h6>
+            <small class="text-dark">This class was scheduled for <strong>{{ live_class.class_date.strftime('%d-%b-%Y') if live_class.class_date else 'N/A' }}</strong>. Attendance scanning, virtual classroom links, and test submissions are locked for expired dates.</small>
+        </div>
+    </div>
+    {% elif attendance %}
+    <!-- Attendance Banner -->
+    <div class="alert alert-success d-flex align-items-center shadow-sm mb-4" role="alert">
+        <i class="fa-solid fa-circle-check fs-3 me-3"></i>
+        <div>
+            <h6 class="fw-bold mb-0">Attendance Recorded Automatically!</h6>
+            <small>Status: <strong>{{ attendance.status }}</strong> | Recorded via: <strong>{{ attendance.recorded_via }}</strong> on {{ attendance.timestamp.strftime('%H:%M:%S') }}</small>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Step-by-Step Training Stepper -->
+    <div class="row g-4">
+        <!-- Step 1: Pre Assessment -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="badge rounded-circle bg-navy text-white p-3 me-3 fs-5" style="width:42px; height:42px; display:flex; align-items:center; justify-content:center;">1</span>
+                        <div>
+                            <h5 class="fw-bold text-navy mb-0">Pre-Assessment</h5>
+                            <small class="text-muted">Evaluate initial baseline domain knowledge</small>
+                        </div>
+                    </div>
+                    {% if pre_attempt %}
+                    <div class="alert alert-info py-2 mb-0">
+                        <i class="fa-solid fa-check-double me-1"></i> Completed! Score: <strong>{{ pre_attempt.score_percentage }}%</strong>
+                    </div>
+                    {% else %}
+                    <a href="{{ url_for('learners.take_assessment', course_id=course.id, assessment_type='PRE', class_id=live_class.class_id) }}" class="btn btn-navy bg-navy text-white w-100 fw-bold shadow-sm">
+                        <i class="fa-solid fa-pen-nib me-1"></i> Start Pre-Assessment Test
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Training / Google Meet Link -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="badge rounded-circle bg-success text-white p-3 me-3 fs-5" style="width:42px; height:42px; display:flex; align-items:center; justify-content:center;">2</span>
+                        <div>
+                            <h5 class="fw-bold text-navy mb-0">Training Session</h5>
+                            <small class="text-muted">{% if live_class.class_mode == 'Online' %}Google Meet Virtual Classroom{% else %}In-Person Campus Batch{% endif %}</small>
+                        </div>
+                    </div>
+                    {% if has_pre_questions and not pre_attempt %}
+                    <div class="alert alert-warning py-2 border mb-0">
+                        <i class="fa-solid fa-lock me-1"></i> Locked: Complete Pre-Assessment first to unlock training session.
+                    </div>
+                    {% else %}
+                        {% if live_class.class_mode == 'Online' %}
+                            {% if live_class.meet_link %}
+                            <a href="{{ live_class.meet_link }}" target="_blank" class="btn btn-success w-100 fw-bold shadow-sm py-2">
+                                <i class="fa-brands fa-google me-2"></i> Join Google Meet Classroom
+                            </a>
+                            {% else %}
+                            <div class="text-muted small">Google Meet link pending facilitator assignment.</div>
+                            {% endif %}
+                        {% else %}
+                        <div class="alert alert-light border py-2 text-dark mb-0">
+                            <i class="fa-solid fa-location-dot text-danger me-1"></i> Location: <strong>{{ live_class.location or 'HYD' }} - {{ live_class.branch or 'Campus' }}</strong> ({{ live_class.session_time }})
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Post Assessment -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="badge rounded-circle bg-warning text-dark p-3 me-3 fs-5" style="width:42px; height:42px; display:flex; align-items:center; justify-content:center;">3</span>
+                        <div>
+                            <h5 class="fw-bold text-navy mb-0">Post-Assessment</h5>
+                            <small class="text-muted">Verify learning outcome & course score</small>
+                        </div>
+                    </div>
+                    {% if post_attempt %}
+                    <div class="alert alert-success py-2 mb-0">
+                        <i class="fa-solid fa-circle-check me-1"></i> Completed! Final Score: <strong>{{ post_attempt.score_percentage }}%</strong>
+                    </div>
+                    {% else %}
+                        {% if not has_pre_questions or pre_attempt %}
+                        <a href="{{ url_for('learners.take_assessment', course_id=course.id, assessment_type='POST', class_id=live_class.class_id) }}" class="btn btn-warning fw-bold text-dark w-100 shadow-sm">
+                            <i class="fa-solid fa-file-signature me-1"></i> Take Post-Assessment Test
+                        </a>
+                        {% else %}
+                        <button class="btn btn-secondary w-100 disabled" disabled><i class="fa-solid fa-lock me-1"></i> Complete Pre-Assessment First</button>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Downloads -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="badge rounded-circle bg-info text-white p-3 me-3 fs-5" style="width:42px; height:42px; display:flex; align-items:center; justify-content:center;">4</span>
+                        <div>
+                            <h5 class="fw-bold text-navy mb-0">Downloads & Materials</h5>
+                            <small class="text-muted">Access class session downloadable resources</small>
+                        </div>
+                    </div>
+                    {% if has_pre_questions and not pre_attempt %}
+                    <div class="text-muted small py-2 text-center border rounded bg-light">
+                        <i class="fa-solid fa-lock me-1 text-warning"></i> Locked until Pre-Assessment completion.
+                    </div>
+                    {% else %}
+                    {% for mat in course.materials %}
+                    <div class="p-2 border rounded bg-light mb-2 d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="fw-bold d-block text-dark">{{ mat.title }}</small>
+                            <small class="text-muted">{{ mat.material_type }}</small>
+                        </div>
+                        {% if mat.allow_download %}
+                        <a href="{{ url_for('courses.download_material', material_id=mat.id) }}?download=1" target="_blank" class="btn btn-navy bg-navy text-white btn-sm px-2">
+                            <i class="fa-solid fa-download"></i> Download
+                        </a>
+                        {% else %}
+                        <span class="badge bg-secondary">View Only</span>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="text-muted small py-2 text-center border rounded bg-light">No class downloadable resources uploaded yet.</div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Course Feedback -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="badge rounded-circle bg-danger text-white p-3 me-3 fs-5" style="width:42px; height:42px; display:flex; align-items:center; justify-content:center;">5</span>
+                        <div>
+                            <h5 class="fw-bold text-navy mb-0">Course Feedback</h5>
+                            <small class="text-muted">Share your facilitation feedback & ratings</small>
+                        </div>
+                    </div>
+                    {% if has_pre_questions and not pre_attempt %}
+                    <div class="text-muted small py-2 text-center border rounded bg-light">
+                        <i class="fa-solid fa-lock me-1 text-warning"></i> Locked until Pre-Assessment completion.
+                    </div>
+                    {% else %}
+                    {% if feedback_resp %}
+                    <div class="alert alert-secondary py-2 mb-0">
+                        <i class="fa-solid fa-heart text-danger me-1"></i> Feedback Submitted! Thank you.
+                    </div>
+                    {% else %}
+                        {% if live_class.feedback_repo_id %}
+                        <a href="{{ url_for('learners.submit_feedback', repo_id=live_class.feedback_repo_id, class_id=live_class.class_id) }}" class="btn btn-outline-danger w-100 fw-bold shadow-sm">
+                            <i class="fa-solid fa-comment-dots me-1"></i> Fill Feedback Form
+                        </a>
+                        {% else %}
+                        <div class="text-muted small">No feedback form attached to this class.</div>
+                        {% endif %}
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

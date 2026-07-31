@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if live_class %}Edit Class {{ live_class.class_id }}{% else %}Schedule Live Class{% endif %} - Narayana Learning Hub{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('classes.list_classes') }}">Classes</a></li>
+            <li class="breadcrumb-item active">{% if live_class %}Edit Class{% else %}Schedule Class{% endif %}</li>
+        </ol>
+    </nav>
+    <h3 class="fw-bold text-navy mb-1">{% if live_class %}Edit Class ({{ live_class.class_id }}){% else %}Schedule Live Class{% endif %}</h3>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        <form method="POST">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Class ID</label>
+                    <input type="text" class="form-control bg-light font-monospace" value="{{ auto_id }}" readonly>
+                    <small class="text-muted">Auto-generated (CRS-CLS-XXXXXX)</small>
+                </div>
+
+                <div class="col-md-5">
+                    <label for="course_id" class="form-label fw-bold">Select Live Course <span class="text-danger">*</span></label>
+                    <select class="form-select" id="course_id" name="course_id" required>
+                        <option value="">-- Choose Live Course --</option>
+                        {% for crs in live_courses %}
+                        <option value="{{ crs.id }}" {% if live_class and live_class.course_id == crs.id %}selected{% endif %}>
+                            {{ crs.name }} ({{ crs.course_id }}) - {{ crs.duration_hours }} hrs
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="class_mode" class="form-label fw-bold">Class Mode <span class="text-danger">*</span></label>
+                    <select class="form-select" id="class_mode" name="class_mode" required>
+                        <option value="In Person" {% if live_class and live_class.class_mode == 'In Person' %}selected{% endif %}>In Person</option>
+                        <option value="Online" {% if live_class and live_class.class_mode == 'Online' %}selected{% endif %}>Online (Google Meet)</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="class_date" class="form-label fw-bold">Class Date <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="class_date" name="class_date" required value="{{ live_class.class_date.strftime('%Y-%m-%d') if live_class else '' }}">
+                </div>
+
+                <!-- In Person Conditional Fields -->
+                <div class="col-md-4 in-person-field">
+                    <label for="location" class="form-label fw-bold">Location (City)</label>
+                    <input type="text" class="form-control" id="location" name="location" placeholder="e.g. HYD" value="{{ live_class.location if live_class else 'HYD' }}">
+                </div>
+
+                <div class="col-md-4 in-person-field">
+                    <label for="branch" class="form-label fw-bold">Branch / Campus</label>
+                    <input type="text" class="form-control" id="branch" name="branch" placeholder="e.g. KPHB" value="{{ live_class.branch if live_class else 'KPHB' }}">
+                </div>
+
+                <div class="col-md-4 in-person-field">
+                    <label for="session_time" class="form-label fw-bold">Session Slot</label>
+                    <select class="form-select" id="session_time" name="session_time">
+                        <option value="Morning" {% if live_class and live_class.session_time == 'Morning' %}selected{% endif %}>Morning Session</option>
+                        <option value="Evening" {% if live_class and live_class.session_time == 'Evening' %}selected{% endif %}>Evening Session</option>
+                    </select>
+                </div>
+
+                <!-- Online Conditional Fields -->
+                <div class="col-md-8 online-field" style="display: none;">
+                    <label for="meet_link" class="form-label fw-bold">Google Meet Link <span class="text-danger">*</span></label>
+                    <input type="url" class="form-control" id="meet_link" name="meet_link" placeholder="https://meet.google.com/abc-defg-hij" value="{{ live_class.meet_link if live_class else '' }}">
+                    <small class="text-muted">Learners will be redirected to this Google Meet link after Pre-Assessment.</small>
+                </div>
+
+                <hr class="my-4">
+
+                <!-- Common Facilitator Fields -->
+                <div class="col-md-4">
+                    <label for="facilitator_name" class="form-label fw-bold">Lead Facilitator Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="facilitator_name" name="facilitator_name" required placeholder="e.g. Dr. K. Sharma" value="{{ live_class.facilitator_name if live_class else '' }}">
+                </div>
+
+                <div class="col-md-4">
+                    <label for="co_facilitator_name" class="form-label fw-bold">Co-Facilitator Name</label>
+                    <input type="text" class="form-control" id="co_facilitator_name" name="co_facilitator_name" placeholder="e.g. Rahul Verma" value="{{ live_class.co_facilitator_name if live_class else '' }}">
+                </div>
+
+                <div class="col-md-4">
+                    <label for="expected_attendance" class="form-label fw-bold">Expected Attendance</label>
+                    <input type="number" class="form-control" id="expected_attendance" name="expected_attendance" required value="{{ live_class.expected_attendance if live_class else 30 }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="feedback_repo_id" class="form-label fw-bold">Assign Feedback Form</label>
+                    <select class="form-select" id="feedback_repo_id" name="feedback_repo_id">
+                        <option value="">-- Select Feedback Form from Repository --</option>
+                        {% for repo in feedback_repos %}
+                        <option value="{{ repo.id }}" {% if live_class and live_class.feedback_repo_id == repo.id %}selected{% endif %}>
+                            {{ repo.title }} ({{ repo.questions|length }} questions)
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                <a href="{{ url_for('classes.list_classes') }}" class="btn btn-light border">Cancel</a>
+                <button type="submit" class="btn btn-success px-4 fw-bold">
+                    <i class="fa-solid fa-floppy-disk me-1"></i> Save Live Class
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

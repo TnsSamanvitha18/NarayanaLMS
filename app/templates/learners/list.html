@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Learner Management - Narayana Learning Hub{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold text-navy mb-1"><i class="fa-solid fa-user-graduate me-2"></i> Learner Management</h3>
+        <p class="text-muted mb-0">Manage learner accounts and assign Self-Paced courses via CSV or Global IDs.</p>
+    </div>
+    <a href="{{ url_for('learners.assign_learners') }}" class="btn btn-warning fw-bold text-dark shadow-sm">
+        <i class="fa-solid fa-user-plus me-1"></i> Assign Self-Paced Courses
+    </a>
+</div>
+
+<!-- Search Bar -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-3">
+        <form method="GET" action="{{ url_for('learners.list_learners') }}" class="row g-3">
+            <div class="col-md-10">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                    <input type="text" name="search" class="form-control border-start-0" placeholder="Search by Learner Global ID or Name..." value="{{ search_query }}">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-navy bg-navy text-white w-100"><i class="fa-solid fa-search me-1"></i> Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Learners Table -->
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-muted small text-uppercase">
+                    <tr>
+                        <th>Global ID</th>
+                        <th>Learner Name</th>
+                        <th>Department</th>
+                        <th>Enrolled Courses</th>
+                        <th>Attendance Count</th>
+                        <th>Registered Date</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for l in learners %}
+                    <tr>
+                        <td class="fw-bold font-monospace text-navy">{{ l.global_id }}</td>
+                        <td class="fw-bold text-dark">{{ l.name }}</td>
+                        <td><span class="badge bg-light text-dark border">{{ l.department or 'L&D' }}</span></td>
+                        <td>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle fs-6">
+                                {{ l.enrollments|length }} Courses
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle fs-6">
+                                {{ l.attendances|length }} Classes Attended
+                            </span>
+                        </td>
+                        <td class="text-muted">{{ l.created_at.strftime('%d-%b-%Y') }}</td>
+                        <td class="text-end">
+                            <form action="{{ url_for('learners.reset_learner_attempts', learner_id=l.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Reset assessment attempts to 0 for learner {{ l.global_id }}?');">
+                                <button type="submit" class="btn btn-sm btn-outline-warning text-dark fw-bold" title="Reset Assessment Attempts">
+                                    <i class="fa-solid fa-rotate-left me-1"></i> Reset Attempts
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">No learners found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

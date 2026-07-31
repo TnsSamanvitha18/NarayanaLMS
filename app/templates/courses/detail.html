@@ -1,0 +1,543 @@
+{% extends 'base.html' %}
+
+{% block title %}Course {{ course.course_id }} - Narayana Learning Hub{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('courses.list_courses') }}">Courses & Classes</a></li>
+            <li class="breadcrumb-item active">{{ course.course_id }}</li>
+        </ol>
+    </nav>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h3 class="fw-bold text-navy mb-1">{{ course.name }}</h3>
+            <span class="badge font-monospace bg-dark text-gold fs-6 me-2">{{ course.course_id }}</span>
+            <span class="badge {% if course.mode == 'Live' %}bg-success{% else %}bg-info{% endif %} fs-6 me-2">{{ course.mode }}</span>
+            <span class="badge bg-secondary border fs-6"><i class="fa-regular fa-clock me-1"></i> {{ course.duration_hours | format_duration }}</span>
+        </div>
+        <div class="d-flex align-items-center">
+            <a href="{{ url_for('courses.download_analytics', course_id=course.id) }}" class="btn btn-outline-success btn-sm px-3 fw-bold me-2 shadow-sm" title="Download Course Performance Analytics CSV">
+                <i class="fa-solid fa-file-csv me-1"></i> Download Course Analytics
+            </a>
+            <a href="{{ url_for('courses.edit_course', course_id=course.id) }}" class="btn btn-navy bg-navy text-white btn-sm px-3 shadow-sm me-2">
+                <i class="fa-solid fa-pen-to-square me-1"></i> Edit Course
+            </a>
+            <form action="{{ url_for('courses.delete_course', course_id=course.id) }}" method="POST" class="d-inline me-2" onsubmit="return confirm('Are you sure you want to delete course {{ course.course_id }}? This will permanently delete all lessons, courseware, and assessments.');">
+                <button type="submit" class="btn btn-outline-danger btn-sm px-3 shadow-sm">
+                    <i class="fa-solid fa-trash-can me-1"></i> Delete Course
+                </button>
+            </form>
+            <a href="{{ url_for('courses.list_courses') }}" class="btn btn-outline-secondary btn-sm px-3">Back to Courses</a>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <!-- Overview Card -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white py-3">
+                <h5 class="fw-bold text-navy mb-0"><i class="fa-solid fa-circle-info me-2"></i> Course Overview</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">{{ course.description or 'No description provided.' }}</p>
+                <hr>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Mode:</span>
+                    <span class="fw-bold text-dark">{{ course.mode }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Duration:</span>
+                    <span class="fw-bold text-dark">{{ course.duration_hours }} Hours</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Pass Mark:</span>
+                    <span class="fw-bold text-success">{{ course.pass_percentage }}%</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Created On:</span>
+                    <span class="fw-bold text-dark">{{ course.created_at.strftime('%d-%b-%Y') }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3">
+                <ul class="nav nav-tabs card-header-tabs" id="assessTab" role="tablist">
+                    {% if course.mode == 'Self Paced' %}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active fw-bold text-navy" id="lessons-tab" data-bs-toggle="tab" data-bs-target="#lessons-content" type="button">
+                            <i class="fa-solid fa-book-reader text-primary me-1"></i> Lessons & Courseware ({{ lessons|length }})
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-bold text-navy" id="course-end-tab" data-bs-toggle="tab" data-bs-target="#course-end-content" type="button">
+                            <i class="fa-solid fa-award text-warning me-1"></i> Course End Assessment
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-bold text-navy" id="resources-tab" data-bs-toggle="tab" data-bs-target="#resources-content" type="button">
+                            <i class="fa-solid fa-folder-open text-info me-1"></i> Downloadable Resources ({{ course.materials|length }})
+                        </button>
+                    </li>
+                    {% else %}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active fw-bold text-navy" id="classes-tab" data-bs-toggle="tab" data-bs-target="#classes-content" type="button">
+                            <i class="fa-solid fa-chalkboard-user text-success me-1"></i> Scheduled Classes & Batches ({{ live_classes|length }})
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-bold text-navy" id="resources-tab" data-bs-toggle="tab" data-bs-target="#resources-content" type="button">
+                            <i class="fa-solid fa-folder-open text-info me-1"></i> Downloadable Course Supplements ({{ course.materials|length }})
+                        </button>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="card-body p-0">
+                <div class="tab-content" id="assessTabContent">
+
+                    {% if course.mode == 'Self Paced' %}
+                    <!-- LESSONS & COURSEWARE TAB -->
+                    <div class="tab-pane fade show active p-3" id="lessons-content" role="tabpanel">
+                        <!-- All-In-One Create Lesson Form -->
+                        <div class="card bg-light border-0 p-3 mb-4 shadow-sm">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h6 class="fw-bold text-navy mb-0"><i class="fa-solid fa-plus-circle me-1 text-primary"></i> Create New Lesson / Module</h6>
+                                    <small class="text-muted">Build lesson structure with auto-populated lesson #, pre-assessment, non-downloadable content, and post-assessment.</small>
+                                </div>
+                                <div>
+                                    <form action="{{ url_for('courses.clear_lessons', course_id=course.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Clear all lessons for this course?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Clear All Lessons">
+                                            <i class="fa-solid fa-trash-can me-1"></i> Clear All Lessons
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <form action="{{ url_for('courses.add_lesson', course_id=course.id) }}" method="POST" enctype="multipart/form-data" class="row g-3">
+                                <!-- 1. Lesson Number (Auto-Populated) & Basic Info -->
+                                <div class="col-md-2">
+                                    <label class="form-label small fw-bold text-navy">Lesson # (Auto)</label>
+                                    <input type="number" name="lesson_number" class="form-control form-control-sm bg-white fw-bold font-monospace text-center" value="{{ lessons|length + 1 }}" readonly>
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="form-label small fw-bold">Lesson Title <span class="text-danger">*</span></label>
+                                    <input type="text" name="title" class="form-control form-control-sm" placeholder="e.g. Lesson {{ lessons|length + 1 }}: Core Fundamentals" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label small fw-bold">Duration (Hrs) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.25" min="0.1" name="duration_hours" class="form-control form-control-sm fw-bold text-center" value="1.0" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold text-navy"><i class="fa-solid fa-clock-rotate-left text-warning me-1"></i> Min Viewing Time (Min) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.1" min="0.1" name="min_time_minutes" class="form-control form-control-sm fw-bold text-center" value="1.0" title="Minimum time in minutes learner must spend on courseware to unlock Post-Assessment" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold">Lesson Summary</label>
+                                    <input type="text" name="summary" class="form-control form-control-sm" placeholder="Overview of key learning objectives...">
+                                </div>
+
+                                <hr class="my-2">
+
+                                <!-- 2. Pre-Assessment CSV -->
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded bg-white h-100">
+                                        <label class="form-label small fw-bold text-primary mb-1">
+                                            <i class="fa-solid fa-file-csv me-1"></i> 1. Lesson Pre-Assessment CSV
+                                        </label>
+                                        <input type="file" name="pre_assessment_csv" class="form-control form-control-sm" accept=".csv,.xlsx,.xls">
+                                        <small class="text-muted d-block mt-1">Upload CSV quiz questions taken before reading lesson content.</small>
+                                    </div>
+                                </div>
+
+                                <!-- 3. Post-Assessment CSV -->
+                                <div class="col-md-6">
+                                    <div class="p-3 border rounded bg-white h-100">
+                                        <label class="form-label small fw-bold text-success mb-1">
+                                            <i class="fa-solid fa-file-csv me-1"></i> 3. Lesson Post-Assessment CSV
+                                        </label>
+                                        <input type="file" name="post_assessment_csv" class="form-control form-control-sm" accept=".csv,.xlsx,.xls">
+                                        <small class="text-muted d-block mt-1">Upload CSV quiz questions taken after reading lesson content.</small>
+                                    </div>
+                                </div>
+
+                                <!-- 4. Lesson Content (Non-Downloadable, Any Format) -->
+                                <div class="col-12">
+                                    <div class="p-3 border rounded bg-white">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <label class="form-label small fw-bold text-navy mb-0">
+                                                <i class="fa-solid fa-lock text-warning me-1"></i> 2. Lesson Content / Courseware (Non-Downloadable File or Video URL)
+                                            </label>
+                                            <span class="badge bg-warning-subtle text-dark border"><i class="fa-solid fa-ban me-1"></i> Learner View-Only (No Download)</span>
+                                        </div>
+                                        
+                                        <div class="row g-2">
+                                            <div class="col-md-4">
+                                                <input type="text" name="courseware_title" class="form-control form-control-sm" placeholder="Content Title (e.g. Video Lecture, Slide Deck)">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <select name="courseware_type" class="form-select form-select-sm">
+                                                    <option value="Video URL">Video URL / YouTube Link</option>
+                                                    <option value="Video">Video File (MP4/WebM Upload)</option>
+                                                    <option value="PDF">PDF Presentation Reader</option>
+                                                    <option value="PPT">PPT Slide Deck</option>
+                                                    <option value="Excel">Excel Data Sheet View</option>
+                                                    <option value="SCORM">SCORM Module View</option>
+                                                    <option value="Text">Reading Instructions</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <input type="file" name="courseware_file" class="form-control form-control-sm" accept=".pdf,.ppt,.pptx,.mp4,.webm,.avi,.xlsx,.xls,.zip,.rar">
+                                            </div>
+                                            <div class="col-md-12 mt-2">
+                                                <input type="url" name="external_url" class="form-control form-control-sm" placeholder="Video Lecture / YouTube Embed Link (e.g. https://www.youtube.com/watch?v=...)">
+                                            </div>
+                                            <div class="col-12 mt-2">
+                                                <textarea name="courseware_text" class="form-control form-control-sm" rows="2" placeholder="Optional reading text, code examples, or detailed instructions..."></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 text-end">
+                                    <button type="submit" class="btn btn-navy bg-navy text-white btn-sm px-4 fw-bold shadow-sm">
+                                        <i class="fa-solid fa-save me-1"></i> Save Complete Lesson #{{ lessons|length + 1 }}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Lessons Accordion / List -->
+                        <div class="accordion" id="lessonsAccordion">
+                            {% for les in lessons %}
+                            <div class="accordion-item mb-3 border rounded-3 shadow-sm overflow-hidden">
+                                <h2 class="accordion-header d-flex justify-content-between align-items-center bg-light border-bottom pe-3" id="headingLes{{ les.id }}">
+                                    <button class="accordion-button {% if not loop.first %}collapsed{% endif %} fw-bold text-navy bg-light flex-grow-1 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLes{{ les.id }}">
+                                        <span class="badge bg-navy text-white me-2">Lesson {{ les.lesson_number }}</span> {{ les.title }}
+                                        <span class="badge bg-secondary font-monospace ms-2"><i class="fa-regular fa-clock me-1"></i>{{ les.duration_hours or 1.0 }} hrs</span>
+                                    </button>
+                                    <form action="{{ url_for('courses.delete_lesson', lesson_id=les.id) }}" method="POST" class="d-inline ms-2" onsubmit="return confirm('Are you sure you want to delete Lesson #{{ les.lesson_number }} completely?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger px-2 py-1" title="Delete Lesson">
+                                            <i class="fa-solid fa-trash-can me-1"></i> Delete
+                                        </button>
+                                    </form>
+                                </h2>
+                                <div id="collapseLes{{ les.id }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" data-bs-parent="#lessonsAccordion">
+                                    <div class="accordion-body p-3">
+                                        <!-- 1. Lesson Pre & Post Assessment Uploads -->
+                                        <div class="row g-2 mb-3">
+                                            <div class="col-md-6">
+                                                <div class="p-2 border rounded bg-light">
+                                                    <small class="fw-bold text-navy d-block mb-1"><i class="fa-solid fa-file-csv text-primary me-1"></i> Upload Lesson Pre-Assessment CSV</small>
+                                                    <form action="{{ url_for('courses.upload_lesson_assessment', lesson_id=les.id) }}" method="POST" enctype="multipart/form-data" class="d-flex gap-1">
+                                                        <input type="hidden" name="assessment_type" value="LESSON_PRE">
+                                                        <input type="file" name="assessment_csv" class="form-control form-control-sm" accept=".csv,.xlsx,.xls" required>
+                                                        <button type="submit" class="btn btn-primary btn-sm">Upload</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="p-2 border rounded bg-light">
+                                                    <small class="fw-bold text-navy d-block mb-1"><i class="fa-solid fa-file-csv text-success me-1"></i> Upload Lesson Post-Assessment CSV</small>
+                                                    <form action="{{ url_for('courses.upload_lesson_assessment', lesson_id=les.id) }}" method="POST" enctype="multipart/form-data" class="d-flex gap-1">
+                                                        <input type="hidden" name="assessment_type" value="LESSON_POST">
+                                                        <input type="file" name="assessment_csv" class="form-control form-control-sm" accept=".csv,.xlsx,.xls" required>
+                                                        <button type="submit" class="btn btn-success btn-sm">Upload</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 2. Attach Non-Downloadable Courseware Form -->
+                                        <div class="p-2 border rounded bg-white mb-3">
+                                            <small class="fw-bold text-navy d-block mb-1"><i class="fa-solid fa-cloud-arrow-up text-warning me-1"></i> Attach Non-Downloadable Lesson Courseware (Video URL, PDF, PPT, Text)</small>
+                                            <form action="{{ url_for('courses.add_lesson_courseware', lesson_id=les.id) }}" method="POST" enctype="multipart/form-data" class="row g-2">
+                                                <div class="col-md-3">
+                                                    <input type="text" name="title" class="form-control form-control-sm" placeholder="Courseware Title" required>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <select name="courseware_type" class="form-select form-select-sm">
+                                                        <option value="Video URL">Video URL / YouTube Link</option>
+                                                        <option value="Video">Video File (MP4)</option>
+                                                        <option value="PDF">PDF Reader View</option>
+                                                        <option value="PPT">PPT Presentation</option>
+                                                        <option value="Text">Reading Text</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <input type="url" name="external_url" class="form-control form-control-sm mb-1" placeholder="Video URL (e.g. YouTube link)...">
+                                                    <input type="file" name="courseware_file" class="form-control form-control-sm" accept=".pdf,.ppt,.pptx,.mp4,.webm">
+                                                </div>
+                                                <div class="col-md-2 d-flex align-items-end">
+                                                    <button type="submit" class="btn btn-navy bg-navy text-white btn-sm w-100 fw-bold">Attach</button>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <!-- Attached Courseware List -->
+                                        <div class="small">
+                                            <strong class="text-muted d-block mb-1">Attached Lesson Courseware:</strong>
+                                            {% for cw in les.courseware %}
+                                            <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+                                                <div>
+                                                    <i class="fa-solid fa-file me-1 text-primary"></i> <strong>{{ cw.title }}</strong> ({{ cw.courseware_type }})
+                                                    <span class="badge bg-warning-subtle text-dark border ms-1"><i class="fa-solid fa-lock me-1"></i> Non-Downloadable</span>
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            <span class="text-muted">No courseware attached to this lesson yet.</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="text-center py-4 text-muted">No lessons created yet. Create a lesson above to attach non-downloadable courseware & assessments.</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- COURSE END ASSESSMENT TAB -->
+                    <div class="tab-pane fade p-3" id="course-end-content" role="tabpanel">
+                        <div class="card bg-light border-0 p-3 mb-4">
+                            <h6 class="fw-bold text-navy mb-2"><i class="fa-solid fa-file-csv text-warning me-1"></i> Upload Course End Assessment CSV Questions</h6>
+                            <form action="{{ url_for('courses.upload_course_end_assessment', course_id=course.id) }}" method="POST" enctype="multipart/form-data" class="row g-2">
+                                <div class="col-md-8">
+                                    <input type="file" name="assessment_csv" class="form-control form-control-sm" accept=".csv,.xlsx,.xls" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-warning text-dark btn-sm w-100 fw-bold">Upload Course End CSV</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- DOWNLOADABLE RESOURCES TAB -->
+                    <div class="tab-pane fade p-3" id="resources-content" role="tabpanel">
+                        <div class="card bg-light border-0 p-3 mb-4">
+                            <h6 class="fw-bold text-navy mb-2"><i class="fa-solid fa-cloud-arrow-up me-1 text-primary"></i> Upload Course-Level Downloadable Resource</h6>
+                            <form action="{{ url_for('courses.upload_material', course_id=course.id) }}" method="POST" enctype="multipart/form-data" class="row g-3">
+                                <div class="col-md-5">
+                                    <input type="text" name="material_title" class="form-control form-control-sm" placeholder="Resource Title (e.g. Reference Handbook)" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="file" name="material_file" class="form-control form-control-sm" accept=".pdf,.ppt,.pptx,.mp4,.webm,.avi,.xlsx,.xls,.csv,.zip,.rar,.doc,.docx">
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-navy bg-navy text-white btn-sm w-100 fw-bold">Upload Resource</button>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="url" name="external_url" class="form-control form-control-sm" placeholder="Or External URL...">
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <div class="form-check form-switch ms-2">
+                                        <input class="form-check-input" type="checkbox" name="allow_download" id="allow_download_res" checked>
+                                        <label class="form-check-label fw-bold small text-navy" for="allow_download_res">
+                                            Allow Learner Download
+                                        </label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    {% if course.mode != 'Self Paced' %}
+                    <!-- SCHEDULED BATCHES TAB -->
+                    <div class="tab-pane fade show active p-3" id="classes-content" role="tabpanel">
+                        <div class="card bg-light border-0 p-3 mb-4 shadow-sm">
+                            <h6 class="fw-bold text-navy mb-3"><i class="fa-solid fa-calendar-plus me-1 text-success"></i> Schedule New Live Class Batch</h6>
+                            <form action="{{ url_for('courses.create_course_class', course_id=course.id) }}" method="POST" enctype="multipart/form-data" class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold text-navy mb-1">Class Mode *</label>
+                                    <select name="class_mode" class="form-select form-select-sm fw-bold">
+                                        <option value="In Person" {% if 'In Person' in course.mode %}selected{% endif %}>Live In Person</option>
+                                        <option value="Online" {% if 'Online' in course.mode %}selected{% endif %}>Live Online Class</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold text-navy mb-1">Class Date *</label>
+                                    <input type="date" name="class_date" class="form-control form-control-sm" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold text-navy mb-1">Session Timing *</label>
+                                    <select name="session_time" class="form-select form-select-sm">
+                                        <option value="Morning (9:00 AM - 1:00 PM)">Morning (9:00 AM - 1:00 PM)</option>
+                                        <option value="Afternoon (2:00 PM - 5:00 PM)">Afternoon (2:00 PM - 5:00 PM)</option>
+                                        <option value="Full Day (9:00 AM - 5:00 PM)">Full Day (9:00 AM - 5:00 PM)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold text-navy mb-1">Lead Facilitator *</label>
+                                    <input type="text" name="facilitator_name" class="form-control form-control-sm" placeholder="Lead Facilitator Name" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold text-navy mb-1">Co-Facilitator (Optional)</label>
+                                    <input type="text" name="co_facilitator_name" class="form-control form-control-sm" placeholder="Co-Facilitator Name">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold text-navy mb-1">Location / City</label>
+                                    <input type="text" name="location" class="form-control form-control-sm" placeholder="e.g. Hyderabad / Bangalore">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold text-navy mb-1">Campus (Optional)</label>
+                                    <input type="text" name="branch" class="form-control form-control-sm" placeholder="e.g. KPHB Campus">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small fw-bold text-navy mb-1">Virtual Meeting Link (Online)</label>
+                                    <input type="url" name="meet_link" class="form-control form-control-sm" placeholder="Zoom, Meet, Teams, Lark link...">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold text-navy mb-1"><i class="fa-solid fa-file-csv me-1 text-primary"></i> Pre-Assessment Quiz CSV (Optional)</label>
+                                    <input type="file" name="pre_assessment_file" accept=".csv" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold text-navy mb-1"><i class="fa-solid fa-file-csv me-1 text-success"></i> Post-Assessment Quiz CSV (Optional)</label>
+                                    <input type="file" name="post_assessment_file" accept=".csv" class="form-control form-control-sm">
+                                </div>
+
+                                <div class="col-md-12 text-end mt-2">
+                                    <button type="submit" class="btn btn-success btn-sm px-4 fw-bold shadow-sm">
+                                        <i class="fa-solid fa-plus-circle me-1"></i> Schedule Class Batch
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Class List & Attendance Downloads -->
+                        <h6 class="fw-bold text-navy mb-3"><i class="fa-solid fa-chalkboard-user me-1 text-primary"></i> Scheduled Live Batches</h6>
+                        {% for cls in live_classes %}
+                        <div class="card border border-light-subtle shadow-sm mb-3 rounded-3 overflow-hidden">
+                            <div class="card-header bg-navy text-white py-2 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong class="font-monospace text-gold me-2">{{ cls.class_id }}</strong> {{ cls.class_name }}
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-sm btn-outline-success py-0 px-2 fw-bold text-white me-2" data-bs-toggle="modal" data-bs-target="#attModal{{ cls.id }}">
+                                        <i class="fa-solid fa-user-check me-1"></i> Mark Attendance (CSV/IDs)
+                                    </button>
+                                    <a href="{{ url_for('courses.download_attendance', class_id=cls.id) }}" class="btn btn-sm btn-outline-light py-0 px-2 fw-bold me-2" title="Download Class Attendance Log CSV">
+                                        <i class="fa-solid fa-file-csv me-1 text-warning"></i> Attendance Report
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-gold py-0 px-2 fw-bold text-dark me-2" data-bs-toggle="modal" data-bs-target="#qrModal{{ cls.id }}">
+                                        <i class="fa-solid fa-qrcode me-1"></i> View QR Code
+                                    </button>
+                                    <a href="{{ url_for('classes.view_class', class_id=cls.id) }}" class="btn btn-sm btn-outline-info py-0 px-2 fw-bold text-white">
+                                        <i class="fa-solid fa-eye me-1"></i> Class Details
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-body p-3 small text-dark">
+                                <div class="row align-items-center">
+                                    <div class="col-md-2 text-center border-end">
+                                        <img src="/static/qr_codes/qr_{{ cls.class_id }}.png" alt="QR Code" class="img-fluid border p-1 rounded" style="max-height: 80px;" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://localhost:5000/learner/login?classId={{ cls.class_id }}'">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>Mode:</strong> <span class="badge {% if cls.class_mode == 'Online' %}bg-info{% else %}bg-success{% endif %}">{{ cls.class_mode }}</span><br>
+                                        <strong>Date:</strong> {{ cls.class_date.strftime('%Y-%m-%d') if cls.class_date else 'N/A' }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>Facilitator:</strong> {{ cls.facilitator_name }}<br>
+                                        <strong>Co-Facilitator:</strong> {{ cls.co_facilitator_name or 'N/A' }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {% if cls.class_mode == 'Online' %}
+                                        <strong>Meeting Link:</strong> <a href="{{ cls.meet_link }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 180px;">{{ cls.meet_link or 'Pending' }}</a>
+                                        {% else %}
+                                        <strong>Location:</strong> {{ cls.location or 'Main Campus' }} - {{ cls.branch or 'HYD' }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- QR Code Modal -->
+                        <div class="modal fade" id="qrModal{{ cls.id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered text-center">
+                                <div class="modal-content border-0 shadow-lg">
+                                    <div class="modal-header bg-navy text-white">
+                                        <h5 class="modal-title fw-bold"><i class="fa-solid fa-qrcode me-2 text-gold"></i> Class Attendance QR Code</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body p-4">
+                                        <h6 class="fw-bold text-navy mb-1">{{ cls.class_name }}</h6>
+                                        <p class="font-monospace text-gold bg-dark d-inline-block px-3 py-1 rounded small mb-3">{{ cls.class_id }}</p>
+                                        <div class="p-3 bg-white border rounded-3 d-inline-block shadow-sm mb-3">
+                                            <img src="/static/qr_codes/qr_{{ cls.class_id }}.png" alt="QR Code" class="img-fluid" style="max-width: 240px;" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=http://localhost:5000/learner/login?classId={{ cls.class_id }}'">
+                                        </div>
+                                        <p class="text-muted small mb-3">Learners scan this QR code in class to authenticate & mark attendance automatically.</p>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a href="{{ url_for('classes.download_qr', class_id_str=cls.class_id) }}" class="btn btn-navy bg-navy text-white btn-sm fw-bold px-3">
+                                                <i class="fa-solid fa-download me-1"></i> Download PNG
+                                            </a>
+                                            <a href="http://localhost:5000/learner/login?classId={{ cls.class_id }}" target="_blank" class="btn btn-outline-primary btn-sm fw-bold px-3">
+                                                <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Open Scan URL
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mark Attendance Modal -->
+                        <div class="modal fade" id="attModal{{ cls.id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0 shadow-lg text-start">
+                                    <div class="modal-header bg-navy text-white py-2.5">
+                                        <h6 class="modal-title fw-bold"><i class="fa-solid fa-user-check me-2 text-success"></i> Record Attendance - {{ cls.class_id }}</h6>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body p-4">
+                                        <form action="{{ url_for('attendance.bulk_upload') }}" method="POST" enctype="multipart/form-data">
+                                            <input type="hidden" name="class_id" value="{{ cls.id }}">
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold text-navy mb-1"><i class="fa-solid fa-align-left me-1 text-primary"></i> Global IDs Text Box (Paste / Type)</label>
+                                                <textarea class="form-control font-monospace" name="global_ids_text" rows="3" placeholder="Paste Global IDs here (comma-separated or one per line)...&#10;e.g. 10001, 10002, 10003"></textarea>
+                                                <small class="text-muted">Type or paste Global IDs separated by commas or newlines.</small>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold text-navy mb-1"><i class="fa-solid fa-file-csv me-1 text-success"></i> OR Upload Attendance CSV / Excel File</label>
+                                                <input type="file" class="form-control" name="attendance_csv" accept=".csv,.xlsx,.xls">
+                                                <small class="text-muted">CSV column: <strong>Global ID</strong> (or first column).</small>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold text-navy mb-1">Mark Status As</label>
+                                                <select class="form-select" name="status">
+                                                    <option value="Present" selected>Present</option>
+                                                    <option value="Late">Late</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="text-end pt-2 border-top">
+                                                <button type="button" class="btn btn-light border btn-sm" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-success btn-sm fw-bold px-3">
+                                                    <i class="fa-solid fa-check me-1"></i> Submit Attendance
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="text-muted small py-3 text-center border rounded bg-light">No live batches scheduled for this course yet.</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

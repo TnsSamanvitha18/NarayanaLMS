@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Assign Self-Paced Course - Narayana Learning Hub{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('learners.list_learners') }}">Learners</a></li>
+            <li class="breadcrumb-item active">Assign Course</li>
+        </ol>
+    </nav>
+    <h3 class="fw-bold text-navy mb-1">Assign Learners to Self-Paced Course</h3>
+    <p class="text-muted">Business Rule: Only Self-Paced Courses are manually assigned via CSV or Global IDs text area.</p>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        <form method="POST" enctype="multipart/form-data">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <label for="course_id" class="form-label fw-bold">Select Self-Paced Course <span class="text-danger">*</span></label>
+                    <select class="form-select" id="course_id" name="course_id" required>
+                        <option value="">-- Choose Self-Paced Course --</option>
+                        {% for crs in courses %}
+                        <option value="{{ crs.id }}">{{ crs.name }} ({{ crs.course_id }}) - Pass Score: {{ crs.pass_percentage }}%</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <hr class="my-2">
+                    <h5 class="fw-bold text-navy mb-3"><i class="fa-solid fa-list-ol me-2 text-warning"></i> Option A: Enter Global IDs Text Area</h5>
+                    <p class="text-muted small mb-2">Enter Global IDs separated by a new line (one ID per line).</p>
+                    <textarea class="form-control font-monospace" name="global_ids" rows="5" placeholder="10001&#10;10002&#10;10003"></textarea>
+                </div>
+
+                <div class="col-12">
+                    <h5 class="fw-bold text-navy mb-3"><i class="fa-solid fa-file-csv me-2 text-success"></i> Option B: Upload CSV File</h5>
+                    <div class="card bg-light border-0 p-3" style="max-width: 500px;">
+                        <input type="file" class="form-control" name="learner_csv" accept=".csv">
+                        <small class="text-muted mt-2 d-block">CSV column header should contain <code>Global ID</code> or <code>ID</code>.</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                <a href="{{ url_for('learners.list_learners') }}" class="btn btn-light border">Cancel</a>
+                <button type="submit" class="btn btn-navy bg-navy text-white px-4 fw-bold shadow-sm">
+                    <i class="fa-solid fa-user-check me-1"></i> Assign Course to Learners
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

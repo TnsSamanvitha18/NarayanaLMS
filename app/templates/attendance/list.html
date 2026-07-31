@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Attendance Tracking - Narayana Learning Hub{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold text-navy mb-1"><i class="fa-solid fa-clipboard-user me-2"></i> Attendance Tracking</h3>
+        <p class="text-muted mb-0">Monitor learner participation, automated QR logs, and exception overrides.</p>
+    </div>
+    <a href="{{ url_for('attendance.manual_override') }}" class="btn btn-danger fw-bold shadow-sm">
+        <i class="fa-solid fa-triangle-exclamation me-1"></i> Add Attendance (Exception Override)
+    </a>
+</div>
+
+<!-- Stat Header -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm bg-white p-3">
+            <span class="text-muted small text-uppercase fw-semibold">Total Recorded Logs</span>
+            <h3 class="fw-bold text-navy my-1">{{ total_records }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm bg-white p-3">
+            <span class="text-muted small text-uppercase fw-semibold">Present / Late Count</span>
+            <h3 class="fw-bold text-success my-1">{{ present_count }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm bg-white p-3">
+            <span class="text-muted small text-uppercase fw-semibold">Attendance Percentage</span>
+            <h3 class="fw-bold text-primary my-1">{{ pct }}%</h3>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Card -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-3">
+        <form method="GET" action="{{ url_for('attendance.list_attendance') }}" class="row g-3">
+            <div class="col-md-6">
+                <input type="text" name="search" class="form-control" placeholder="Search by Learner Global ID or Name..." value="{{ search_query }}">
+            </div>
+            <div class="col-md-4">
+                <select name="class_id" class="form-select">
+                    <option value="">All Live Classes</option>
+                    {% for c in live_classes %}
+                    <option value="{{ c.class_id }}" {% if class_filter == c.class_id %}selected{% endif %}>{{ c.class_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-navy bg-navy text-white w-100"><i class="fa-solid fa-filter me-1"></i> Filter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-muted small text-uppercase">
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Class Code & Name</th>
+                        <th>Learner Global ID</th>
+                        <th>Learner Name</th>
+                        <th>Recorded Via</th>
+                        <th>Status</th>
+                        <th>Exception Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in attendances %}
+                    <tr>
+                        <td class="small text-muted">{{ a.timestamp.strftime('%d-%b-%Y %H:%M:%S') }}</td>
+                        <td>
+                            <div class="fw-bold text-navy">{{ a.live_class.class_name }}</div>
+                            <small class="font-monospace text-muted">{{ a.live_class.class_id }}</small>
+                        </td>
+                        <td class="font-monospace fw-bold text-navy">{{ a.learner.global_id }}</td>
+                        <td class="fw-medium text-dark">{{ a.learner.name }}</td>
+                        <td>
+                            {% if a.recorded_via == 'QR' %}
+                            <span class="badge bg-success-subtle text-success border border-success-subtle"><i class="fa-solid fa-qrcode me-1"></i> QR Scan</span>
+                            {% else %}
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle"><i class="fa-solid fa-user-pen me-1"></i> Manual Override</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge {% if a.status == 'Present' %}bg-success{% elif a.status == 'Late' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                                {{ a.status }}
+                            </span>
+                        </td>
+                        <td class="small text-muted">{{ a.manual_reason or '-' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">No attendance records found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
