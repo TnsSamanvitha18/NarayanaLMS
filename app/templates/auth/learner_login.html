@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 
 {% block public_content %}
-<div class="d-flex align-items-center justify-content-center flex-grow-1 py-5" style="background: linear-gradient(135deg, #1E293B 0%, #003366 100%);">
-    <div class="card glass-card border-0 shadow-lg p-4" style="max-width: 440px; width: 90%;">
+<div class="d-flex align-items-center justify-content-center flex-grow-1 py-5">
+    <div class="card card-gradient-purple border-0 shadow-lg p-4" style="max-width: 450px; width: 92%; border-radius: 32px !important;">
         <div class="card-body text-center p-3">
             <div class="mb-4">
-                <i class="fa-solid fa-qrcode text-warning fa-3x mb-2"></i>
-                <h4 class="fw-bold text-navy">LEARNER PORTAL</h4>
+                <div class="gradient-purple text-white rounded-circle p-3 d-inline-flex mb-3 shadow-sm">
+                    <i class="fa-solid fa-qrcode fa-2x"></i>
+                </div>
+                <h4 class="fw-extrabold text-gradient-primary">LEARNER PORTAL</h4>
                 <p class="text-muted small">Narayana Learning Hub Attendance & Training</p>
                 {% if class_id %}
                 <div class="badge bg-success py-2 px-3 fs-6 rounded-pill mb-2">
@@ -27,14 +29,14 @@
 
                 <div class="form-floating mb-3 text-start">
                     <input type="text" class="form-control" id="global_id" name="global_id" placeholder="10001" required value="10001">
-                    <label for="global_id"><i class="fa-solid fa-id-badge me-1"></i> Enter Global ID</label>
+                    <label for="global_id"><i class="fa-solid fa-id-badge me-1 text-primary"></i> Enter Global ID</label>
                 </div>
                 <div class="form-floating mb-4 text-start">
                     <input type="password" class="form-control" id="password" name="password" placeholder="Password" value="password123">
-                    <label for="password"><i class="fa-solid fa-lock me-1"></i> Password</label>
+                    <label for="password"><i class="fa-solid fa-lock me-1 text-primary"></i> Password</label>
                 </div>
 
-                <button type="submit" class="btn btn-navy bg-navy text-white w-100 py-2.5 fw-bold shadow-sm rounded-3">
+                <button type="submit" class="btn btn-navy text-white w-100 py-3 fw-bold shadow-sm">
                     <i class="fa-solid fa-right-to-bracket me-2"></i> Continue to Class Training
                 </button>
             </form>
