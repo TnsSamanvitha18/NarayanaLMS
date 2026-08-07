@@ -1,43 +1,57 @@
 /* ==========================================================================
    NARAYANA LEARNING HUB - VIBRANT TECHNOLOGICAL DESIGN SYSTEM
-   Supports Light & Dark (Cyber Slate) Modes with Modern Rectangular Inputs
+   Supports Light & Dark (Cyber Slate) Modes with Animated Tech Mesh Canvas
    ========================================================================== */
 
-/* --- Light Mode Color Tokens & Colorful Mesh Canvas --- */
+/* --- Keyframe Animations for Background Canvas --- */
+@keyframes ambientMeshShift {
+    0% {
+        background-position: 0% 0%, 100% 0%, 100% 100%, 0% 100%;
+    }
+    50% {
+        background-position: 100% 50%, 0% 100%, 0% 0%, 100% 50%;
+    }
+    100% {
+        background-position: 0% 0%, 100% 0%, 100% 100%, 0% 100%;
+    }
+}
+
+/* --- Light Mode Color Tokens & Vibrant Mesh Canvas --- */
 :root, [data-theme="light"] {
-    --bg-app: radial-gradient(at 0% 0%, rgba(224, 237, 255, 0.85) 0px, transparent 50%),
-              radial-gradient(at 100% 0%, rgba(243, 232, 255, 0.85) 0px, transparent 50%),
-              radial-gradient(at 100% 100%, rgba(254, 243, 199, 0.75) 0px, transparent 50%),
-              radial-gradient(at 0% 100%, rgba(209, 250, 229, 0.75) 0px, transparent 50%),
-              #F1F5F9;
+    --bg-app: radial-gradient(at 10% 10%, rgba(59, 130, 246, 0.28) 0px, transparent 55%),
+              radial-gradient(at 90% 10%, rgba(139, 92, 246, 0.28) 0px, transparent 55%),
+              radial-gradient(at 90% 90%, rgba(245, 158, 11, 0.25) 0px, transparent 55%),
+              radial-gradient(at 10% 90%, rgba(16, 185, 129, 0.25) 0px, transparent 55%),
+              radial-gradient(at 50% 50%, rgba(6, 182, 212, 0.2) 0px, transparent 65%),
+              #E2E8F0;
     
-    --bg-surface: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
-    --bg-surface-elevated: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.9) 100%);
+    --bg-surface: linear-gradient(145deg, rgba(255, 255, 255, 0.92) 0%, rgba(248, 250, 252, 0.85) 100%);
+    --bg-surface-elevated: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.88) 100%);
     --bg-glass: rgba(255, 255, 255, 0.88);
     
     --text-primary: #0F172A;
     --text-secondary: #334155;
     --text-muted: #64748B;
     
-    --border-color: #CBD5E1;
-    --border-subtle: #E2E8F0;
+    --border-color: rgba(203, 213, 225, 0.8);
+    --border-subtle: rgba(226, 232, 240, 0.8);
     
     --navy-blue: #2563EB;
     --navy-dark: #1D4ED8;
     --navy-light: #3B82F6;
     
     --gold-accent: #F59E0B;
-    --gold-glow: rgba(245, 158, 11, 0.25);
+    --gold-glow: rgba(245, 158, 11, 0.3);
     
     --cyan-accent: #06B6D4;
-    --cyan-glow: rgba(6, 182, 212, 0.2);
+    --cyan-glow: rgba(6, 182, 212, 0.25);
     
-    --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
-    --card-hover-shadow: 0 18px 38px rgba(37, 99, 235, 0.16);
+    --card-shadow: 0 14px 30px rgba(15, 23, 42, 0.08), 0 4px 10px rgba(0, 0, 0, 0.03);
+    --card-hover-shadow: 0 22px 42px rgba(37, 99, 235, 0.2);
     
-    --table-header-bg: rgba(248, 250, 252, 0.9);
+    --table-header-bg: rgba(248, 250, 252, 0.95);
     --table-header-text: #475569;
-    --table-row-hover: rgba(241, 245, 249, 0.8);
+    --table-row-hover: rgba(241, 245, 249, 0.85);
     --table-border: #E2E8F0;
     
     --input-bg: #FFFFFF;
@@ -48,32 +62,35 @@
     --subnav-bg: rgba(248, 250, 252, 0.9);
 
     /* Light Mode Descent Card Fills */
-    --card-blue-fill: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(59, 130, 246, 0.03) 100%);
-    --card-cyan-fill: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(56, 189, 248, 0.03) 100%);
-    --card-emerald-fill: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(52, 211, 153, 0.03) 100%);
-    --card-amber-fill: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(251, 191, 36, 0.03) 100%);
-    --card-coral-fill: linear-gradient(135deg, rgba(244, 63, 94, 0.12) 0%, rgba(251, 113, 133, 0.03) 100%);
-    --card-purple-fill: linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(167, 139, 250, 0.03) 100%);
-    --card-gold-fill: linear-gradient(135deg, rgba(212, 175, 55, 0.14) 0%, rgba(245, 158, 11, 0.03) 100%);
+    --card-blue-fill: linear-gradient(135deg, rgba(37, 99, 235, 0.14) 0%, rgba(255, 255, 255, 0.9) 100%);
+    --card-cyan-fill: linear-gradient(135deg, rgba(6, 182, 212, 0.14) 0%, rgba(255, 255, 255, 0.9) 100%);
+    --card-emerald-fill: linear-gradient(135deg, rgba(16, 185, 129, 0.14) 0%, rgba(255, 255, 255, 0.9) 100%);
+    --card-amber-fill: linear-gradient(135deg, rgba(245, 158, 11, 0.14) 0%, rgba(255, 255, 255, 0.9) 100%);
+    --card-coral-fill: linear-gradient(135deg, rgba(244, 63, 94, 0.14) 0%, rgba(255, 255, 255, 0.9) 100%);
+    --card-purple-fill: linear-gradient(135deg, rgba(139, 92, 246, 0.14) 0%, rgba(255, 255, 255, 0.9) 100%);
+    --card-gold-fill: linear-gradient(135deg, rgba(212, 175, 55, 0.16) 0%, rgba(255, 255, 255, 0.9) 100%);
+
+    --tech-grid-color: rgba(37, 99, 235, 0.08);
 }
 
 /* --- Dark Mode Color Tokens & Cyber Aurora Canvas --- */
 [data-theme="dark"] {
-    --bg-app: radial-gradient(at 0% 0%, rgba(30, 58, 138, 0.45) 0px, transparent 50%),
-              radial-gradient(at 100% 0%, rgba(91, 33, 182, 0.45) 0px, transparent 50%),
-              radial-gradient(at 100% 100%, rgba(6, 95, 70, 0.38) 0px, transparent 50%),
-              radial-gradient(at 0% 100%, rgba(159, 18, 57, 0.38) 0px, transparent 50%),
-              #090D16;
+    --bg-app: radial-gradient(at 10% 10%, rgba(30, 58, 138, 0.65) 0px, transparent 55%),
+              radial-gradient(at 90% 10%, rgba(91, 33, 182, 0.65) 0px, transparent 55%),
+              radial-gradient(at 90% 90%, rgba(6, 95, 70, 0.55) 0px, transparent 55%),
+              radial-gradient(at 10% 90%, rgba(159, 18, 57, 0.55) 0px, transparent 55%),
+              radial-gradient(at 50% 50%, rgba(14, 116, 144, 0.45) 0px, transparent 65%),
+              #070B14;
     
-    --bg-surface: linear-gradient(145deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.9) 100%);
-    --bg-surface-elevated: linear-gradient(145deg, rgba(51, 65, 85, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%);
+    --bg-surface: linear-gradient(145deg, rgba(30, 41, 59, 0.92) 0%, rgba(15, 23, 42, 0.88) 100%);
+    --bg-surface-elevated: linear-gradient(145deg, rgba(51, 65, 85, 0.92) 0%, rgba(30, 41, 59, 0.88) 100%);
     --bg-glass: rgba(17, 24, 39, 0.85);
     
     --text-primary: #F9FAFB;
     --text-secondary: #E5E7EB;
     --text-muted: #9CA3AF;
     
-    --border-color: #374151;
+    --border-color: rgba(55, 65, 81, 0.9);
     --border-subtle: #1F2937;
     
     --navy-blue: #3B82F6;
@@ -86,12 +103,12 @@
     --cyan-accent: #06B6D4;
     --cyan-glow: rgba(6, 182, 212, 0.35);
     
-    --card-shadow: 0 12px 32px -5px rgba(0, 0, 0, 0.7);
-    --card-hover-shadow: 0 20px 40px -5px rgba(59, 130, 246, 0.3);
+    --card-shadow: 0 14px 35px -5px rgba(0, 0, 0, 0.8);
+    --card-hover-shadow: 0 22px 45px -5px rgba(59, 130, 246, 0.35);
     
-    --table-header-bg: rgba(31, 41, 55, 0.9);
+    --table-header-bg: rgba(31, 41, 55, 0.92);
     --table-header-text: #38BDF8;
-    --table-row-hover: rgba(30, 41, 59, 0.8);
+    --table-row-hover: rgba(30, 41, 59, 0.85);
     --table-border: #374151;
     
     --input-bg: #111827;
@@ -102,23 +119,48 @@
     --subnav-bg: rgba(11, 15, 25, 0.9);
 
     /* Dark Mode Descent Card Fills */
-    --card-blue-fill: linear-gradient(135deg, rgba(30, 58, 138, 0.45) 0%, rgba(15, 23, 42, 0.85) 100%);
-    --card-cyan-fill: linear-gradient(135deg, rgba(14, 116, 144, 0.45) 0%, rgba(15, 23, 42, 0.85) 100%);
-    --card-emerald-fill: linear-gradient(135deg, rgba(6, 95, 70, 0.45) 0%, rgba(15, 23, 42, 0.85) 100%);
-    --card-amber-fill: linear-gradient(135deg, rgba(146, 64, 14, 0.45) 0%, rgba(15, 23, 42, 0.85) 100%);
-    --card-coral-fill: linear-gradient(135deg, rgba(159, 18, 57, 0.45) 0%, rgba(15, 23, 42, 0.85) 100%);
-    --card-purple-fill: linear-gradient(135deg, rgba(91, 33, 182, 0.45) 0%, rgba(15, 23, 42, 0.85) 100%);
-    --card-gold-fill: linear-gradient(135deg, rgba(120, 53, 15, 0.45) 0%, rgba(15, 23, 42, 0.85) 100%);
+    --card-blue-fill: linear-gradient(135deg, rgba(30, 58, 138, 0.55) 0%, rgba(15, 23, 42, 0.88) 100%);
+    --card-cyan-fill: linear-gradient(135deg, rgba(14, 116, 144, 0.55) 0%, rgba(15, 23, 42, 0.88) 100%);
+    --card-emerald-fill: linear-gradient(135deg, rgba(6, 95, 70, 0.55) 0%, rgba(15, 23, 42, 0.88) 100%);
+    --card-amber-fill: linear-gradient(135deg, rgba(146, 64, 14, 0.55) 0%, rgba(15, 23, 42, 0.88) 100%);
+    --card-coral-fill: linear-gradient(135deg, rgba(159, 18, 57, 0.55) 0%, rgba(15, 23, 42, 0.88) 100%);
+    --card-purple-fill: linear-gradient(135deg, rgba(91, 33, 182, 0.55) 0%, rgba(15, 23, 42, 0.88) 100%);
+    --card-gold-fill: linear-gradient(135deg, rgba(120, 53, 15, 0.55) 0%, rgba(15, 23, 42, 0.88) 100%);
+
+    --tech-grid-color: rgba(56, 189, 248, 0.06);
 }
 
-/* --- Base Reset & Typography --- */
+/* --- Base Reset, Tech Grid Overlay & Typography --- */
 body {
     font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: var(--text-primary);
     background: var(--bg-app);
+    background-size: 200% 200%;
     background-attachment: fixed;
-    transition: background 0.4s ease, color 0.3s ease;
+    animation: ambientMeshShift 25s ease infinite;
+    transition: color 0.3s ease;
     min-height: 100vh;
+    position: relative;
+}
+
+/* Futuristic Geometric Tech Grid Overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(var(--tech-grid-color) 1.2px, transparent 1.2px);
+    background-size: 32px 32px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Main Content Wrapper above Grid */
+main, header, footer {
+    position: relative;
+    z-index: 1;
 }
 
 /* --- Login Form Field Styling --- */
@@ -159,44 +201,51 @@ body {
 /* --- Descent Gradient Card Utilities --- */
 .card-gradient-blue {
     background: var(--card-blue-fill) !important;
-    border: 1px solid rgba(59, 130, 246, 0.35) !important;
-    backdrop-filter: blur(12px);
+    border: 1px solid rgba(59, 130, 246, 0.4) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 .card-gradient-cyan {
     background: var(--card-cyan-fill) !important;
-    border: 1px solid rgba(6, 182, 212, 0.35) !important;
-    backdrop-filter: blur(12px);
+    border: 1px solid rgba(6, 182, 212, 0.4) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 .card-gradient-emerald {
     background: var(--card-emerald-fill) !important;
-    border: 1px solid rgba(16, 185, 129, 0.35) !important;
-    backdrop-filter: blur(12px);
+    border: 1px solid rgba(16, 185, 129, 0.4) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 .card-gradient-amber {
     background: var(--card-amber-fill) !important;
-    border: 1px solid rgba(245, 158, 11, 0.35) !important;
-    backdrop-filter: blur(12px);
+    border: 1px solid rgba(245, 158, 11, 0.4) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 .card-gradient-coral {
     background: var(--card-coral-fill) !important;
-    border: 1px solid rgba(244, 63, 94, 0.35) !important;
-    backdrop-filter: blur(12px);
+    border: 1px solid rgba(244, 63, 94, 0.4) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 .card-gradient-purple {
     background: var(--card-purple-fill) !important;
-    border: 1px solid rgba(139, 92, 246, 0.35) !important;
-    backdrop-filter: blur(12px);
+    border: 1px solid rgba(139, 92, 246, 0.4) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 .card-gradient-gold {
     background: var(--card-gold-fill) !important;
-    border: 1px solid rgba(212, 175, 55, 0.4) !important;
-    backdrop-filter: blur(12px);
+    border: 1px solid rgba(212, 175, 55, 0.45) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 /* Vibrant Utility Gradients & Accents */
@@ -208,8 +257,9 @@ body {
 .gradient-cyan { background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%) !important; color: #ffffff !important; }
 
 .gradient-multi-hero {
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(139, 92, 246, 0.12) 50%, rgba(6, 182, 212, 0.12) 100%) !important;
-    backdrop-filter: blur(12px);
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.16) 0%, rgba(139, 92, 246, 0.16) 50%, rgba(6, 182, 212, 0.16) 100%) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 /* Vibrant Top Border Accents */
@@ -253,7 +303,8 @@ body {
 /* --- Circular & Rounded Cards --- */
 .card {
     background: var(--bg-surface);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
     border-radius: 28px !important;
     box-shadow: var(--card-shadow);
@@ -280,7 +331,8 @@ body {
     position: relative;
     overflow: hidden;
     background: var(--bg-surface);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 .card-circular:hover {
@@ -312,7 +364,8 @@ body {
 .card-stat {
     border-radius: 28px !important;
     background: var(--bg-surface);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     box-shadow: var(--card-shadow);
     transition: all 0.3s ease;
 }
@@ -325,8 +378,8 @@ body {
 
 .glass-card {
     background: var(--bg-glass);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--border-color);
     border-radius: 28px !important;
     box-shadow: var(--card-shadow);
@@ -335,7 +388,8 @@ body {
 /* --- Collapsible Profile Sidebar --- */
 .profile-sidebar {
     background: var(--bg-surface);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
     border-radius: 32px !important;
     padding: 1.5rem 1.25rem;
@@ -363,7 +417,7 @@ body {
     height: 90px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid rgba(255, 255, 255, 0.3);
+    border: 3px solid rgba(255, 255, 255, 0.5);
     box-shadow: 0 6px 20px rgba(37, 99, 235, 0.25);
     transition: all 0.3s ease;
 }
@@ -382,8 +436,8 @@ body {
 /* --- Top Header & Nav Tabs --- */
 .ls-navbar {
     background-color: var(--header-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border-color);
     transition: background-color 0.3s ease;
 }
@@ -658,7 +712,8 @@ body {
 /* --- Modals & Dropdowns --- */
 .modal-content {
     background: var(--bg-surface-elevated);
-    backdrop-filter: blur(16px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--border-color);
     border-radius: 28px !important;
     box-shadow: var(--card-shadow);
@@ -671,7 +726,8 @@ body {
 
 .dropdown-menu {
     background: var(--bg-surface-elevated);
-    backdrop-filter: blur(16px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--border-color);
     border-radius: 18px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
@@ -692,7 +748,8 @@ body {
 .alert {
     border-radius: 20px !important;
     border: 1px solid var(--border-color);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
 [data-theme="dark"] .alert-warning {
