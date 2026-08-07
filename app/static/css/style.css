@@ -110,8 +110,8 @@
    3. EXACT SPECIFICATION TYPOGRAPHY SCALE
    -------------------------------------------------------------------------- */
 
-/* Body Text: Inter, 400 Weight, 16px */
-body, p, label, input, select, textarea, div, span {
+/* Body Reset & Global Font Rules */
+body {
     font-family: var(--font-body);
     font-weight: 400;
     font-size: 16px;
@@ -122,6 +122,10 @@ body, p, label, input, select, textarea, div, span {
     animation: ambientTealShift 25s ease infinite;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
+}
+
+p, label, input, select, textarea {
+    font-family: var(--font-body);
 }
 
 /* Hero Title: Plus Jakarta Sans, 700 Weight, 42px */
@@ -223,6 +227,13 @@ table tbody td, .table td, .table tbody td * {
     border-radius: 50px !important;
     padding: 0.5rem 1.25rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    height: auto;
+    min-height: 56px;
+    align-items: center !important;
+}
+
+.ls-navbar-capsule * {
+    max-height: none;
 }
 
 .ls-nav-tab {
