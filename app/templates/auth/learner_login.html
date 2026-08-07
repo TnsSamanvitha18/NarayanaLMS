@@ -2,13 +2,13 @@
 
 {% block public_content %}
 <div class="d-flex align-items-center justify-content-center flex-grow-1 py-5">
-    <div class="card card-gradient-purple border-0 shadow-lg p-4" style="max-width: 450px; width: 92%; border-radius: 32px !important;">
+    <div class="card card-gradient-purple border-0 shadow-lg p-4" style="max-width: 450px; width: 92%; border-radius: 28px !important;">
         <div class="card-body text-center p-3">
             <div class="mb-4">
                 <div class="gradient-purple text-white rounded-circle p-3 d-inline-flex mb-3 shadow-sm">
                     <i class="fa-solid fa-qrcode fa-2x"></i>
                 </div>
-                <h4 class="fw-extrabold text-gradient-primary">LEARNER PORTAL</h4>
+                <h4 class="fw-extrabold text-gradient-primary">LEARNER PORTAL LOGIN</h4>
                 <p class="text-muted small">Narayana Learning Hub Attendance & Training</p>
                 {% if class_id %}
                 <div class="badge bg-success py-2 px-3 fs-6 rounded-pill mb-2">
@@ -27,16 +27,21 @@
                 <input type="hidden" name="class_id" value="{{ class_id or '' }}">
                 <input type="hidden" name="course_id" value="{{ course_id or '' }}">
 
-                <div class="form-floating mb-3 text-start">
-                    <input type="text" class="form-control" id="global_id" name="global_id" placeholder="10001" required value="10001">
-                    <label for="global_id"><i class="fa-solid fa-id-badge me-1 text-primary"></i> Enter Global ID</label>
-                </div>
-                <div class="form-floating mb-4 text-start">
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" value="password123">
-                    <label for="password"><i class="fa-solid fa-lock me-1 text-primary"></i> Password</label>
+                <div class="login-field mb-3">
+                    <label for="global_id" class="login-label">
+                        <i class="fa-solid fa-id-badge text-primary"></i> Global ID
+                    </label>
+                    <input type="text" class="form-control-login" id="global_id" name="global_id" placeholder="Enter Global ID (e.g. 10001)" required value="10001">
                 </div>
 
-                <button type="submit" class="btn btn-navy text-white w-100 py-3 fw-bold shadow-sm">
+                <div class="login-field mb-4">
+                    <label for="password" class="login-label">
+                        <i class="fa-solid fa-lock text-primary"></i> Password
+                    </label>
+                    <input type="password" class="form-control-login" id="password" name="password" placeholder="Enter password" value="password123">
+                </div>
+
+                <button type="submit" class="btn btn-navy text-white w-100 py-3 fw-bold shadow-sm" style="border-radius: 14px;">
                     <i class="fa-solid fa-right-to-bracket me-2"></i> Continue to Class Training
                 </button>
             </form>
@@ -44,7 +49,7 @@
             <div class="mt-4 pt-3 border-top text-center">
                 <span class="badge bg-light text-dark border"><i class="fa-brands fa-google text-danger me-1"></i> Ready for Google SSO Swap</span>
                 <div class="mt-2">
-                    <a href="{{ url_for('auth.admin_login') }}" class="text-muted small text-decoration-none">L&D Admin Login</a>
+                    <a href="{{ url_for('auth.admin_login') }}" class="text-muted small text-decoration-none">Switch to L&D Admin Login</a>
                 </div>
             </div>
         </div>

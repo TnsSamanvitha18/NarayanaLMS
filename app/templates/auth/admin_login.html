@@ -2,14 +2,14 @@
 
 {% block public_content %}
 <div class="d-flex align-items-center justify-content-center flex-grow-1 py-5">
-    <div class="card card-gradient-blue border-0 shadow-lg p-4" style="max-width: 440px; width: 92%; border-radius: 32px !important;">
+    <div class="card card-gradient-blue border-0 shadow-lg p-4" style="max-width: 440px; width: 92%; border-radius: 28px !important;">
         <div class="card-body text-center p-3">
             <div class="mb-4">
                 <div class="gradient-blue text-white rounded-circle p-3 d-inline-flex mb-3 shadow-sm">
-                    <i class="fa-solid fa-graduation-cap fa-2x"></i>
+                    <i class="fa-solid fa-user-shield fa-2x"></i>
                 </div>
-                <h4 class="fw-extrabold text-gradient-primary">NARAYANA LEARNING HUB</h4>
-                <p class="text-muted small">Learning & Development (L&D) Portal</p>
+                <h4 class="fw-extrabold text-gradient-primary">ADMINISTRATOR LOGIN</h4>
+                <p class="text-muted small">Narayana L&D Portal Management System</p>
             </div>
 
             {% if error %}
@@ -19,16 +19,21 @@
             {% endif %}
 
             <form method="POST" action="{{ url_for('auth.admin_login') }}">
-                <div class="form-floating mb-3 text-start">
-                    <input type="text" class="form-control" id="username" name="username" placeholder="admin" required value="admin">
-                    <label for="username"><i class="fa-solid fa-user me-1 text-primary"></i> Username</label>
-                </div>
-                <div class="form-floating mb-4 text-start">
-                    <input type="password" class="form-control" id="password" name="password" placeholder="admin" required value="admin">
-                    <label for="password"><i class="fa-solid fa-lock me-1 text-primary"></i> Password</label>
+                <div class="login-field mb-3">
+                    <label for="username" class="login-label">
+                        <i class="fa-solid fa-user text-primary"></i> Username
+                    </label>
+                    <input type="text" class="form-control-login" id="username" name="username" placeholder="Enter admin username" required value="admin">
                 </div>
 
-                <button type="submit" class="btn btn-navy text-white w-100 py-3 fw-bold shadow-sm">
+                <div class="login-field mb-4">
+                    <label for="password" class="login-label">
+                        <i class="fa-solid fa-lock text-primary"></i> Password
+                    </label>
+                    <input type="password" class="form-control-login" id="password" name="password" placeholder="Enter password" required value="admin">
+                </div>
+
+                <button type="submit" class="btn btn-navy text-white w-100 py-3 fw-bold shadow-sm" style="border-radius: 14px;">
                     <i class="fa-solid fa-right-to-bracket me-2"></i> Login to L&D Dashboard
                 </button>
             </form>
@@ -37,7 +42,7 @@
                 <small class="text-muted">Temporary L&D Admin Credentials (admin / admin)</small>
                 <div class="mt-2">
                     <a href="{{ url_for('auth.learner_login') }}" class="text-primary text-decoration-none small fw-bold">
-                        <i class="fa-solid fa-user-graduate me-1"></i> Learner Login Portal
+                        <i class="fa-solid fa-user-graduate me-1"></i> Switch to Learner Login Portal
                     </a>
                 </div>
             </div>

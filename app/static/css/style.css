@@ -1,6 +1,6 @@
 /* ==========================================================================
    NARAYANA LEARNING HUB - VIBRANT TECHNOLOGICAL DESIGN SYSTEM
-   Supports Light & Dark (Cyber Slate) Modes with Colorful Mesh Canvas
+   Supports Light & Dark (Cyber Slate) Modes with Modern Rectangular Inputs
    ========================================================================== */
 
 /* --- Light Mode Color Tokens & Colorful Mesh Canvas --- */
@@ -119,6 +119,41 @@ body {
     background-attachment: fixed;
     transition: background 0.4s ease, color 0.3s ease;
     min-height: 100vh;
+}
+
+/* --- Login Form Field Styling --- */
+.login-field {
+    margin-bottom: 1.25rem;
+    text-align: left;
+}
+
+.login-label {
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin-bottom: 0.45rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.form-control-login {
+    background-color: var(--input-bg);
+    border: 1.5px solid var(--input-border);
+    color: var(--input-text);
+    border-radius: 12px !important;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.form-control-login:focus {
+    background-color: var(--input-bg);
+    border-color: var(--navy-light);
+    color: var(--input-text);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18);
+    outline: none;
 }
 
 /* --- Descent Gradient Card Utilities --- */
@@ -525,7 +560,7 @@ body {
 
 /* --- Buttons & UI Elements --- */
 .btn {
-    border-radius: 50px;
+    border-radius: 12px;
     font-weight: 600;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -562,7 +597,7 @@ body {
 
 /* --- Badges --- */
 .badge {
-    border-radius: 50px;
+    border-radius: 12px;
     font-weight: 600;
     letter-spacing: 0.3px;
 }
@@ -599,13 +634,13 @@ body {
     color: var(--text-primary);
 }
 
-/* --- Forms & Inputs --- */
+/* --- Forms & Inputs (Modern Rectangular 12px Contours) --- */
 .form-control, .form-select {
     background-color: var(--input-bg);
-    border: 1px solid var(--input-border);
+    border: 1.5px solid var(--input-border);
     color: var(--input-text);
-    border-radius: 50px;
-    padding: 0.6rem 1.1rem;
+    border-radius: 12px !important;
+    padding: 0.65rem 1rem;
     transition: all 0.2s ease;
 }
 
@@ -625,7 +660,7 @@ body {
     background: var(--bg-surface-elevated);
     backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
-    border-radius: 32px !important;
+    border-radius: 28px !important;
     box-shadow: var(--card-shadow);
     color: var(--text-primary);
 }
@@ -638,13 +673,13 @@ body {
     background: var(--bg-surface-elevated);
     backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
-    border-radius: 20px;
+    border-radius: 18px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
 .dropdown-item {
     color: var(--text-primary);
-    border-radius: 12px;
+    border-radius: 10px;
     padding: 0.5rem 1rem;
 }
 
@@ -655,7 +690,7 @@ body {
 
 /* --- Alerts --- */
 .alert {
-    border-radius: 24px !important;
+    border-radius: 20px !important;
     border: 1px solid var(--border-color);
     backdrop-filter: blur(12px);
 }
