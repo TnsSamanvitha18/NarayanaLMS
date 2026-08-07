@@ -37,7 +37,7 @@
                 <!-- Brand Logo (Restored Narayana L&D Branding) -->
                 <div class="d-flex align-items-center gap-3">
                     <a href="{{ url_for('dashboard.index') if admin_logged_in else url_for('learners.my_portal') }}" class="d-flex align-items-center text-decoration-none">
-                        <i class="fa-solid fa-graduation-cap text-gold fa-2x me-2"></i>
+                        <i class="fa-solid fa-graduation-cap text-orange fa-2x me-2"></i>
                         <span class="fs-4 fw-extrabold tracking-tight text-dark" style="font-family: 'Plus Jakarta Sans', sans-serif;">Narayana Learning Hub</span>
                     </a>
                 </div>
@@ -96,7 +96,7 @@
                     <div class="position-relative">
                         <button type="button" class="btn btn-link text-muted p-1 text-decoration-none" title="Notifications">
                             <i class="fa-regular fa-bell fs-5"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-primary" style="font-size: 0.65rem; padding: 0.35em 0.55em;">
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle text-white" style="background-color: var(--brand-orange); font-size: 0.65rem; padding: 0.35em 0.55em;">
                                 3
                             </span>
                         </button>
