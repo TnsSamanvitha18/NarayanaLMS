@@ -7,7 +7,7 @@
     <div class="row g-4">
         <!-- Collapsible Profile Sidebar (Left Column) -->
         <div class="col-lg-3 col-xl-2 profile-sidebar-col" id="sidebarCol">
-            <div class="profile-sidebar text-center shadow-sm" id="learnerSidebar">
+            <div class="profile-sidebar text-center" id="learnerSidebar">
                 <!-- Toggle Collapse Button Header -->
                 <button type="button" class="btn btn-sm btn-light border position-absolute top-0 end-0 m-2 rounded-circle p-1" id="toggleSidebarBtn" title="Collapse Sidebar">
                     <i class="fa-solid fa-chevron-left text-muted fs-6" id="toggleSidebarIcon"></i>
@@ -18,29 +18,29 @@
                     <span class="online-dot" title="Online"></span>
                 </div>
                 
-                <h5 class="fw-extrabold text-gradient-primary mb-1 sidebar-expand-only text-truncate">Alex Morgan</h5>
+                <h5 class="fw-bold text-dark mb-1 sidebar-expand-only text-truncate">Alex Morgan</h5>
                 <p class="text-muted small mb-3 sidebar-expand-only"><i class="fa-solid fa-id-badge me-1 text-primary"></i> ID: 10001</p>
 
                 <!-- Gamification Hexagon Badge -->
                 <div class="mb-3 sidebar-expand-only">
-                    <div class="hexagon-icon hexagon-purple shadow-sm">
+                    <div class="hexagon-icon hexagon-purple mb-2">
                         <i class="fa-solid fa-award"></i>
                     </div>
-                    <span class="badge bg-gold text-dark font-monospace fw-bold">LEVEL 4Facilitator</span>
+                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle font-monospace fw-bold">LEVEL 4 Facilitator</span>
                 </div>
 
                 <div class="border-top pt-3 text-start sidebar-expand-only">
                     <div class="d-flex justify-content-between text-muted small mb-2">
                         <span><i class="fa-solid fa-graduation-cap me-1 text-primary"></i> Enrolled:</span>
-                        <strong class="text-gradient-blue">5 Programs</strong>
+                        <strong class="text-dark">5 Programs</strong>
                     </div>
                     <div class="d-flex justify-content-between text-muted small mb-2">
                         <span><i class="fa-solid fa-circle-check me-1 text-success"></i> Completed:</span>
-                        <strong class="text-gradient-emerald">1 Course</strong>
+                        <strong class="text-success">1 Course</strong>
                     </div>
                     <div class="d-flex justify-content-between text-muted small mb-2">
                         <span><i class="fa-solid fa-fire me-1 text-danger"></i> Learning Streak:</span>
-                        <strong class="text-gradient-coral">12 Days</strong>
+                        <strong class="text-danger">12 Days</strong>
                     </div>
                 </div>
 
@@ -62,11 +62,11 @@
         <!-- Main Content Area (Middle Column) -->
         <div class="col-lg-6 col-xl-7" id="mainContentCol">
             <!-- Top Hero Banner: Continue Learning -->
-            <div class="card border-0 shadow-sm mb-4 p-4 border-top-blue">
+            <div class="card border-0 mb-4 p-4">
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
                     <div>
                         <span class="status-pill pill-in-progress mb-2"><i class="fa-solid fa-play me-1"></i> CONTINUE NEXT</span>
-                        <h3 class="fw-extrabold text-gradient-primary mb-1">AWS Certified Solutions Architect</h3>
+                        <h3 class="fw-bold text-dark mb-1">AWS Certified Solutions Architect</h3>
                         <p class="text-muted small mb-0">Module 3: Virtual Private Cloud (VPC) & Security Groups</p>
                     </div>
                     <div>
@@ -79,7 +79,7 @@
 
             <!-- Program Directory Title -->
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold text-gradient-primary mb-0"><i class="fa-solid fa-layer-group me-2 text-primary"></i> Enrolled Learning Programs</h5>
+                <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-layer-group me-2 text-primary"></i> Enrolled Learning Programs</h5>
                 <span class="text-muted small">Showing 5 Assigned Programs</span>
             </div>
 
@@ -87,20 +87,20 @@
             <div class="row g-4 mb-4">
                 <!-- Program Card 1 -->
                 <div class="col-md-6 col-xl-4">
-                    <div class="card card-circular border-top-blue shadow-sm">
-                        <span class="status-pill pill-in-progress"><i class="fa-solid fa-spinner fa-spin me-1"></i> IN PROGRESS</span>
+                    <div class="card card-circular shadow-sm">
+                        <span class="status-pill pill-in-progress mb-2"><i class="fa-solid fa-spinner fa-spin me-1"></i> IN PROGRESS</span>
                         
                         <!-- SVG Circular Progress Gauge -->
                         <div class="progress-ring-wrapper">
-                            <svg class="progress-ring-svg" width="72" height="72">
-                                <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="30" cx="36" cy="36"/>
-                                <circle class="progress-ring-fill" stroke="#2563EB" stroke-width="6" stroke-dasharray="188" stroke-dashoffset="65" fill="transparent" r="30" cx="36" cy="36"/>
+                            <svg class="progress-ring-svg" width="68" height="68">
+                                <circle class="progress-ring-bg" stroke-width="5" fill="transparent" r="28" cx="34" cy="34"/>
+                                <circle class="progress-ring-fill" stroke="#2563EB" stroke-width="5" stroke-dasharray="176" stroke-dashoffset="61" fill="transparent" r="28" cx="34" cy="34"/>
                             </svg>
-                            <span class="progress-ring-text text-gradient-blue">65%</span>
+                            <span class="progress-ring-text text-dark">65%</span>
                         </div>
 
                         <div>
-                            <h6 class="fw-extrabold text-gradient-blue mb-1 text-truncate" style="max-width: 180px;">AWS Solutions Architect</h6>
+                            <h6 class="fw-bold text-dark mb-1 text-truncate" style="max-width: 180px;">AWS Solutions Architect</h6>
                             <small class="text-muted d-block mb-3">Self Paced • 12 Hours</small>
                         </div>
 
@@ -112,24 +112,24 @@
 
                 <!-- Program Card 2 -->
                 <div class="col-md-6 col-xl-4">
-                    <div class="card card-circular border-top-purple shadow-sm">
-                        <span class="status-pill pill-in-progress"><i class="fa-solid fa-chalkboard-user me-1"></i> LIVE SESSION</span>
+                    <div class="card card-circular shadow-sm">
+                        <span class="status-pill pill-in-progress mb-2"><i class="fa-solid fa-chalkboard-user me-1"></i> LIVE SESSION</span>
                         
                         <!-- SVG Circular Progress Gauge -->
                         <div class="progress-ring-wrapper">
-                            <svg class="progress-ring-svg" width="72" height="72">
-                                <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="30" cx="36" cy="36"/>
-                                <circle class="progress-ring-fill" stroke="#8B5CF6" stroke-width="6" stroke-dasharray="188" stroke-dashoffset="112" fill="transparent" r="30" cx="36" cy="36"/>
+                            <svg class="progress-ring-svg" width="68" height="68">
+                                <circle class="progress-ring-bg" stroke-width="5" fill="transparent" r="28" cx="34" cy="34"/>
+                                <circle class="progress-ring-fill" stroke="#8B5CF6" stroke-width="5" stroke-dasharray="176" stroke-dashoffset="105" fill="transparent" r="28" cx="34" cy="34"/>
                             </svg>
-                            <span class="progress-ring-text text-gradient-purple">40%</span>
+                            <span class="progress-ring-text text-dark">40%</span>
                         </div>
 
                         <div>
-                            <h6 class="fw-extrabold text-gradient-purple mb-1 text-truncate" style="max-width: 180px;">Agile Leadership Masterclass</h6>
+                            <h6 class="fw-bold text-dark mb-1 text-truncate" style="max-width: 180px;">Agile Leadership Masterclass</h6>
                             <small class="text-muted d-block mb-3">Live Batch • Today 2:00 PM</small>
                         </div>
 
-                        <a href="{{ url_for('learner_portal.class_flow', class_id=1) }}" class="btn btn-primary btn-sm px-4 py-2 w-100 fw-bold" style="background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%); border: none;">
+                        <a href="{{ url_for('learner_portal.class_flow', class_id=1) }}" class="btn btn-primary btn-sm px-4 py-2 w-100 fw-bold">
                             Join Class <i class="fa-solid fa-video ms-1"></i>
                         </a>
                     </div>
@@ -137,20 +137,20 @@
 
                 <!-- Program Card 3 -->
                 <div class="col-md-6 col-xl-4">
-                    <div class="card card-circular border-top-cyan shadow-sm">
-                        <span class="status-pill pill-pending"><i class="fa-solid fa-clock me-1"></i> NOT STARTED</span>
+                    <div class="card card-circular shadow-sm">
+                        <span class="status-pill pill-pending mb-2"><i class="fa-solid fa-clock me-1"></i> NOT STARTED</span>
                         
                         <!-- SVG Circular Progress Gauge -->
                         <div class="progress-ring-wrapper">
-                            <svg class="progress-ring-svg" width="72" height="72">
-                                <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="30" cx="36" cy="36"/>
-                                <circle class="progress-ring-fill" stroke="#06B6D4" stroke-width="6" stroke-dasharray="188" stroke-dashoffset="188" fill="transparent" r="30" cx="36" cy="36"/>
+                            <svg class="progress-ring-svg" width="68" height="68">
+                                <circle class="progress-ring-bg" stroke-width="5" fill="transparent" r="28" cx="34" cy="34"/>
+                                <circle class="progress-ring-fill" stroke="#06B6D4" stroke-width="5" stroke-dasharray="176" stroke-dashoffset="176" fill="transparent" r="28" cx="34" cy="34"/>
                             </svg>
-                            <span class="progress-ring-text text-gradient-cyan">0%</span>
+                            <span class="progress-ring-text text-dark">0%</span>
                         </div>
 
                         <div>
-                            <h6 class="fw-extrabold text-gradient-cyan mb-1 text-truncate" style="max-width: 180px;">Cybersecurity Fundamentals</h6>
+                            <h6 class="fw-bold text-dark mb-1 text-truncate" style="max-width: 180px;">Cybersecurity Fundamentals</h6>
                             <small class="text-muted d-block mb-3">Self Paced • 8 Hours</small>
                         </div>
 
@@ -162,20 +162,20 @@
 
                 <!-- Program Card 4 -->
                 <div class="col-md-6 col-xl-4">
-                    <div class="card card-circular border-top-emerald shadow-sm">
-                        <span class="status-pill pill-completed"><i class="fa-solid fa-circle-check me-1"></i> COMPLETED</span>
+                    <div class="card card-circular shadow-sm">
+                        <span class="status-pill pill-completed mb-2"><i class="fa-solid fa-circle-check me-1"></i> COMPLETED</span>
                         
                         <!-- SVG Circular Progress Gauge -->
                         <div class="progress-ring-wrapper">
-                            <svg class="progress-ring-svg" width="72" height="72">
-                                <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="30" cx="36" cy="36"/>
-                                <circle class="progress-ring-fill" stroke="#10B981" stroke-width="6" stroke-dasharray="188" stroke-dashoffset="0" fill="transparent" r="30" cx="36" cy="36"/>
+                            <svg class="progress-ring-svg" width="68" height="68">
+                                <circle class="progress-ring-bg" stroke-width="5" fill="transparent" r="28" cx="34" cy="34"/>
+                                <circle class="progress-ring-fill" stroke="#10B981" stroke-width="5" stroke-dasharray="176" stroke-dashoffset="0" fill="transparent" r="28" cx="34" cy="34"/>
                             </svg>
-                            <span class="progress-ring-text text-gradient-emerald">100%</span>
+                            <span class="progress-ring-text text-dark">100%</span>
                         </div>
 
                         <div>
-                            <h6 class="fw-extrabold text-gradient-emerald mb-1 text-truncate" style="max-width: 180px;">Python Data Science BootCamp</h6>
+                            <h6 class="fw-bold text-dark mb-1 text-truncate" style="max-width: 180px;">Python Data Science BootCamp</h6>
                             <small class="text-muted d-block mb-3">Certified • Passed 92%</small>
                         </div>
 
@@ -187,24 +187,24 @@
 
                 <!-- Program Card 5 -->
                 <div class="col-md-6 col-xl-4">
-                    <div class="card card-circular border-top-coral shadow-sm">
-                        <span class="status-pill pill-overdue"><i class="fa-solid fa-triangle-exclamation me-1"></i> ACTION NEEDED</span>
+                    <div class="card card-circular shadow-sm">
+                        <span class="status-pill pill-overdue mb-2"><i class="fa-solid fa-triangle-exclamation me-1"></i> ACTION NEEDED</span>
                         
                         <!-- SVG Circular Progress Gauge -->
                         <div class="progress-ring-wrapper">
-                            <svg class="progress-ring-svg" width="72" height="72">
-                                <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="30" cx="36" cy="36"/>
-                                <circle class="progress-ring-fill" stroke="#F43F5E" stroke-width="6" stroke-dasharray="188" stroke-dashoffset="150" fill="transparent" r="30" cx="36" cy="36"/>
+                            <svg class="progress-ring-svg" width="68" height="68">
+                                <circle class="progress-ring-bg" stroke-width="5" fill="transparent" r="28" cx="34" cy="34"/>
+                                <circle class="progress-ring-fill" stroke="#F43F5E" stroke-width="5" stroke-dasharray="176" stroke-dashoffset="140" fill="transparent" r="28" cx="34" cy="34"/>
                             </svg>
-                            <span class="progress-ring-text text-gradient-coral">20%</span>
+                            <span class="progress-ring-text text-dark">20%</span>
                         </div>
 
                         <div>
-                            <h6 class="fw-extrabold text-gradient-coral mb-1 text-truncate" style="max-width: 180px;">Design Thinking & UX</h6>
+                            <h6 class="fw-bold text-dark mb-1 text-truncate" style="max-width: 180px;">Design Thinking & UX</h6>
                             <small class="text-muted d-block mb-3">Quiz Due Tomorrow</small>
                         </div>
 
-                        <a href="{{ url_for('learner_portal.assessment', course_id=1) }}" class="btn btn-navy btn-sm px-4 py-2 w-100 fw-bold" style="background: linear-gradient(135deg, #F43F5E 0%, #BE123C 100%); border: none;">
+                        <a href="{{ url_for('learner_portal.assessment', course_id=1) }}" class="btn btn-danger btn-sm px-4 py-2 w-100 fw-bold">
                             Take Assessment <i class="fa-solid fa-pen-to-square ms-1"></i>
                         </a>
                     </div>
@@ -215,46 +215,46 @@
         <!-- Right Side Widgets Column -->
         <div class="col-lg-3 col-xl-3">
             <!-- My Titles Widget -->
-            <div class="card border-0 shadow-sm mb-4 p-3 border-top-blue">
-                <h6 class="fw-bold text-gradient-primary mb-3"><i class="fa-solid fa-trophy me-2 text-warning"></i> My Achievements & Titles</h6>
+            <div class="card border-0 p-3 mb-4">
+                <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-trophy me-2 text-warning"></i> My Achievements & Titles</h6>
                 <div class="d-flex align-items-center mb-3">
-                    <div class="hexagon-icon hexagon-emerald me-3 shadow-xs" style="width: 44px; height: 48px; font-size: 1rem;">
+                    <div class="hexagon-icon hexagon-emerald me-3" style="width: 42px; height: 46px; font-size: 1rem;">
                         <i class="fa-solid fa-shield-halved"></i>
                     </div>
                     <div>
-                        <h6 class="fw-extrabold text-gradient-emerald mb-0">Cloud Explorer</h6>
+                        <h6 class="fw-bold text-dark mb-0">Cloud Explorer</h6>
                         <small class="text-muted">Earned for AWS Module 1</small>
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
-                    <div class="hexagon-icon hexagon-amber me-3 shadow-xs" style="width: 44px; height: 48px; font-size: 1rem;">
+                    <div class="hexagon-icon hexagon-amber me-3" style="width: 42px; height: 46px; font-size: 1rem;">
                         <i class="fa-solid fa-bolt"></i>
                     </div>
                     <div>
-                        <h6 class="fw-extrabold text-gradient-amber mb-0">Speed Learner</h6>
+                        <h6 class="fw-bold text-dark mb-0">Speed Learner</h6>
                         <small class="text-muted">Completed 3 lessons in 1 day</small>
                     </div>
                 </div>
             </div>
 
             <!-- My Badges Widget -->
-            <div class="card border-0 shadow-sm mb-4 p-3 border-top-purple">
-                <h6 class="fw-bold text-gradient-purple mb-3"><i class="fa-solid fa-hexagon-nodes me-2 text-primary"></i> Badges Unlocked</h6>
+            <div class="card border-0 p-3 mb-4">
+                <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-hexagon-nodes me-2 text-primary"></i> Badges Unlocked</h6>
                 <div class="d-flex justify-content-around text-center">
                     <div>
-                        <div class="hexagon-icon hexagon-blue mb-1" style="width: 46px; height: 50px; font-size: 1rem;">
+                        <div class="hexagon-icon hexagon-blue mb-1" style="width: 42px; height: 46px; font-size: 1rem;">
                             <i class="fa-solid fa-code"></i>
                         </div>
                         <small class="text-muted d-block text-xs fw-bold">Coder</small>
                     </div>
                     <div>
-                        <div class="hexagon-icon hexagon-purple mb-1" style="width: 46px; height: 50px; font-size: 1rem;">
+                        <div class="hexagon-icon hexagon-purple mb-1" style="width: 42px; height: 46px; font-size: 1rem;">
                             <i class="fa-solid fa-brain"></i>
                         </div>
                         <small class="text-muted d-block text-xs fw-bold">Strategist</small>
                     </div>
                     <div>
-                        <div class="hexagon-icon hexagon-coral mb-1" style="width: 46px; height: 50px; font-size: 1rem;">
+                        <div class="hexagon-icon hexagon-coral mb-1" style="width: 42px; height: 46px; font-size: 1rem;">
                             <i class="fa-solid fa-fire"></i>
                         </div>
                         <small class="text-muted d-block text-xs fw-bold">10 Streak</small>
@@ -263,13 +263,13 @@
             </div>
 
             <!-- My Certificates Widget -->
-            <div class="card border-0 shadow-sm p-3 border-top-emerald">
-                <h6 class="fw-bold text-gradient-emerald mb-3"><i class="fa-solid fa-certificate me-2 text-success"></i> My Certificates</h6>
+            <div class="card border-0 p-3">
+                <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-certificate me-2 text-success"></i> My Certificates</h6>
                 <div class="d-flex align-items-center justify-content-between p-2 rounded border bg-light mb-2">
                     <div class="d-flex align-items-center">
                         <i class="fa-solid fa-file-pdf text-danger fs-4 me-2"></i>
                         <div>
-                            <div class="fw-extrabold text-gradient-emerald small">Python BootCamp</div>
+                            <div class="fw-bold text-dark small">Python BootCamp</div>
                             <small class="text-muted text-xs">Issued 28-Jul-2026</small>
                         </div>
                     </div>
