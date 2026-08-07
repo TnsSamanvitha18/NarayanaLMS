@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NARAYANA LEARNING HUB - MODERN ELECTRIC TEAL & CYAN DESIGN SYSTEM
+   NARAYANA LEARNING HUB - IBM PLEX MONO TYPOGRAPHY SYSTEM
    Modern Capsule Header, Frosted Glass Cards & Electric Teal Accents
    ========================================================================== */
 
@@ -102,10 +102,10 @@
 }
 
 /* --------------------------------------------------------------------------
-   3. BASE RESET & ATMOSPHERE
+   3. BASE RESET & IBM PLEX MONO TYPOGRAPHY
    -------------------------------------------------------------------------- */
 body {
-    font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: 'IBM Plex Mono', monospace !important;
     color: var(--text-primary);
     background: var(--bg-app);
     background-size: 200% 200%;
@@ -115,10 +115,15 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: 'IBM Plex Mono', monospace !important;
     color: var(--text-primary);
     font-weight: 700;
     letter-spacing: -0.02em;
+}
+
+button, input, select, textarea, p, span, div, a, td, th {
+    font-family: 'IBM Plex Mono', monospace !important;
 }
 
 .text-dark { color: var(--text-primary) !important; }
@@ -159,6 +164,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .ls-nav-tab {
+    font-family: 'IBM Plex Mono', monospace !important;
     color: var(--text-secondary);
     font-weight: 600;
     padding: 0.55rem 1.25rem;
@@ -167,7 +173,7 @@ h1, h2, h3, h4, h5, h6 {
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    font-size: 0.92rem;
+    font-size: 0.88rem;
     cursor: pointer;
     border: none;
 }
@@ -229,9 +235,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* --------------------------------------------------------------------------
-   6. MODERN TEAL BUTTONS, BADGES & PILLS
+   6. BUTTONS, BADGES & PILLS
    -------------------------------------------------------------------------- */
 .btn {
+    font-family: 'IBM Plex Mono', monospace !important;
     border-radius: 50px;
     font-weight: 600;
     padding: 0.55rem 1.3rem;
@@ -271,15 +278,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .badge {
+    font-family: 'IBM Plex Mono', monospace !important;
     border-radius: 50px;
     font-weight: 600;
     padding: 0.45em 0.85em;
 }
 
-/* Status Pills */
 .status-pill {
+    font-family: 'IBM Plex Mono', monospace !important;
     font-size: 0.72rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.5px;
     padding: 0.38em 0.9em;
     border-radius: 50px;
@@ -306,6 +314,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .login-label {
+    font-family: 'IBM Plex Mono', monospace !important;
     font-size: 0.88rem;
     font-weight: 700;
     margin-bottom: 0.45rem;
@@ -316,12 +325,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .form-control, .form-select, .form-control-login {
+    font-family: 'IBM Plex Mono', monospace !important;
     background-color: var(--input-bg);
     border: 1.5px solid var(--input-border);
     color: var(--input-text);
     border-radius: 50px !important;
     padding: 0.65rem 1.2rem;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     transition: all 0.2s ease;
 }
 
@@ -354,8 +364,9 @@ h1, h2, h3, h4, h5, h6 {
 
 .progress-ring-text {
     position: absolute;
-    font-weight: 800;
-    font-size: 0.9rem;
+    font-family: 'IBM Plex Mono', monospace !important;
+    font-weight: 700;
+    font-size: 0.88rem;
     color: var(--teal-primary);
 }
 
@@ -388,12 +399,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .theme-toggle-btn {
+    font-family: 'IBM Plex Mono', monospace !important;
     background: var(--teal-light);
     border: 1px solid var(--border-color);
     color: var(--teal-primary);
     border-radius: 50px;
     padding: 0.38rem 0.9rem;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 700;
     display: inline-flex;
     align-items: center;
@@ -434,6 +446,7 @@ h1, h2, h3, h4, h5, h6 {
    10. TABLES, MODALS & SCROLLBARS
    -------------------------------------------------------------------------- */
 .table {
+    font-family: 'IBM Plex Mono', monospace !important;
     color: var(--text-primary);
     border-color: var(--table-border);
 }
@@ -451,10 +464,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .table thead th {
+    font-family: 'IBM Plex Mono', monospace !important;
     color: var(--table-header-text) !important;
-    font-weight: 800;
+    font-weight: 700;
     text-transform: uppercase;
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     letter-spacing: 0.6px;
     border-bottom: 2px solid var(--table-border) !important;
     background-color: transparent !important;
@@ -462,7 +476,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .table-hover > tbody > tr:hover > * {
     background-color: var(--table-row-hover);
-    color: var(--text-primary);
+    color: var(--teal-primary);
 }
 
 .modal-content {
@@ -481,6 +495,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .dropdown-item {
+    font-family: 'IBM Plex Mono', monospace !important;
     color: var(--text-primary);
     border-radius: 12px;
     padding: 0.5rem 1rem;
