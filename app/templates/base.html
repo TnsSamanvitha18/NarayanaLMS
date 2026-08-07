@@ -109,25 +109,21 @@
 
                     <!-- Profile / Account Dropdown -->
                     <div class="dropdown">
-                        <button class="btn p-0 border-0 d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
-                            <div class="avatar bg-navy text-white rounded-circle fw-bold d-flex align-items-center justify-content-center shadow-sm" style="width: 38px; height: 38px;">
-                                {% if admin_logged_in %}A{% else %}<img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" alt="Avatar" class="rounded-circle" style="width: 38px; height: 38px; object-fit: cover;">{% endif %}
+                        <button class="btn p-0 border-0 d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Account Menu">
+                            <div class="position-relative">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" alt="Profile Avatar" class="rounded-circle border border-2 border-primary shadow-sm" style="width: 40px; height: 40px; object-fit: cover;">
+                                <span class="online-dot" style="width: 11px; height: 11px; right: 0; bottom: 0;"></span>
                             </div>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                            {% if admin_logged_in %}
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2">
                             <li class="px-3 py-2 border-bottom">
-                                <span class="d-block fw-bold text-dark">{{ admin_username }}</span>
-                                <small class="text-muted">Administrator</small>
+                                <span class="d-block fw-bold text-dark">{% if admin_logged_in %}{{ admin_username }}{% else %}Alex Morgan{% endif %}</span>
+                                <small class="text-muted">{% if admin_logged_in %}L&D Administrator{% else %}Learner ID: 10001{% endif %}</small>
                             </li>
-                            <li><a class="dropdown-item text-danger fw-semibold" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
-                            {% else %}
-                            <li class="px-3 py-2 border-bottom">
-                                <span class="d-block fw-bold text-dark">Learner Portal</span>
-                                <small class="text-muted">Student Mode</small>
-                            </li>
-                            <li><a class="dropdown-item text-danger fw-semibold" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+                            {% if not admin_logged_in %}
+                            <li><a class="dropdown-item fw-semibold" href="{{ url_for('learners.my_portal') }}"><i class="fa-solid fa-user me-2 text-primary"></i> My Profile</a></li>
                             {% endif %}
+                            <li><a class="dropdown-item text-danger fw-semibold" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
                         </ul>
                     </div>
                 </div>
