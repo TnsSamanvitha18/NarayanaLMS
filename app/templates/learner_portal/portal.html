@@ -61,16 +61,16 @@
         </div>
     </div>
 
-    <!-- Center Main Column: Continue Next Banner & My Programs Grid -->
+    <!-- Center Main Column: Continue Next Banner & Circular Programs Grid -->
     <div class="col-lg-6 col-xl-7 main-content-col" id="mainContentCol">
         <!-- Section 1: Continue Next -->
         <div class="mb-4">
             <h5 class="fw-bold text-dark mb-3">Continue Next</h5>
             {% set first_en = enrollments[0] if enrollments else None %}
-            <div class="card border-0 shadow-sm rounded-4 p-4 position-relative gradient-multi-hero border-top-blue">
+            <div class="card border-0 shadow-sm rounded-4 p-4 position-relative gradient-multi-hero border-top-blue" style="border-radius: 36px !important;">
                 <div class="d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center gap-3">
-                        <div class="gradient-purple text-white p-3 rounded-4 d-flex align-items-center justify-content-center shadow-sm" style="width: 56px; height: 56px;">
+                        <div class="gradient-purple text-white p-3 rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 56px; height: 56px;">
                             <i class="fa-regular fa-file-lines fs-3"></i>
                         </div>
                         <div>
@@ -101,7 +101,7 @@
             </div>
         </div>
 
-        <!-- Section 2: My Programs Grid -->
+        <!-- Section 2: Circular My Programs Grid -->
         <div>
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="fw-bold text-dark mb-0">My Programs</h5>
@@ -117,40 +117,39 @@
                     {% set status_class = 'pill-in-progress' if pct > 0 and pct < 100 else ('pill-completed' if pct == 100 else ('pill-overdue' if loop.index == 5 else 'pill-pending')) %}
                     {% set status_label = 'IN PROGRESS' if pct > 0 and pct < 100 else ('COMPLETED' if pct == 100 else ('OVERDUE' if loop.index == 5 else 'PENDING')) %}
                     <div class="col-md-4">
-                        <div class="card border-0 shadow-sm rounded-4 h-100 p-3 d-flex flex-column justify-content-between {{ border_class }}">
-                            <div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="card card-circular h-100 {{ border_class }}">
+                            <div class="w-100">
+                                <div class="d-flex justify-content-between align-items-center mb-2 w-100">
                                     <span class="status-pill {{ status_class }}">{{ status_label }}</span>
                                     <i class="fa-solid fa-ellipsis-vertical text-muted cursor-pointer"></i>
                                 </div>
-                                <h6 class="fw-bold text-dark mb-3 text-truncate" title="{{ en.course.name }}">{{ en.course.name }}</h6>
+                                <h6 class="fw-bold text-dark mb-2 text-truncate" title="{{ en.course.name }}">{{ en.course.name }}</h6>
                                 
-                                <!-- Progress Ring Chart & Next Step -->
-                                <div class="d-flex align-items-center gap-3 mb-3">
-                                    <div class="progress-ring-wrapper">
-                                        <svg class="progress-ring-svg" width="64" height="64">
-                                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="25" cx="32" cy="32"/>
-                                            <circle class="progress-ring-fill" stroke="{{ stroke_color }}" stroke-width="6" stroke-dasharray="157" stroke-dashoffset="{{ 157 - (157 * pct / 100) }}" fill="transparent" r="25" cx="32" cy="32"/>
-                                        </svg>
-                                        <span class="progress-ring-text" style="color: {{ stroke_color }};">{{ pct }}%</span>
-                                    </div>
-                                    <div>
-                                        <small class="text-muted text-uppercase fw-semibold fs-7 d-block">Next Step</small>
-                                        <small class="fw-bold text-dark">
-                                            {% if pct == 100 %}View Certificate{% elif pct > 0 %}Complete Module {{ loop.index }}{% else %}Start Program{% endif %}
-                                        </small>
-                                    </div>
+                                <!-- Centered Circular SVG Gauge -->
+                                <div class="progress-ring-wrapper mx-auto my-2">
+                                    <svg class="progress-ring-svg" width="76" height="76">
+                                        <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="30" cx="38" cy="38"/>
+                                        <circle class="progress-ring-fill" stroke="{{ stroke_color }}" stroke-width="6" stroke-dasharray="188" stroke-dashoffset="{{ 188 - (188 * pct / 100) }}" fill="transparent" r="30" cx="38" cy="38"/>
+                                    </svg>
+                                    <span class="progress-ring-text" style="color: {{ stroke_color }};">{{ pct }}%</span>
+                                </div>
+
+                                <div class="my-2">
+                                    <small class="text-muted text-uppercase fw-semibold fs-8 d-block">Next Step</small>
+                                    <small class="fw-bold text-dark fs-7">
+                                        {% if pct == 100 %}View Certificate{% elif pct > 0 %}Complete Module {{ loop.index }}{% else %}Start Program{% endif %}
+                                    </small>
                                 </div>
                             </div>
 
-                            <div>
+                            <div class="mt-2">
                                 {% if en.course.mode == 'Live' or 'Live' in en.course.mode %}
-                                <a href="{{ url_for('learners.class_flow', class_id_str=en.live_class.class_id if en.live_class else 'CRS-CLS-000001') }}" class="fw-bold text-decoration-none small" style="color: {{ stroke_color }};">
-                                    Continue <i class="fa-solid fa-chevron-right ms-1"></i>
+                                <a href="{{ url_for('learners.class_flow', class_id_str=en.live_class.class_id if en.live_class else 'CRS-CLS-000001') }}" class="btn btn-navy btn-sm px-3 py-1 fw-bold">
+                                    Continue <i class="fa-solid fa-arrow-right ms-1"></i>
                                 </a>
                                 {% else %}
-                                <a href="{{ url_for('learners.self_paced_flow', course_id_str=en.course.course_id) }}" class="fw-bold text-decoration-none small" style="color: {{ stroke_color }};">
-                                    {% if pct == 0 %}View <i class="fa-solid fa-chevron-right ms-1"></i>{% else %}Continue <i class="fa-solid fa-chevron-right ms-1"></i>{% endif %}
+                                <a href="{{ url_for('learners.self_paced_flow', course_id_str=en.course.course_id) }}" class="btn btn-navy btn-sm px-3 py-1 fw-bold">
+                                    {% if pct == 0 %}Launch <i class="fa-solid fa-arrow-right ms-1"></i>{% else %}Continue <i class="fa-solid fa-arrow-right ms-1"></i>{% endif %}
                                 </a>
                                 {% endif %}
                             </div>
@@ -158,177 +157,177 @@
                     </div>
                     {% endfor %}
                 {% else %}
-                    <!-- Vibrant Sample Program Grid Cards -->
+                    <!-- Vibrant Circular Program Grid Cards -->
                     <!-- Card 1: Compliance Essentials (Blue) -->
                     <div class="col-md-4">
-                        <div class="card border-0 shadow-sm rounded-4 h-100 p-3 d-flex flex-column justify-content-between border-top-blue">
-                            <div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="card card-circular h-100 border-top-blue">
+                            <div class="w-100">
+                                <div class="d-flex justify-content-between align-items-center mb-2 w-100">
                                     <span class="status-pill pill-in-progress">IN PROGRESS</span>
                                     <i class="fa-solid fa-ellipsis-vertical text-muted"></i>
                                 </div>
-                                <h6 class="fw-bold text-dark mb-3">Compliance Essentials</h6>
-                                <div class="d-flex align-items-center gap-3 mb-3">
-                                    <div class="progress-ring-wrapper">
-                                        <svg class="progress-ring-svg" width="64" height="64">
-                                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="25" cx="32" cy="32"/>
-                                            <circle class="progress-ring-fill" stroke="#2563EB" stroke-width="6" stroke-dasharray="157" stroke-dashoffset="55" fill="transparent" r="25" cx="32" cy="32"/>
-                                        </svg>
-                                        <span class="progress-ring-text text-primary">65%</span>
-                                    </div>
-                                    <div>
-                                        <small class="text-muted text-uppercase fw-semibold fs-7 d-block">Next Step</small>
-                                        <small class="fw-bold text-dark">Complete Module 3</small>
-                                    </div>
+                                <h6 class="fw-bold text-dark mb-2">Compliance Essentials</h6>
+                                
+                                <div class="progress-ring-wrapper mx-auto my-2">
+                                    <svg class="progress-ring-svg" width="76" height="76">
+                                        <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="30" cx="38" cy="38"/>
+                                        <circle class="progress-ring-fill" stroke="#2563EB" stroke-width="6" stroke-dasharray="188" stroke-dashoffset="65" fill="transparent" r="30" cx="38" cy="38"/>
+                                    </svg>
+                                    <span class="progress-ring-text text-primary">65%</span>
+                                </div>
+
+                                <div class="my-2">
+                                    <small class="text-muted text-uppercase fw-semibold fs-8 d-block">Next Step</small>
+                                    <small class="fw-bold text-dark fs-7">Complete Module 3</small>
                                 </div>
                             </div>
-                            <div>
-                                <a href="#" class="text-primary fw-bold text-decoration-none small">Continue <i class="fa-solid fa-chevron-right ms-1"></i></a>
+                            <div class="mt-2">
+                                <a href="#" class="btn btn-navy btn-sm px-3 py-1 fw-bold">Continue <i class="fa-solid fa-arrow-right ms-1"></i></a>
                             </div>
                         </div>
                     </div>
 
                     <!-- Card 2: Data Privacy Fundamentals (Purple) -->
                     <div class="col-md-4">
-                        <div class="card border-0 shadow-sm rounded-4 h-100 p-3 d-flex flex-column justify-content-between border-top-purple">
-                            <div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="card card-circular h-100 border-top-purple">
+                            <div class="w-100">
+                                <div class="d-flex justify-content-between align-items-center mb-2 w-100">
                                     <span class="status-pill pill-in-progress">IN PROGRESS</span>
                                     <i class="fa-solid fa-ellipsis-vertical text-muted"></i>
                                 </div>
-                                <h6 class="fw-bold text-dark mb-3">Data Privacy Fundamentals</h6>
-                                <div class="d-flex align-items-center gap-3 mb-3">
-                                    <div class="progress-ring-wrapper">
-                                        <svg class="progress-ring-svg" width="64" height="64">
-                                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="25" cx="32" cy="32"/>
-                                            <circle class="progress-ring-fill" stroke="#8B5CF6" stroke-width="6" stroke-dasharray="157" stroke-dashoffset="94" fill="transparent" r="25" cx="32" cy="32"/>
-                                        </svg>
-                                        <span class="progress-ring-text" style="color: #8B5CF6;">40%</span>
-                                    </div>
-                                    <div>
-                                        <small class="text-muted text-uppercase fw-semibold fs-7 d-block">Next Step</small>
-                                        <small class="fw-bold text-dark">Watch Lesson 4</small>
-                                    </div>
+                                <h6 class="fw-bold text-dark mb-2">Data Privacy Fundamentals</h6>
+                                
+                                <div class="progress-ring-wrapper mx-auto my-2">
+                                    <svg class="progress-ring-svg" width="76" height="76">
+                                        <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="30" cx="38" cy="38"/>
+                                        <circle class="progress-ring-fill" stroke="#8B5CF6" stroke-width="6" stroke-dasharray="188" stroke-dashoffset="112" fill="transparent" r="30" cx="38" cy="38"/>
+                                    </svg>
+                                    <span class="progress-ring-text" style="color: #8B5CF6;">40%</span>
+                                </div>
+
+                                <div class="my-2">
+                                    <small class="text-muted text-uppercase fw-semibold fs-8 d-block">Next Step</small>
+                                    <small class="fw-bold text-dark fs-7">Watch Lesson 4</small>
                                 </div>
                             </div>
-                            <div>
-                                <a href="#" class="fw-bold text-decoration-none small" style="color: #8B5CF6;">Continue <i class="fa-solid fa-chevron-right ms-1"></i></a>
+                            <div class="mt-2">
+                                <a href="#" class="btn btn-sm px-3 py-1 fw-bold text-white gradient-purple">Continue <i class="fa-solid fa-arrow-right ms-1"></i></a>
                             </div>
                         </div>
                     </div>
 
                     <!-- Card 3: Cybersecurity Awareness (Amber) -->
                     <div class="col-md-4">
-                        <div class="card border-0 shadow-sm rounded-4 h-100 p-3 d-flex flex-column justify-content-between border-top-amber">
-                            <div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="card card-circular h-100 border-top-amber">
+                            <div class="w-100">
+                                <div class="d-flex justify-content-between align-items-center mb-2 w-100">
                                     <span class="status-pill pill-pending">PENDING</span>
                                     <i class="fa-solid fa-ellipsis-vertical text-muted"></i>
                                 </div>
-                                <h6 class="fw-bold text-dark mb-3">Cybersecurity Awareness</h6>
-                                <div class="d-flex align-items-center gap-3 mb-3">
-                                    <div class="progress-ring-wrapper">
-                                        <svg class="progress-ring-svg" width="64" height="64">
-                                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="25" cx="32" cy="32"/>
-                                            <circle class="progress-ring-fill" stroke="#F59E0B" stroke-width="6" stroke-dasharray="157" stroke-dashoffset="157" fill="transparent" r="25" cx="32" cy="32"/>
-                                        </svg>
-                                        <span class="progress-ring-text" style="color: #F59E0B;">0%</span>
-                                    </div>
-                                    <div>
-                                        <small class="text-muted text-uppercase fw-semibold fs-7 d-block">Next Step</small>
-                                        <small class="fw-bold text-dark">Start Program</small>
-                                    </div>
+                                <h6 class="fw-bold text-dark mb-2">Cybersecurity Awareness</h6>
+                                
+                                <div class="progress-ring-wrapper mx-auto my-2">
+                                    <svg class="progress-ring-svg" width="76" height="76">
+                                        <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="30" cx="38" cy="38"/>
+                                        <circle class="progress-ring-fill" stroke="#F59E0B" stroke-width="6" stroke-dasharray="188" stroke-dashoffset="188" fill="transparent" r="30" cx="38" cy="38"/>
+                                    </svg>
+                                    <span class="progress-ring-text" style="color: #F59E0B;">0%</span>
+                                </div>
+
+                                <div class="my-2">
+                                    <small class="text-muted text-uppercase fw-semibold fs-8 d-block">Next Step</small>
+                                    <small class="fw-bold text-dark fs-7">Start Program</small>
                                 </div>
                             </div>
-                            <div>
-                                <a href="#" class="fw-bold text-decoration-none small" style="color: #F59E0B;">View <i class="fa-solid fa-chevron-right ms-1"></i></a>
+                            <div class="mt-2">
+                                <a href="#" class="btn btn-sm px-3 py-1 fw-bold text-dark gradient-amber">Start <i class="fa-solid fa-arrow-right ms-1"></i></a>
                             </div>
                         </div>
                     </div>
 
                     <!-- Card 4: Workplace Communication (Emerald Green) -->
                     <div class="col-md-4">
-                        <div class="card border-0 shadow-sm rounded-4 h-100 p-3 d-flex flex-column justify-content-between border-top-emerald">
-                            <div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="card card-circular h-100 border-top-emerald">
+                            <div class="w-100">
+                                <div class="d-flex justify-content-between align-items-center mb-2 w-100">
                                     <span class="status-pill pill-completed">COMPLETED</span>
                                     <i class="fa-solid fa-ellipsis-vertical text-muted"></i>
                                 </div>
-                                <h6 class="fw-bold text-dark mb-3">Workplace Communication</h6>
-                                <div class="d-flex align-items-center gap-3 mb-3">
-                                    <div class="progress-ring-wrapper">
-                                        <svg class="progress-ring-svg" width="64" height="64">
-                                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="25" cx="32" cy="32"/>
-                                            <circle class="progress-ring-fill" stroke="#10B981" stroke-width="6" stroke-dasharray="157" stroke-dashoffset="0" fill="transparent" r="25" cx="32" cy="32"/>
-                                        </svg>
-                                        <span class="progress-ring-text" style="color: #10B981;">100%</span>
-                                    </div>
-                                    <div>
-                                        <small class="text-muted text-uppercase fw-semibold fs-7 d-block">Next Step</small>
-                                        <small class="fw-bold text-dark">View Certificate</small>
-                                    </div>
+                                <h6 class="fw-bold text-dark mb-2">Workplace Communication</h6>
+                                
+                                <div class="progress-ring-wrapper mx-auto my-2">
+                                    <svg class="progress-ring-svg" width="76" height="76">
+                                        <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="30" cx="38" cy="38"/>
+                                        <circle class="progress-ring-fill" stroke="#10B981" stroke-width="6" stroke-dasharray="188" stroke-dashoffset="0" fill="transparent" r="30" cx="38" cy="38"/>
+                                    </svg>
+                                    <span class="progress-ring-text" style="color: #10B981;">100%</span>
+                                </div>
+
+                                <div class="my-2">
+                                    <small class="text-muted text-uppercase fw-semibold fs-8 d-block">Next Step</small>
+                                    <small class="fw-bold text-dark fs-7">View Certificate</small>
                                 </div>
                             </div>
-                            <div>
-                                <a href="#" class="fw-bold text-decoration-none small" style="color: #10B981;">View <i class="fa-solid fa-chevron-right ms-1"></i></a>
+                            <div class="mt-2">
+                                <a href="#" class="btn btn-sm px-3 py-1 fw-bold text-white gradient-emerald">View <i class="fa-solid fa-arrow-right ms-1"></i></a>
                             </div>
                         </div>
                     </div>
 
                     <!-- Card 5: Code of Conduct Refresher (Coral Red) -->
                     <div class="col-md-4">
-                        <div class="card border-0 shadow-sm rounded-4 h-100 p-3 d-flex flex-column justify-content-between border-top-coral">
-                            <div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="card card-circular h-100 border-top-coral">
+                            <div class="w-100">
+                                <div class="d-flex justify-content-between align-items-center mb-2 w-100">
                                     <span class="status-pill pill-overdue">OVERDUE</span>
                                     <i class="fa-solid fa-ellipsis-vertical text-muted"></i>
                                 </div>
-                                <h6 class="fw-bold text-dark mb-3">Code of Conduct Refresher</h6>
-                                <div class="d-flex align-items-center gap-3 mb-3">
-                                    <div class="progress-ring-wrapper">
-                                        <svg class="progress-ring-svg" width="64" height="64">
-                                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="25" cx="32" cy="32"/>
-                                            <circle class="progress-ring-fill" stroke="#F43F5E" stroke-width="6" stroke-dasharray="157" stroke-dashoffset="125" fill="transparent" r="25" cx="32" cy="32"/>
-                                        </svg>
-                                        <span class="progress-ring-text" style="color: #F43F5E;">20%</span>
-                                    </div>
-                                    <div>
-                                        <small class="text-muted text-uppercase fw-semibold fs-7 d-block">Next Step</small>
-                                        <small class="fw-bold text-dark">Complete Assessment</small>
-                                    </div>
+                                <h6 class="fw-bold text-dark mb-2">Code of Conduct Refresher</h6>
+                                
+                                <div class="progress-ring-wrapper mx-auto my-2">
+                                    <svg class="progress-ring-svg" width="76" height="76">
+                                        <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="30" cx="38" cy="38"/>
+                                        <circle class="progress-ring-fill" stroke="#F43F5E" stroke-width="6" stroke-dasharray="188" stroke-dashoffset="150" fill="transparent" r="30" cx="38" cy="38"/>
+                                    </svg>
+                                    <span class="progress-ring-text" style="color: #F43F5E;">20%</span>
+                                </div>
+
+                                <div class="my-2">
+                                    <small class="text-muted text-uppercase fw-semibold fs-8 d-block">Next Step</small>
+                                    <small class="fw-bold text-dark fs-7">Complete Assessment</small>
                                 </div>
                             </div>
-                            <div>
-                                <a href="#" class="fw-bold text-decoration-none small" style="color: #F43F5E;">Continue <i class="fa-solid fa-chevron-right ms-1"></i></a>
+                            <div class="mt-2">
+                                <a href="#" class="btn btn-sm px-3 py-1 fw-bold text-white gradient-coral">Continue <i class="fa-solid fa-arrow-right ms-1"></i></a>
                             </div>
                         </div>
                     </div>
 
                     <!-- Card 6: Leadership Foundations (Cyan) -->
                     <div class="col-md-4">
-                        <div class="card border-0 shadow-sm rounded-4 h-100 p-3 d-flex flex-column justify-content-between border-top-cyan">
-                            <div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="card card-circular h-100 border-top-cyan">
+                            <div class="w-100">
+                                <div class="d-flex justify-content-between align-items-center mb-2 w-100">
                                     <span class="status-pill pill-pending">PENDING</span>
                                     <i class="fa-solid fa-ellipsis-vertical text-muted"></i>
                                 </div>
-                                <h6 class="fw-bold text-dark mb-3">Leadership Foundations</h6>
-                                <div class="d-flex align-items-center gap-3 mb-3">
-                                    <div class="progress-ring-wrapper">
-                                        <svg class="progress-ring-svg" width="64" height="64">
-                                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="25" cx="32" cy="32"/>
-                                            <circle class="progress-ring-fill" stroke="#06B6D4" stroke-width="6" stroke-dasharray="157" stroke-dashoffset="157" fill="transparent" r="25" cx="32" cy="32"/>
-                                        </svg>
-                                        <span class="progress-ring-text" style="color: #06B6D4;">0%</span>
-                                    </div>
-                                    <div>
-                                        <small class="text-muted text-uppercase fw-semibold fs-7 d-block">Next Step</small>
-                                        <small class="fw-bold text-dark">Start Program</small>
-                                    </div>
+                                <h6 class="fw-bold text-dark mb-2">Leadership Foundations</h6>
+                                
+                                <div class="progress-ring-wrapper mx-auto my-2">
+                                    <svg class="progress-ring-svg" width="76" height="76">
+                                        <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="30" cx="38" cy="38"/>
+                                        <circle class="progress-ring-fill" stroke="#06B6D4" stroke-width="6" stroke-dasharray="188" stroke-dashoffset="188" fill="transparent" r="30" cx="38" cy="38"/>
+                                    </svg>
+                                    <span class="progress-ring-text" style="color: #06B6D4;">0%</span>
+                                </div>
+
+                                <div class="my-2">
+                                    <small class="text-muted text-uppercase fw-semibold fs-8 d-block">Next Step</small>
+                                    <small class="fw-bold text-dark fs-7">Start Program</small>
                                 </div>
                             </div>
-                            <div>
-                                <a href="#" class="fw-bold text-decoration-none small" style="color: #06B6D4;">View <i class="fa-solid fa-chevron-right ms-1"></i></a>
+                            <div class="mt-2">
+                                <a href="#" class="btn btn-sm px-3 py-1 fw-bold text-white gradient-cyan">Start <i class="fa-solid fa-arrow-right ms-1"></i></a>
                             </div>
                         </div>
                     </div>
@@ -405,9 +404,9 @@
             </div>
 
             <!-- Cert Item 1 -->
-            <div class="p-2.5 border rounded-3 mb-2.5 bg-light d-flex align-items-center justify-content-between border-start border-4 border-primary">
+            <div class="p-2.5 border rounded-4 mb-2.5 bg-light d-flex align-items-center justify-content-between border-start border-4 border-primary">
                 <div class="d-flex align-items-center gap-2.5">
-                    <div class="bg-white border rounded p-1 shadow-xs" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                    <div class="bg-white border rounded-circle p-1 shadow-xs" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa-solid fa-certificate text-gold fs-5"></i>
                     </div>
                     <div>
@@ -421,9 +420,9 @@
             </div>
 
             <!-- Cert Item 2 -->
-            <div class="p-2.5 border rounded-3 mb-3 bg-light d-flex align-items-center justify-content-between border-start border-4 border-info">
+            <div class="p-2.5 border rounded-4 mb-3 bg-light d-flex align-items-center justify-content-between border-start border-4 border-info">
                 <div class="d-flex align-items-center gap-2.5">
-                    <div class="bg-white border rounded p-1 shadow-xs" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                    <div class="bg-white border rounded-circle p-1 shadow-xs" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
                         <i class="fa-solid fa-certificate text-gold fs-5"></i>
                     </div>
                     <div>

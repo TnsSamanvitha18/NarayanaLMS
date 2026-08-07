@@ -1,21 +1,26 @@
 /* ==========================================================================
    NARAYANA LEARNING HUB - VIBRANT TECHNOLOGICAL DESIGN SYSTEM
-   Supports Light & Dark (Cyber Slate) Modes with Multi-Tone Gradients
+   Supports Light & Dark (Cyber Slate) Modes with Colorful Mesh Canvas
    ========================================================================== */
 
-/* --- Light Mode Color Tokens --- */
+/* --- Light Mode Color Tokens & Colorful Mesh Canvas --- */
 :root, [data-theme="light"] {
-    --bg-app: #F4F6F9;
-    --bg-surface: #FFFFFF;
-    --bg-surface-elevated: #FFFFFF;
-    --bg-glass: rgba(255, 255, 255, 0.9);
+    --bg-app: radial-gradient(at 0% 0%, rgba(224, 237, 255, 0.85) 0px, transparent 50%),
+              radial-gradient(at 100% 0%, rgba(243, 232, 255, 0.85) 0px, transparent 50%),
+              radial-gradient(at 100% 100%, rgba(254, 243, 199, 0.75) 0px, transparent 50%),
+              radial-gradient(at 0% 100%, rgba(209, 250, 229, 0.75) 0px, transparent 50%),
+              #F1F5F9;
+    
+    --bg-surface: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
+    --bg-surface-elevated: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.9) 100%);
+    --bg-glass: rgba(255, 255, 255, 0.88);
     
     --text-primary: #0F172A;
     --text-secondary: #334155;
     --text-muted: #64748B;
     
-    --border-color: #E2E8F0;
-    --border-subtle: #F1F5F9;
+    --border-color: #CBD5E1;
+    --border-subtle: #E2E8F0;
     
     --navy-blue: #2563EB;
     --navy-dark: #1D4ED8;
@@ -27,27 +32,41 @@
     --cyan-accent: #06B6D4;
     --cyan-glow: rgba(6, 182, 212, 0.2);
     
-    --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
-    --card-hover-shadow: 0 14px 32px rgba(37, 99, 235, 0.14), 0 4px 8px rgba(0, 0, 0, 0.04);
+    --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+    --card-hover-shadow: 0 18px 38px rgba(37, 99, 235, 0.16);
     
-    --table-header-bg: #F8FAFC;
+    --table-header-bg: rgba(248, 250, 252, 0.9);
     --table-header-text: #475569;
-    --table-row-hover: #F1F5F9;
+    --table-row-hover: rgba(241, 245, 249, 0.8);
     --table-border: #E2E8F0;
     
     --input-bg: #FFFFFF;
     --input-border: #CBD5E1;
     --input-text: #0F172A;
     
-    --header-bg: #FFFFFF;
-    --subnav-bg: #F8FAFC;
+    --header-bg: rgba(255, 255, 255, 0.92);
+    --subnav-bg: rgba(248, 250, 252, 0.9);
+
+    /* Light Mode Descent Card Fills */
+    --card-blue-fill: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(59, 130, 246, 0.03) 100%);
+    --card-cyan-fill: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(56, 189, 248, 0.03) 100%);
+    --card-emerald-fill: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(52, 211, 153, 0.03) 100%);
+    --card-amber-fill: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(251, 191, 36, 0.03) 100%);
+    --card-coral-fill: linear-gradient(135deg, rgba(244, 63, 94, 0.12) 0%, rgba(251, 113, 133, 0.03) 100%);
+    --card-purple-fill: linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(167, 139, 250, 0.03) 100%);
+    --card-gold-fill: linear-gradient(135deg, rgba(212, 175, 55, 0.14) 0%, rgba(245, 158, 11, 0.03) 100%);
 }
 
-/* --- Dark Mode Color Tokens (Cyber Slate Tech Aesthetic) --- */
+/* --- Dark Mode Color Tokens & Cyber Aurora Canvas --- */
 [data-theme="dark"] {
-    --bg-app: #0B0F19;
-    --bg-surface: #111827;
-    --bg-surface-elevated: #1F2937;
+    --bg-app: radial-gradient(at 0% 0%, rgba(30, 58, 138, 0.45) 0px, transparent 50%),
+              radial-gradient(at 100% 0%, rgba(91, 33, 182, 0.45) 0px, transparent 50%),
+              radial-gradient(at 100% 100%, rgba(6, 95, 70, 0.38) 0px, transparent 50%),
+              radial-gradient(at 0% 100%, rgba(159, 18, 57, 0.38) 0px, transparent 50%),
+              #090D16;
+    
+    --bg-surface: linear-gradient(145deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.9) 100%);
+    --bg-surface-elevated: linear-gradient(145deg, rgba(51, 65, 85, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%);
     --bg-glass: rgba(17, 24, 39, 0.85);
     
     --text-primary: #F9FAFB;
@@ -67,32 +86,85 @@
     --cyan-accent: #06B6D4;
     --cyan-glow: rgba(6, 182, 212, 0.35);
     
-    --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6);
-    --card-hover-shadow: 0 20px 35px -5px rgba(59, 130, 246, 0.25);
+    --card-shadow: 0 12px 32px -5px rgba(0, 0, 0, 0.7);
+    --card-hover-shadow: 0 20px 40px -5px rgba(59, 130, 246, 0.3);
     
-    --table-header-bg: #1F2937;
+    --table-header-bg: rgba(31, 41, 55, 0.9);
     --table-header-text: #38BDF8;
-    --table-row-hover: #1E293B;
+    --table-row-hover: rgba(30, 41, 59, 0.8);
     --table-border: #374151;
     
     --input-bg: #111827;
     --input-border: #374151;
     --input-text: #F9FAFB;
     
-    --header-bg: #111827;
-    --subnav-bg: #0B0F19;
+    --header-bg: rgba(17, 24, 39, 0.92);
+    --subnav-bg: rgba(11, 15, 25, 0.9);
+
+    /* Dark Mode Descent Card Fills */
+    --card-blue-fill: linear-gradient(135deg, rgba(30, 58, 138, 0.45) 0%, rgba(15, 23, 42, 0.85) 100%);
+    --card-cyan-fill: linear-gradient(135deg, rgba(14, 116, 144, 0.45) 0%, rgba(15, 23, 42, 0.85) 100%);
+    --card-emerald-fill: linear-gradient(135deg, rgba(6, 95, 70, 0.45) 0%, rgba(15, 23, 42, 0.85) 100%);
+    --card-amber-fill: linear-gradient(135deg, rgba(146, 64, 14, 0.45) 0%, rgba(15, 23, 42, 0.85) 100%);
+    --card-coral-fill: linear-gradient(135deg, rgba(159, 18, 57, 0.45) 0%, rgba(15, 23, 42, 0.85) 100%);
+    --card-purple-fill: linear-gradient(135deg, rgba(91, 33, 182, 0.45) 0%, rgba(15, 23, 42, 0.85) 100%);
+    --card-gold-fill: linear-gradient(135deg, rgba(120, 53, 15, 0.45) 0%, rgba(15, 23, 42, 0.85) 100%);
 }
 
 /* --- Base Reset & Typography --- */
 body {
     font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: var(--text-primary);
-    background-color: var(--bg-app);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    background: var(--bg-app);
+    background-attachment: fixed;
+    transition: background 0.4s ease, color 0.3s ease;
     min-height: 100vh;
 }
 
-/* --- Vibrant Utility Gradients & Accents --- */
+/* --- Descent Gradient Card Utilities --- */
+.card-gradient-blue {
+    background: var(--card-blue-fill) !important;
+    border: 1px solid rgba(59, 130, 246, 0.35) !important;
+    backdrop-filter: blur(12px);
+}
+
+.card-gradient-cyan {
+    background: var(--card-cyan-fill) !important;
+    border: 1px solid rgba(6, 182, 212, 0.35) !important;
+    backdrop-filter: blur(12px);
+}
+
+.card-gradient-emerald {
+    background: var(--card-emerald-fill) !important;
+    border: 1px solid rgba(16, 185, 129, 0.35) !important;
+    backdrop-filter: blur(12px);
+}
+
+.card-gradient-amber {
+    background: var(--card-amber-fill) !important;
+    border: 1px solid rgba(245, 158, 11, 0.35) !important;
+    backdrop-filter: blur(12px);
+}
+
+.card-gradient-coral {
+    background: var(--card-coral-fill) !important;
+    border: 1px solid rgba(244, 63, 94, 0.35) !important;
+    backdrop-filter: blur(12px);
+}
+
+.card-gradient-purple {
+    background: var(--card-purple-fill) !important;
+    border: 1px solid rgba(139, 92, 246, 0.35) !important;
+    backdrop-filter: blur(12px);
+}
+
+.card-gradient-gold {
+    background: var(--card-gold-fill) !important;
+    border: 1px solid rgba(212, 175, 55, 0.4) !important;
+    backdrop-filter: blur(12px);
+}
+
+/* Vibrant Utility Gradients & Accents */
 .gradient-blue { background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important; color: #ffffff !important; }
 .gradient-purple { background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%) !important; color: #ffffff !important; }
 .gradient-emerald { background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important; color: #ffffff !important; }
@@ -101,23 +173,17 @@ body {
 .gradient-cyan { background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%) !important; color: #ffffff !important; }
 
 .gradient-multi-hero {
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(139, 92, 246, 0.08) 50%, rgba(6, 182, 212, 0.08) 100%) !important;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(139, 92, 246, 0.12) 50%, rgba(6, 182, 212, 0.12) 100%) !important;
+    backdrop-filter: blur(12px);
 }
 
 /* Vibrant Top Border Accents */
-.border-top-blue { border-top: 4px solid #2563EB !important; }
-.border-top-purple { border-top: 4px solid #8B5CF6 !important; }
-.border-top-amber { border-top: 4px solid #F59E0B !important; }
-.border-top-emerald { border-top: 4px solid #10B981 !important; }
-.border-top-coral { border-top: 4px solid #F43F5E !important; }
-.border-top-cyan { border-top: 4px solid #06B6D4 !important; }
-
-/* Vibrant Text Gradients */
-.text-gradient-primary {
-    background: linear-gradient(135deg, #2563EB 0%, #8B5CF6 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
+.border-top-blue { border-top: 5px solid #2563EB !important; }
+.border-top-purple { border-top: 5px solid #8B5CF6 !important; }
+.border-top-amber { border-top: 5px solid #F59E0B !important; }
+.border-top-emerald { border-top: 5px solid #10B981 !important; }
+.border-top-coral { border-top: 5px solid #F43F5E !important; }
+.border-top-cyan { border-top: 5px solid #06B6D4 !important; }
 
 /* Color Utility Classes */
 .text-navy { color: var(--navy-blue) !important; }
@@ -128,12 +194,12 @@ body {
 
 /* Bootstrap Utility Overrides for Dark Mode Compatibility */
 .bg-white {
-    background-color: var(--bg-surface) !important;
+    background: var(--bg-surface) !important;
     color: var(--text-primary) !important;
 }
 
 .bg-light {
-    background-color: var(--bg-surface-elevated) !important;
+    background: var(--bg-surface-elevated) !important;
     color: var(--text-primary) !important;
 }
 
@@ -149,78 +215,75 @@ body {
     border-color: var(--border-color) !important;
 }
 
-/* --- Top Header & Nav Tabs --- */
-.ls-navbar {
-    background-color: var(--header-bg);
-    border-bottom: 1px solid var(--border-color);
-    transition: background-color 0.3s ease;
-}
-
-.ls-nav-tab {
-    color: var(--text-secondary);
-    font-weight: 600;
-    padding: 0.85rem 1.1rem;
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s ease;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    font-size: 0.92rem;
-    cursor: pointer;
-    border-radius: 8px 8px 0 0;
-}
-
-.ls-nav-tab:hover {
-    color: var(--navy-blue);
-    background-color: rgba(37, 99, 235, 0.05);
-}
-
-.ls-nav-tab.active {
-    color: var(--navy-blue);
-    font-weight: 700;
-    border-bottom-color: var(--navy-blue);
-    background-color: rgba(37, 99, 235, 0.08);
-}
-
-/* --- Tech Cards & Glassmorphism --- */
+/* --- Circular & Rounded Cards --- */
 .card {
-    background-color: var(--bg-surface);
+    background: var(--bg-surface);
+    backdrop-filter: blur(12px);
     border: 1px solid var(--border-color);
-    border-radius: 18px;
+    border-radius: 28px !important;
     box-shadow: var(--card-shadow);
-    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .card:hover {
     border-color: var(--navy-blue);
     box-shadow: var(--card-hover-shadow);
-    transform: translateY(-3px);
+    transform: translateY(-4px);
+}
+
+.card-circular {
+    border-radius: 42px !important;
+    padding: 1.75rem 1.25rem !important;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+    box-shadow: var(--card-shadow);
+    border: 2px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-surface);
+    backdrop-filter: blur(12px);
+}
+
+.card-circular:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: var(--card-hover-shadow);
+    border-color: var(--navy-blue);
+}
+
+.card-circular .progress-ring-wrapper {
+    width: 80px;
+    height: 80px;
+    margin: 0.75rem auto;
 }
 
 .card-header {
-    background-color: var(--bg-surface);
+    background: transparent;
     border-bottom: 1px solid var(--border-color);
     color: var(--text-primary);
-    border-top-left-radius: 18px !important;
-    border-top-right-radius: 18px !important;
+    border-top-left-radius: 28px !important;
+    border-top-right-radius: 28px !important;
 }
 
 .card-footer {
-    background-color: var(--bg-surface);
+    background: transparent;
     border-top: 1px solid var(--border-color);
     color: var(--text-muted);
 }
 
 .card-stat {
-    border: 1px solid var(--border-color);
-    border-radius: 18px;
+    border-radius: 28px !important;
     background: var(--bg-surface);
+    backdrop-filter: blur(12px);
     box-shadow: var(--card-shadow);
     transition: all 0.3s ease;
 }
 
 .card-stat-interactive:hover {
-    transform: translateY(-4px);
+    transform: translateY(-5px);
     border-color: var(--navy-blue);
     box-shadow: var(--card-hover-shadow);
 }
@@ -230,15 +293,16 @@ body {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
-    border-radius: 18px;
+    border-radius: 28px !important;
     box-shadow: var(--card-shadow);
 }
 
 /* --- Collapsible Profile Sidebar --- */
 .profile-sidebar {
-    background-color: var(--bg-surface);
+    background: var(--bg-surface);
+    backdrop-filter: blur(12px);
     border: 1px solid var(--border-color);
-    border-radius: 20px;
+    border-radius: 32px !important;
     padding: 1.5rem 1.25rem;
     box-shadow: var(--card-shadow);
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -259,23 +323,12 @@ body {
     height: 48px;
 }
 
-.profile-sidebar.collapsed .online-dot {
-    width: 10px;
-    height: 10px;
-    bottom: 2px;
-    right: 2px;
-}
-
-.sidebar-col, .main-content-col {
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
 .avatar-profile {
     width: 90px;
     height: 90px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid var(--bg-surface);
+    border: 3px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 6px 20px rgba(37, 99, 235, 0.25);
     transition: all 0.3s ease;
 }
@@ -284,11 +337,46 @@ body {
     width: 14px;
     height: 14px;
     background-color: #22C55E;
-    border: 2px solid var(--bg-surface);
+    border: 2px solid #FFFFFF;
     border-radius: 50%;
     position: absolute;
     bottom: 4px;
     right: 4px;
+}
+
+/* --- Top Header & Nav Tabs --- */
+.ls-navbar {
+    background-color: var(--header-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.3s ease;
+}
+
+.ls-nav-tab {
+    color: var(--text-secondary);
+    font-weight: 600;
+    padding: 0.85rem 1.1rem;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.92rem;
+    cursor: pointer;
+    border-radius: 12px 12px 0 0;
+}
+
+.ls-nav-tab:hover {
+    color: var(--navy-blue);
+    background-color: rgba(37, 99, 235, 0.08);
+}
+
+.ls-nav-tab.active {
+    color: var(--navy-blue);
+    font-weight: 700;
+    border-bottom-color: var(--navy-blue);
+    background-color: rgba(37, 99, 235, 0.12);
 }
 
 /* --- Status Pills (Bright Vibrant Badges) --- */
@@ -297,7 +385,7 @@ body {
     font-weight: 800;
     letter-spacing: 0.6px;
     padding: 0.35em 0.8em;
-    border-radius: 6px;
+    border-radius: 50px;
     text-transform: uppercase;
     display: inline-block;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
@@ -437,7 +525,7 @@ body {
 
 /* --- Buttons & UI Elements --- */
 .btn {
-    border-radius: 10px;
+    border-radius: 50px;
     font-weight: 600;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -474,7 +562,7 @@ body {
 
 /* --- Badges --- */
 .badge {
-    border-radius: 8px;
+    border-radius: 50px;
     font-weight: 600;
     letter-spacing: 0.3px;
 }
@@ -516,8 +604,8 @@ body {
     background-color: var(--input-bg);
     border: 1px solid var(--input-border);
     color: var(--input-text);
-    border-radius: 10px;
-    padding: 0.6rem 0.9rem;
+    border-radius: 50px;
+    padding: 0.6rem 1.1rem;
     transition: all 0.2s ease;
 }
 
@@ -534,9 +622,10 @@ body {
 
 /* --- Modals & Dropdowns --- */
 .modal-content {
-    background-color: var(--bg-surface-elevated);
+    background: var(--bg-surface-elevated);
+    backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
-    border-radius: 18px;
+    border-radius: 32px !important;
     box-shadow: var(--card-shadow);
     color: var(--text-primary);
 }
@@ -546,15 +635,16 @@ body {
 }
 
 .dropdown-menu {
-    background-color: var(--bg-surface-elevated);
+    background: var(--bg-surface-elevated);
+    backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
-    border-radius: 14px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
 .dropdown-item {
     color: var(--text-primary);
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 0.5rem 1rem;
 }
 
@@ -565,8 +655,9 @@ body {
 
 /* --- Alerts --- */
 .alert {
-    border-radius: 14px;
+    border-radius: 24px !important;
     border: 1px solid var(--border-color);
+    backdrop-filter: blur(12px);
 }
 
 [data-theme="dark"] .alert-warning {
@@ -582,9 +673,9 @@ body {
 }
 
 [data-theme="dark"] .alert-danger {
-    background-color: rgba(239, 68, 68, 0.15) !important;
-    border-color: rgba(239, 68, 68, 0.3) !important;
-    color: #F87171 !important;
+    background-color: rgba(244, 63, 94, 0.15) !important;
+    border-color: rgba(244, 63, 94, 0.3) !important;
+    color: #FB7185 !important;
 }
 
 [data-theme="dark"] .alert-info {
@@ -600,7 +691,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--bg-app);
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
