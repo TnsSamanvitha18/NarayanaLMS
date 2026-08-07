@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Siksha - Narayana Learning Hub{% endblock %}</title>
+    <title>{% block title %}Narayana Learning Hub{% endblock %}</title>
     <!-- Google Fonts Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,41 +30,37 @@
 </head>
 <body>
 
-    <!-- SVG Donut Ring Gradient Definitions -->
+    <!-- SVG Teal & Cyan Donut Ring Gradient Definitions -->
     <svg width="0" height="0" style="position: absolute;">
         <defs>
-            <linearGradient id="berryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#E11D74" />
-                <stop offset="100%" stop-color="#C026D3" />
-            </linearGradient>
-            <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#7C3AED" />
-                <stop offset="100%" stop-color="#E11D74" />
+            <linearGradient id="tealGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0D9488" />
+                <stop offset="100%" stop-color="#06B6D4" />
             </linearGradient>
         </defs>
     </svg>
 
-    <!-- Siksha Floating Capsule Main Header Navigation -->
+    <!-- Floating Capsule Main Navigation -->
     <header class="ls-navbar sticky-top">
         <div class="container-fluid px-4">
             <div class="ls-navbar-capsule d-flex align-items-center justify-content-between">
                 <!-- Brand Logo & Capsule Navigation -->
                 <div class="d-flex align-items-center gap-4">
                     <a href="{{ url_for('dashboard.index') if admin_logged_in else url_for('learners.my_portal') }}" class="d-flex align-items-center text-decoration-none">
-                        <i class="fa-solid fa-book-open-reader text-berry fa-xl me-2"></i>
-                        <span class="fs-4 fw-extrabold tracking-tight text-dark" style="font-family: 'Plus Jakarta Sans', sans-serif;">Siksha</span>
+                        <i class="fa-solid fa-graduation-cap text-teal fa-xl me-2"></i>
+                        <span class="fs-4 fw-extrabold tracking-tight text-dark" style="font-family: 'Plus Jakarta Sans', sans-serif;">Narayana Learning Hub</span>
                     </a>
 
-                    <!-- Siksha Floating Capsule Nav Tabs -->
+                    <!-- Capsule Nav Tabs -->
                     <div class="d-none d-lg-flex align-items-center gap-1">
                         {% if admin_logged_in %}
                         <a href="{{ url_for('dashboard.index') }}" class="ls-nav-tab {% if request.endpoint == 'dashboard.index' %}active{% endif %}">
-                            Dashboard
+                            Home
                         </a>
                         <a href="{{ url_for('courses.list_courses') }}" class="ls-nav-tab {% if 'courses' in request.endpoint or 'classes' in request.endpoint %}active{% endif %}">
                             Course & Classes
                         </a>
-                        <a href="{{ url_for('learners.list_learners') }}" class="ls-nav-tab {% if 'learners' in request.endpoint %}active{% endif %}">
+                        <a href="{{ url_for('learners.list_learners') }}" class="ls-nav-tab {% if 'learners' in request.endpoint and request.endpoint != 'learners.my_portal' %}active{% endif %}">
                             Learners
                         </a>
                         <a href="{{ url_for('attendance.list_attendance') }}" class="ls-nav-tab {% if 'attendance' in request.endpoint %}active{% endif %}">
@@ -74,57 +70,55 @@
                             Certificates
                         </a>
                         <a href="{{ url_for('reports.index') }}" class="ls-nav-tab {% if 'reports' in request.endpoint %}active{% endif %}">
-                            Analytics
+                            Reports
                         </a>
                         {% else %}
                         <a href="{{ url_for('learners.my_portal') }}" class="ls-nav-tab {% if request.endpoint == 'learners.my_portal' %}active{% endif %}">
-                            My Learning
+                            My Programs
                         </a>
-                        <a href="#" class="ls-nav-tab dummy-nav-tab" data-tab-name="Discover Learning Catalog">
-                            Discover
+                        <a href="#" class="ls-nav-tab dummy-nav-tab" data-tab-name="Course Catalog">
+                            Catalog
                         </a>
-                        <a href="#" class="ls-nav-tab active dummy-nav-tab" data-tab-name="Learning Analytics & Performance">
-                            Analytics
+                        <a href="#" class="ls-nav-tab dummy-nav-tab" data-tab-name="My Certifications">
+                            Certificates
                         </a>
                         {% endif %}
                     </div>
                 </div>
 
-                <!-- Right Utility Bar (Capsule Pill User Profile) -->
+                <!-- Right Utility Bar -->
                 <div class="d-flex align-items-center gap-3">
-                    <!-- Search Icon Button -->
                     <button type="button" class="btn btn-link text-muted p-1 text-decoration-none" title="Search">
                         <i class="fa-solid fa-magnifying-glass fs-5"></i>
                     </button>
 
-                    <!-- Notifications Bell with Counter Badge -->
                     <div class="position-relative">
                         <button type="button" class="btn btn-link text-muted p-1 text-decoration-none" title="Notifications">
                             <i class="fa-regular fa-bell fs-5"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle text-white" style="background-color: var(--berry-pink); font-size: 0.65rem; padding: 0.35em 0.55em;">
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle text-white" style="background-color: var(--teal-primary); font-size: 0.65rem; padding: 0.35em 0.55em;">
                                 3
                             </span>
                         </button>
                     </div>
 
-                    <!-- Theme Toggle Switcher -->
+                    <!-- Theme Switcher -->
                     <button type="button" class="theme-toggle-btn ms-1" title="Toggle Light/Dark Theme">
-                        <i class="fa-solid fa-moon text-berry me-1"></i> <span>Dark Mode</span>
+                        <i class="fa-solid fa-moon text-teal me-1"></i> <span>Dark Mode</span>
                     </button>
 
-                    <!-- Profile / Account Dropdown -->
+                    <!-- Account Dropdown -->
                     <div class="dropdown">
                         <button class="btn p-1 border-0 d-flex align-items-center gap-2 rounded-pill bg-light shadow-xs px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Account Menu">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" alt="Profile Avatar" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
-                            <span class="fw-bold text-dark small d-none d-md-inline pe-1">{% if admin_logged_in %}{{ admin_username }}{% else %}Thorfinn Thorsson{% endif %}</span>
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" alt="Profile Avatar" class="rounded-circle border border-2 border-teal" style="width: 34px; height: 34px; object-fit: cover;">
+                            <span class="fw-bold text-dark small d-none d-md-inline pe-1">{% if admin_logged_in %}{{ admin_username }}{% else %}Alex Morgan{% endif %}</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2">
                             <li class="px-3 py-2 border-bottom">
-                                <span class="d-block fw-bold text-dark">{% if admin_logged_in %}{{ admin_username }}{% else %}Thorfinn Thorsson{% endif %}</span>
+                                <span class="d-block fw-bold text-dark">{% if admin_logged_in %}{{ admin_username }}{% else %}Alex Morgan{% endif %}</span>
                                 <small class="text-muted">{% if admin_logged_in %}L&D Administrator{% else %}Learner ID: 10001{% endif %}</small>
                             </li>
                             {% if not admin_logged_in %}
-                            <li><a class="dropdown-item fw-semibold" href="{{ url_for('learners.my_portal') }}"><i class="fa-solid fa-user me-2 text-berry"></i> My Profile</a></li>
+                            <li><a class="dropdown-item fw-semibold" href="{{ url_for('learners.my_portal') }}"><i class="fa-solid fa-user me-2 text-teal"></i> My Profile</a></li>
                             {% endif %}
                             <li><a class="dropdown-item text-danger fw-semibold" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
                         </ul>
@@ -134,9 +128,9 @@
         </div>
     </header>
 
-    <!-- Main Body Container -->
+    <!-- Main Content Container -->
     <main class="container-fluid py-4 px-4">
-        <!-- Toast Notifications Container -->
+        <!-- Toast Container -->
         <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
@@ -161,9 +155,8 @@
         {% endif %}
     </main>
 
-    <!-- Bootstrap 5 JS Bundle -->
+    <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block extra_js %}{% endblock %}
 </body>

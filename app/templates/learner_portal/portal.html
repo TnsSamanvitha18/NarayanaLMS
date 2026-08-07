@@ -1,236 +1,265 @@
 {% extends 'base.html' %}
 
-{% block title %}Analytics & Learning - Siksha LMS{% endblock %}
+{% block title %}My Learning Portal - Narayana Learning Hub{% endblock %}
 
-{% block content %}
-<div class="container-fluid px-0">
-    <div class="row g-4">
-        <!-- Left & Middle Column (Analytics & Progress) -->
-        <div class="col-lg-8 col-xl-8">
-            <!-- Top Hero Card: Donut Gauge & Key Factors of Mastering Design System -->
-            <div class="card p-4 mb-4 shadow-sm">
-                <div class="row align-items-center g-4">
-                    <!-- Donut Gauge Column -->
-                    <div class="col-md-5 text-center border-end-md">
-                        <div class="progress-ring-siksha mb-3">
-                            <svg class="progress-ring-svg" width="140" height="140">
-                                <circle class="progress-ring-bg" stroke-width="10" fill="transparent" r="58" cx="70" cy="70"/>
-                                <circle class="progress-ring-fill-berry" stroke-width="10" stroke-dasharray="364" stroke-dashoffset="29" fill="transparent" r="58" cx="70" cy="70"/>
-                            </svg>
-                            <div class="progress-ring-text">
-                                <div class="progress-ring-number">92%</div>
-                                <div class="progress-ring-label">Total marks</div>
-                            </div>
-                        </div>
-                        <p class="text-muted small mb-0 fw-semibold">You have scored 92% out of 100%</p>
-                    </div>
+{% block public_content %}
+<div class="row g-4">
+    <!-- Collapsible Learner Profile Sidebar (Left) -->
+    <div class="col-lg-3 col-xl-2 sidebar-col" id="sidebarCol">
+        <div class="profile-sidebar card border-0 shadow-sm text-center position-relative h-100" id="learnerSidebar">
+            <!-- Collapse / Expand Trigger Button -->
+            <button class="btn btn-sm btn-light border position-absolute top-0 end-0 m-2 rounded-circle" id="toggleSidebarBtn" title="Toggle Sidebar">
+                <i class="fa-solid fa-angles-left" id="toggleSidebarIcon"></i>
+                <span class="d-none d-xl-inline ms-1" id="toggleSidebarText">Collapse</span>
+            </button>
 
-                    <!-- Key Factors Skill Progress Bars Column -->
-                    <div class="col-md-7">
-                        <h5 class="fw-bold text-dark mb-3">Key Factors of Mastering Design System</h5>
-                        
-                        <div class="progress-bar-siksha-wrapper">
-                            <div class="d-flex justify-content-between small fw-bold mb-1">
-                                <span class="text-muted">Design Principles</span>
-                                <span class="text-dark">82%</span>
-                            </div>
-                            <div class="progress-bar-siksha-bg">
-                                <div class="progress-bar-siksha-fill" style="width: 82%;"></div>
-                            </div>
-                        </div>
-
-                        <div class="progress-bar-siksha-wrapper">
-                            <div class="d-flex justify-content-between small fw-bold mb-1">
-                                <span class="text-muted">Component Library</span>
-                                <span class="text-dark">70%</span>
-                            </div>
-                            <div class="progress-bar-siksha-bg">
-                                <div class="progress-bar-siksha-fill" style="width: 70%;"></div>
-                            </div>
-                        </div>
-
-                        <div class="progress-bar-siksha-wrapper">
-                            <div class="d-flex justify-content-between small fw-bold mb-1">
-                                <span class="text-muted">Design Tokens</span>
-                                <span class="text-dark">68%</span>
-                            </div>
-                            <div class="progress-bar-siksha-bg">
-                                <div class="progress-bar-siksha-fill" style="width: 68%;"></div>
-                            </div>
-                        </div>
-
-                        <div class="progress-bar-siksha-wrapper">
-                            <div class="d-flex justify-content-between small fw-bold mb-1">
-                                <span class="text-muted">Documentation</span>
-                                <span class="text-dark">72%</span>
-                            </div>
-                            <div class="progress-bar-siksha-bg">
-                                <div class="progress-bar-siksha-fill" style="width: 72%;"></div>
-                            </div>
-                        </div>
-
-                        <div class="progress-bar-siksha-wrapper mb-0">
-                            <div class="d-flex justify-content-between small fw-bold mb-1">
-                                <span class="text-muted">Collaboration Workflows</span>
-                                <span class="text-dark">91%</span>
-                            </div>
-                            <div class="progress-bar-siksha-bg">
-                                <div class="progress-bar-siksha-fill" style="width: 91%;"></div>
-                            </div>
+            <!-- Profile Avatar & Status -->
+            <div class="position-relative d-inline-block mt-3 mb-3 mx-auto">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Alex Morgan" class="avatar-profile">
+                <span class="online-dot"></span>
+            </div>
+            
+            <div class="sidebar-info-block">
+                <h5 class="fw-bold text-dark mb-0">Alex Morgan</h5>
+                <span class="badge bg-teal-subtle text-teal border border-teal-subtle mt-1 mb-2">ID: 10001</span>
+                <p class="text-muted small mb-3"><i class="fa-solid fa-briefcase me-1"></i> Senior Developer</p>
+                
+                <hr class="my-3 text-muted">
+                
+                <!-- Quick Stats Grid -->
+                <div class="row text-center g-2 mb-3">
+                    <div class="col-6">
+                        <div class="bg-light p-2 rounded-3 border">
+                            <span class="text-muted text-xs d-block">Programs</span>
+                            <strong class="fw-bold text-dark fs-6">4 Active</strong>
                         </div>
                     </div>
+                    <div class="col-6">
+                        <div class="bg-light p-2 rounded-3 border">
+                            <span class="text-muted text-xs d-block">Attendance</span>
+                            <strong class="fw-bold text-teal fs-6">94%</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between p-2.5 rounded-3 bg-light border mb-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-award text-teal fs-4 me-2"></i>
+                        <div class="text-start">
+                            <span class="d-block fw-bold text-dark small">Certificates</span>
+                            <small class="text-muted text-xs">2 Verified PDFs</small>
+                        </div>
+                    </div>
+                    <span class="badge bg-success text-white">Earned</span>
                 </div>
             </div>
 
-            <!-- Bottom Row: Total Time & Accuracy Donut Grid -->
-            <div class="row g-4">
-                <!-- Total Time Card -->
-                <div class="col-md-6">
-                    <div class="card p-4 h-100 shadow-sm">
-                        <h6 class="fw-bold text-dark mb-1">Total time</h6>
-                        <p class="text-muted small mb-3">Your Time on Test</p>
-                        
-                        <h3 class="fw-extrabold text-dark mb-2">108 Minutes</h3>
-                        <div class="progress-bar-siksha-bg mb-1">
-                            <div class="progress-bar-siksha-fill" style="width: 90%;"></div>
-                        </div>
-                        <div class="d-flex justify-content-between text-muted text-xs mb-4">
-                            <span>0 Min</span>
-                            <span>120 Min</span>
-                        </div>
+            <!-- Footer Sidebar Expand/Collapse Toggle -->
+            <div class="mt-auto pt-3 border-top w-100">
+                <button class="btn btn-sm btn-outline-teal w-100 fw-semibold" id="toggleSidebarFooterBtn">
+                    <i class="fa-solid fa-arrows-left-right me-1"></i> <span id="toggleSidebarFooterText">Collapse Sidebar</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
-                        <p class="text-muted small mb-1">Your Time on Test</p>
-                        <h3 class="fw-extrabold text-dark mb-2">70 Minutes</h3>
-                        <div class="progress-bar-siksha-bg mb-1">
-                            <div class="progress-bar-siksha-fill" style="width: 58%;"></div>
-                        </div>
-                        <div class="d-flex justify-content-between text-muted text-xs">
-                            <span>0 Min</span>
-                            <span>120 Min</span>
-                        </div>
-                    </div>
+    <!-- Main Content Area: Enrolled Programs & Live Schedule (Middle) -->
+    <div class="col-lg-6 col-xl-7 main-content-col" id="mainContentCol">
+        <!-- Hero Welcome Banner -->
+        <div class="card p-4 mb-4 border-0 text-white shadow-sm overflow-hidden position-relative" style="background: linear-gradient(135deg, #0D9488 0%, #06B6D4 100%);">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h3 class="fw-extrabold mb-1">Welcome back, Alex! 👋</h3>
+                    <p class="mb-3 text-white-50">Continue your interactive learning path. You have 2 live sessions upcoming this week.</p>
+                    <a href="#enrolledPrograms" class="btn btn-light text-teal fw-bold btn-sm shadow-xs">
+                        <i class="fa-solid fa-play me-1"></i> Resume Learning
+                    </a>
                 </div>
-
-                <!-- Accuracy Donut Ring & Metrics Card -->
-                <div class="col-md-6">
-                    <div class="card p-4 h-100 shadow-sm text-center">
-                        <!-- Berry Purple Donut Ring -->
-                        <div class="progress-ring-siksha mb-2" style="width: 120px; height: 120px;">
-                            <svg class="progress-ring-svg" width="120" height="120">
-                                <circle class="progress-ring-bg" stroke-width="8" fill="transparent" r="50" cx="60" cy="60"/>
-                                <circle class="progress-ring-fill-purple" stroke-width="8" stroke-dasharray="314" stroke-dashoffset="213" fill="transparent" r="50" cx="60" cy="60"/>
-                            </svg>
-                            <div class="progress-ring-text">
-                                <div class="progress-ring-number fs-4 text-berry">32%</div>
-                            </div>
-                        </div>
-                        <span class="text-muted small fw-semibold d-block mb-3">Accuracy</span>
-
-                        <!-- Attempted / Correct / Wrong Grid -->
-                        <div class="bg-light p-3 rounded-4 border">
-                            <div class="row text-center">
-                                <div class="col-4 border-end">
-                                    <small class="text-muted d-block text-xs">Attempted</small>
-                                    <strong class="fw-extrabold text-dark fs-6">135/180</strong>
-                                </div>
-                                <div class="col-4 border-end">
-                                    <small class="text-muted d-block text-xs">Correct</small>
-                                    <strong class="fw-extrabold text-success fs-6">90</strong>
-                                </div>
-                                <div class="col-4">
-                                    <small class="text-muted d-block text-xs">Wrong</small>
-                                    <strong class="fw-extrabold text-danger fs-6">45</strong>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-md-4 text-center d-none d-md-block">
+                    <i class="fa-solid fa-laptop-code display-3 text-white-50"></i>
                 </div>
             </div>
         </div>
 
-        <!-- Right Side Leaderboard Widget (Siksha Style) -->
-        <div class="col-lg-4 col-xl-4">
-            <div class="card p-4 shadow-sm h-100">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <h5 class="fw-bold text-dark mb-0">Leaderboard 🏆</h5>
-                    <select class="form-select form-select-sm w-auto rounded-pill border py-1">
-                        <option>Practical</option>
-                        <option>Theoretical</option>
-                    </select>
-                </div>
+        <!-- Circular Program Cards Grid -->
+        <div class="d-flex justify-content-between align-items-center mb-3" id="enrolledPrograms">
+            <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-circle-play me-2 text-teal"></i> My Circular Enrolled Programs</h5>
+            <span class="text-muted small">4 Programs Enrolled</span>
+        </div>
 
-                <!-- Top 3 Podium -->
-                <div class="leaderboard-podium mb-4">
-                    <!-- Rank 2: Sam Alexander -->
-                    <div class="podium-item">
-                        <div class="podium-star-avatar">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80" alt="Sam" class="podium-avatar">
-                            <span class="podium-rank-badge" style="background: #F59E0B;">2</span>
-                        </div>
-                        <div class="fw-bold text-dark small mt-2">Sam Alexander</div>
-                        <small class="text-muted text-xs d-block">125 mins</small>
+        <div class="row g-3 mb-4">
+            <!-- Program 1: Full Stack Web Development -->
+            <div class="col-md-6 col-xl-3">
+                <div class="card card-circular shadow-sm h-100">
+                    <div class="hexagon-icon hexagon-blue">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-1 mt-2">Full Stack Web Development</h6>
+                    <span class="status-pill pill-in-progress mb-2">In Progress</span>
+
+                    <!-- SVG Circular Progress Ring Gauge -->
+                    <div class="progress-ring-wrapper">
+                        <svg class="progress-ring-svg" width="76" height="76">
+                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="32" cx="38" cy="38"/>
+                            <circle class="progress-ring-fill" stroke="url(#tealGradient)" stroke-width="6" stroke-dasharray="201" stroke-dashoffset="70" fill="transparent" r="32" cx="38" cy="38"/>
+                        </svg>
+                        <div class="progress-ring-text">65%</div>
                     </div>
 
-                    <!-- Rank 1: Courtney Henry -->
-                    <div class="podium-item podium-rank-1">
-                        <div class="podium-star-avatar">
-                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80" alt="Courtney" class="podium-avatar">
-                            <span class="podium-rank-badge" style="background: #E11D74;">1</span>
-                        </div>
-                        <div class="fw-bold text-dark small mt-2">Courtney Henry</div>
-                        <small class="text-muted text-xs d-block">120 mins</small>
-                    </div>
-
-                    <!-- Rank 3: Annette Black -->
-                    <div class="podium-item">
-                        <div class="podium-star-avatar">
-                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80" alt="Annette" class="podium-avatar">
-                            <span class="podium-rank-badge" style="background: #EA580C;">3</span>
-                        </div>
-                        <div class="fw-bold text-dark small mt-2">Annette Black</div>
-                        <small class="text-muted text-xs d-block">130 mins</small>
-                    </div>
-                </div>
-
-                <!-- Rank List Items -->
-                <div class="leaderboard-list">
-                    <div class="leaderboard-list-item">
-                        <div class="d-flex align-items-center gap-3">
-                            <span class="star-badge-orange">4</span>
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Jenny" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
-                            <span class="fw-bold text-dark small">Jenny Wilson</span>
-                        </div>
-                        <strong class="text-dark small">131 mins</strong>
-                    </div>
-
-                    <div class="leaderboard-list-item">
-                        <div class="d-flex align-items-center gap-3">
-                            <span class="star-badge-orange">5</span>
-                            <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&auto=format&fit=crop&q=80" alt="Jacob" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
-                            <span class="fw-bold text-dark small">Jacob Jones</span>
-                        </div>
-                        <strong class="text-dark small">135 mins</strong>
-                    </div>
-
-                    <div class="leaderboard-list-item">
-                        <div class="d-flex align-items-center gap-3">
-                            <span class="star-badge-orange">6</span>
-                            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&auto=format&fit=crop&q=80" alt="Robert" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
-                            <span class="fw-bold text-dark small">Robert Murphy</span>
-                        </div>
-                        <strong class="text-dark small">140 mins</strong>
-                    </div>
-
-                    <div class="leaderboard-list-item mb-0">
-                        <div class="d-flex align-items-center gap-3">
-                            <span class="star-badge-orange">7</span>
-                            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80" alt="Fritny" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
-                            <span class="fw-bold text-dark small">Fritny Flores</span>
-                        </div>
-                        <strong class="text-dark small">145 mins</strong>
-                    </div>
+                    <a href="{{ url_for('learners.self_paced_flow', course_id=1) }}" class="btn btn-teal btn-sm w-100 mt-2 fw-bold">
+                        Continue <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
                 </div>
             </div>
+
+            <!-- Program 2: Data Science & AI -->
+            <div class="col-md-6 col-xl-3">
+                <div class="card card-circular shadow-sm h-100">
+                    <div class="hexagon-icon hexagon-purple">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-1 mt-2">Data Science & AI</h6>
+                    <span class="status-pill pill-in-progress mb-2">In Progress</span>
+
+                    <div class="progress-ring-wrapper">
+                        <svg class="progress-ring-svg" width="76" height="76">
+                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="32" cx="38" cy="38"/>
+                            <circle class="progress-ring-fill" stroke="url(#tealGradient)" stroke-width="6" stroke-dasharray="201" stroke-dashoffset="120" fill="transparent" r="32" cx="38" cy="38"/>
+                        </svg>
+                        <div class="progress-ring-text">40%</div>
+                    </div>
+
+                    <a href="{{ url_for('learners.self_paced_flow', course_id=2) }}" class="btn btn-teal btn-sm w-100 mt-2 fw-bold">
+                        Continue <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Program 3: Cloud Architecture & DevOps -->
+            <div class="col-md-6 col-xl-3">
+                <div class="card card-circular shadow-sm h-100">
+                    <div class="hexagon-icon hexagon-emerald">
+                        <i class="fa-solid fa-cloud"></i>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-1 mt-2">Cloud DevOps Architecture</h6>
+                    <span class="status-pill pill-completed mb-2">Completed</span>
+
+                    <div class="progress-ring-wrapper">
+                        <svg class="progress-ring-svg" width="76" height="76">
+                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="32" cx="38" cy="38"/>
+                            <circle class="progress-ring-fill" stroke="#10B981" stroke-width="6" stroke-dasharray="201" stroke-dashoffset="0" fill="transparent" r="32" cx="38" cy="38"/>
+                        </svg>
+                        <div class="progress-ring-text text-success">100%</div>
+                    </div>
+
+                    <a href="{{ url_for('learners.assessment', course_id=3) }}" class="btn btn-outline-teal btn-sm w-100 mt-2 fw-bold">
+                        Review <i class="fa-solid fa-check ms-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Program 4: Enterprise UI/UX Design System -->
+            <div class="col-md-6 col-xl-3">
+                <div class="card card-circular shadow-sm h-100">
+                    <div class="hexagon-icon hexagon-coral">
+                        <i class="fa-solid fa-palette"></i>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-1 mt-2">Enterprise UI/UX Design System</h6>
+                    <span class="status-pill pill-pending mb-2">Pending</span>
+
+                    <div class="progress-ring-wrapper">
+                        <svg class="progress-ring-svg" width="76" height="76">
+                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="32" cx="38" cy="38"/>
+                            <circle class="progress-ring-fill" stroke="#F59E0B" stroke-width="6" stroke-dasharray="201" stroke-dashoffset="160" fill="transparent" r="32" cx="38" cy="38"/>
+                        </svg>
+                        <div class="progress-ring-text text-warning">20%</div>
+                    </div>
+
+                    <a href="{{ url_for('learners.self_paced_flow', course_id=4) }}" class="btn btn-teal btn-sm w-100 mt-2 fw-bold">
+                        Start <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Live Classes Table Section -->
+        <div class="card border-0 shadow-sm p-3">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-calendar-check me-2 text-teal"></i> Scheduled Live Batches</h5>
+                <span class="badge bg-teal-subtle text-teal border border-teal-subtle">Online Zoom & Teams</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Class Name</th>
+                            <th>Mode</th>
+                            <th>Date & Time</th>
+                            <th>Facilitator</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-dark">React Native Masterclass</div>
+                                <small class="text-muted fw-semibold">CLS-2026-001</small>
+                            </td>
+                            <td><span class="badge bg-info-subtle text-info">Online</span></td>
+                            <td>
+                                <div class="fw-semibold">08-Aug-2026</div>
+                                <small class="text-muted">10:00 AM - 12:00 PM</small>
+                            </td>
+                            <td>Dr. Rajesh Sharma</td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-teal text-white fw-bold">Join Class</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-dark">Advanced System Architecture</div>
+                                <small class="text-muted fw-semibold">CLS-2026-002</small>
+                            </td>
+                            <td><span class="badge bg-success-subtle text-success">In Person</span></td>
+                            <td>
+                                <div class="fw-semibold">10-Aug-2026</div>
+                                <small class="text-muted">02:00 PM - 04:30 PM</small>
+                            </td>
+                            <td>Priya Ananth</td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-outline-teal fw-bold">View Venue</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Side Widgets Area (Right) -->
+    <div class="col-lg-3 col-xl-3">
+        <!-- Certificate Download Quick Widget -->
+        <div class="card p-3 mb-4 border-0 shadow-sm text-center">
+            <div class="bg-teal-subtle text-teal rounded-circle p-3 d-inline-flex mx-auto mb-2">
+                <i class="fa-solid fa-award fs-3"></i>
+            </div>
+            <h6 class="fw-bold text-dark mb-1">Download Verified Certificate</h6>
+            <p class="text-muted small mb-3">Cloud DevOps Architecture certification is ready for download.</p>
+            <a href="#" class="btn btn-teal text-white btn-sm w-100 fw-bold">
+                <i class="fa-solid fa-download me-1"></i> Download PDF
+            </a>
+        </div>
+
+        <!-- Assessment Quiz Quick Widget -->
+        <div class="card p-3 border-0 shadow-sm text-center">
+            <div class="bg-warning-subtle text-warning rounded-circle p-3 d-inline-flex mx-auto mb-2">
+                <i class="fa-solid fa-clipboard-question fs-3"></i>
+            </div>
+            <h6 class="fw-bold text-dark mb-1">Assessment Pending</h6>
+            <p class="text-muted small mb-3">Enterprise UI/UX Design System Quiz 1 is active.</p>
+            <a href="{{ url_for('learners.assessment', course_id=4) }}" class="btn btn-outline-teal btn-sm w-100 fw-bold">
+                <i class="fa-solid fa-pen-to-square me-1"></i> Take Quiz Now
+            </a>
         </div>
     </div>
 </div>

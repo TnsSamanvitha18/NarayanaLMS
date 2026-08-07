@@ -1,53 +1,57 @@
 /* ==========================================================================
-   NARAYANA LEARNING HUB - SIKSHA DESIGN SYSTEM
-   Soft Lavender Canvas, Berry Pink & Royal Purple Donut Gauges, Capsule Header
+   NARAYANA LEARNING HUB - MODERN ELECTRIC TEAL & CYAN DESIGN SYSTEM
+   Modern Capsule Header, Frosted Glass Cards & Electric Teal Accents
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
    1. KEYFRAME ANIMATIONS
    -------------------------------------------------------------------------- */
-@keyframes ambientGlowPulse {
+@keyframes ambientTealShift {
     0%   { background-position: 0% 0%, 100% 0%, 100% 100%, 0% 100%; }
     50%  { background-position: 100% 50%, 0% 100%, 0% 0%, 100% 50%; }
     100% { background-position: 0% 0%, 100% 0%, 100% 100%, 0% 100%; }
 }
 
 /* --------------------------------------------------------------------------
-   2. SIKSHA DESIGN TOKENS
+   2. ELECTRIC TEAL DESIGN TOKENS
    -------------------------------------------------------------------------- */
 :root, [data-theme="light"] {
-    --bg-app: radial-gradient(at 0% 0%, rgba(225, 29, 116, 0.12) 0px, transparent 55%),
-              radial-gradient(at 100% 0%, rgba(124, 58, 237, 0.15) 0px, transparent 55%),
-              radial-gradient(at 100% 100%, rgba(244, 63, 94, 0.1) 0px, transparent 55%),
-              radial-gradient(at 0% 100%, rgba(147, 51, 234, 0.12) 0px, transparent 55%),
-              #F4F3F8;
+    --bg-app: radial-gradient(at 10% 10%, rgba(13, 148, 136, 0.15) 0px, transparent 55%),
+              radial-gradient(at 90% 10%, rgba(6, 182, 212, 0.15) 0px, transparent 55%),
+              radial-gradient(at 90% 90%, rgba(59, 130, 246, 0.12) 0px, transparent 55%),
+              radial-gradient(at 10% 90%, rgba(20, 184, 166, 0.15) 0px, transparent 55%),
+              #F2F8F8;
     
     --bg-surface: #FFFFFF;
     --bg-surface-elevated: #F8FAFC;
     --bg-capsule: rgba(255, 255, 255, 0.92);
     
     --text-primary: #0F172A;
-    --text-secondary: #334155;
-    --text-muted: #64748B;
+    --text-secondary: #1E293B;
+    --text-muted: #475569;
     
-    --border-color: #E2E8F0;
-    --border-subtle: #F1F5F9;
+    --border-color: #CBD5E1;
+    --border-subtle: #E2E8F0;
     
-    --berry-pink: #E11D74;
-    --berry-pink-subtle: #FCE7F3;
-    --royal-purple: #7C3AED;
-    --royal-purple-subtle: #F3E8FF;
+    --teal-primary: #0D9488;
+    --teal-hover: #0F766E;
+    --teal-light: #CCFBF1;
+    --teal-glow: rgba(13, 148, 136, 0.25);
     
-    --brand-blue: #E11D74;
-    --brand-orange: #7C3AED;
+    --cyan-primary: #06B6D4;
+    --cyan-hover: #0891B2;
+    --cyan-light: #CFFAFE;
     
-    --card-shadow: 0 10px 30px rgba(15, 23, 42, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
-    --card-hover-shadow: 0 18px 40px rgba(225, 29, 116, 0.15);
+    --brand-blue: #0D9488;
+    --brand-orange: #06B6D4;
     
-    --table-header-bg: #F8FAFC;
-    --table-header-text: #475569;
-    --table-row-hover: #F1F5F9;
-    --table-border: #E2E8F0;
+    --card-shadow: 0 10px 28px rgba(15, 23, 42, 0.05), 0 2px 6px rgba(0, 0, 0, 0.02);
+    --card-hover-shadow: 0 18px 40px rgba(13, 148, 136, 0.18);
+    
+    --table-header-bg: #F1F5F9;
+    --table-header-text: #0F766E;
+    --table-row-hover: #F8FAFC;
+    --table-border: #CBD5E1;
     
     --input-bg: #FFFFFF;
     --input-border: #CBD5E1;
@@ -55,41 +59,45 @@
 }
 
 [data-theme="dark"] {
-    --bg-app: radial-gradient(at 0% 0%, rgba(190, 24, 93, 0.4) 0px, transparent 55%),
-              radial-gradient(at 100% 0%, rgba(91, 33, 182, 0.45) 0px, transparent 55%),
-              radial-gradient(at 100% 100%, rgba(159, 18, 57, 0.35) 0px, transparent 55%),
-              radial-gradient(at 0% 100%, rgba(107, 33, 168, 0.4) 0px, transparent 55%),
-              #0D0B14;
+    --bg-app: radial-gradient(at 10% 10%, rgba(15, 118, 110, 0.45) 0px, transparent 55%),
+              radial-gradient(at 90% 10%, rgba(8, 145, 178, 0.45) 0px, transparent 55%),
+              radial-gradient(at 90% 90%, rgba(30, 58, 138, 0.35) 0px, transparent 55%),
+              radial-gradient(at 10% 90%, rgba(13, 148, 136, 0.4) 0px, transparent 55%),
+              #071214;
     
-    --bg-surface: #171324;
-    --bg-surface-elevated: #211B33;
-    --bg-capsule: rgba(23, 19, 36, 0.92);
+    --bg-surface: #0E1A1C;
+    --bg-surface-elevated: #15262A;
+    --bg-capsule: rgba(14, 26, 28, 0.92);
     
     --text-primary: #FAFAF9;
-    --text-secondary: #E7E5E4;
-    --text-muted: #A8A29E;
+    --text-secondary: #E2E8F0;
+    --text-muted: #94A3B8;
     
-    --border-color: #2E2642;
-    --border-subtle: #211B33;
+    --border-color: #1E3A3E;
+    --border-subtle: #15262A;
     
-    --berry-pink: #F43F5E;
-    --berry-pink-subtle: rgba(244, 63, 94, 0.18);
-    --royal-purple: #A855F7;
-    --royal-purple-subtle: rgba(168, 85, 247, 0.18);
+    --teal-primary: #14B8A6;
+    --teal-hover: #2DD4BF;
+    --teal-light: rgba(20, 184, 166, 0.2);
+    --teal-glow: rgba(20, 184, 166, 0.35);
     
-    --brand-blue: #F43F5E;
-    --brand-orange: #A855F7;
+    --cyan-primary: #22D3EE;
+    --cyan-hover: #67E8F9;
+    --cyan-light: rgba(34, 211, 238, 0.2);
     
-    --card-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
-    --card-hover-shadow: 0 20px 45px rgba(244, 63, 94, 0.25);
+    --brand-blue: #14B8A6;
+    --brand-orange: #22D3EE;
     
-    --table-header-bg: #211B33;
-    --table-header-text: #F43F5E;
-    --table-row-hover: #1E182F;
-    --table-border: #2E2642;
+    --card-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
+    --card-hover-shadow: 0 20px 45px rgba(20, 184, 166, 0.3);
     
-    --input-bg: #120E1C;
-    --input-border: #3D3356;
+    --table-header-bg: #15262A;
+    --table-header-text: #2DD4BF;
+    --table-row-hover: #112023;
+    --table-border: #1E3A3E;
+    
+    --input-bg: #091214;
+    --input-border: #23464B;
     --input-text: #FAFAF9;
 }
 
@@ -102,7 +110,7 @@ body {
     background: var(--bg-app);
     background-size: 200% 200%;
     background-attachment: fixed;
-    animation: ambientGlowPulse 25s ease infinite;
+    animation: ambientTealShift 25s ease infinite;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
 }
@@ -116,8 +124,8 @@ h1, h2, h3, h4, h5, h6 {
 .text-dark { color: var(--text-primary) !important; }
 .text-muted { color: var(--text-muted) !important; }
 .text-secondary { color: var(--text-secondary) !important; }
-.text-berry { color: var(--berry-pink) !important; }
-.text-purple { color: var(--royal-purple) !important; }
+.text-teal { color: var(--teal-primary) !important; }
+.text-cyan { color: var(--cyan-primary) !important; }
 
 [data-theme="dark"] .text-dark,
 [data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3,
@@ -125,14 +133,14 @@ h1, h2, h3, h4, h5, h6 {
     color: #FAFAF9 !important;
 }
 
-[data-theme="dark"] .text-muted { color: #A8A29E !important; }
+[data-theme="dark"] .text-muted { color: #94A3B8 !important; }
 [data-theme="dark"] .bg-white, [data-theme="dark"] .bg-light {
     background-color: var(--bg-surface) !important;
     color: #FAFAF9 !important;
 }
 
 /* --------------------------------------------------------------------------
-   4. FLOATING CAPSULE HEADER
+   4. FLOATING CAPSULE HEADER NAVIGATION
    -------------------------------------------------------------------------- */
 .ls-navbar {
     background-color: transparent;
@@ -153,7 +161,7 @@ h1, h2, h3, h4, h5, h6 {
 .ls-nav-tab {
     color: var(--text-secondary);
     font-weight: 600;
-    padding: 0.5rem 1.25rem;
+    padding: 0.55rem 1.25rem;
     border-radius: 50px;
     transition: all 0.2s ease;
     text-decoration: none;
@@ -165,37 +173,37 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .ls-nav-tab:hover {
-    color: var(--berry-pink);
-    background-color: var(--berry-pink-subtle);
+    color: var(--teal-primary);
+    background-color: var(--teal-light);
 }
 
 .ls-nav-tab.active {
-    color: var(--text-primary);
+    color: #FFFFFF !important;
     font-weight: 700;
-    background-color: var(--border-subtle);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    background: linear-gradient(135deg, var(--teal-primary) 0%, var(--cyan-primary) 100%);
+    box-shadow: 0 4px 12px var(--teal-glow);
 }
 
 /* --------------------------------------------------------------------------
-   5. SIKSHA CARDS & CONTAINERS
+   5. CARDS & CONTAINERS
    -------------------------------------------------------------------------- */
 .card, .card-stat, .profile-sidebar, .modal-content, .card-circular, .glass-card {
     background-color: var(--bg-surface) !important;
-    border: 1px solid var(--border-color) !important;
+    border: 1.5px solid var(--border-color) !important;
     border-radius: 24px !important;
     box-shadow: var(--card-shadow) !important;
     transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .card:hover, .card-stat:hover {
-    border-color: var(--berry-pink) !important;
+    border-color: var(--teal-primary) !important;
     box-shadow: var(--card-hover-shadow) !important;
     transform: translateY(-3px);
 }
 
 .card-circular {
-    border-radius: 28px !important;
-    padding: 1.5rem 1.25rem !important;
+    border-radius: 32px !important;
+    padding: 1.6rem 1.25rem !important;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -214,181 +222,52 @@ h1, h2, h3, h4, h5, h6 {
     padding: 1.1rem 1.25rem;
 }
 
-/* --------------------------------------------------------------------------
-   6. SIKSHA BERRY-PINK & PURPLE DONUT RING GAUGES
-   -------------------------------------------------------------------------- */
-.progress-ring-siksha {
-    position: relative;
-    width: 140px;
-    height: 140px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-}
-
-.progress-ring-siksha .progress-ring-svg {
-    transform: rotate(-90deg);
-}
-
-.progress-ring-siksha .progress-ring-bg {
-    stroke: var(--border-color);
-}
-
-.progress-ring-siksha .progress-ring-fill-berry {
-    stroke: url(#berryGradient);
-    stroke-linecap: round;
-    transition: stroke-dashoffset 0.8s ease;
-}
-
-.progress-ring-siksha .progress-ring-fill-purple {
-    stroke: url(#purpleGradient);
-    stroke-linecap: round;
-    transition: stroke-dashoffset 0.8s ease;
-}
-
-.progress-ring-siksha .progress-ring-text {
-    position: absolute;
-    text-align: center;
-}
-
-.progress-ring-siksha .progress-ring-number {
-    font-size: 1.85rem;
-    font-weight: 800;
-    line-height: 1;
-    color: var(--berry-pink);
-}
-
-.progress-ring-siksha .progress-ring-label {
-    font-size: 0.72rem;
-    font-weight: 600;
+.card-footer {
+    background: transparent;
+    border-top: 1px solid var(--border-color);
     color: var(--text-muted);
 }
 
 /* --------------------------------------------------------------------------
-   7. SKILL PROGRESS BARS (SIKSHA STYLE)
-   -------------------------------------------------------------------------- */
-.progress-bar-siksha-wrapper {
-    margin-bottom: 0.9rem;
-}
-
-.progress-bar-siksha-bg {
-    height: 10px;
-    background-color: var(--border-color);
-    border-radius: 50px;
-    overflow: hidden;
-}
-
-.progress-bar-siksha-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #7C3AED 0%, #E11D74 100%);
-    border-radius: 50px;
-    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* --------------------------------------------------------------------------
-   8. LEADERBOARD PODIUM WIDGET
-   -------------------------------------------------------------------------- */
-.leaderboard-podium {
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    gap: 0.75rem;
-    padding: 1rem 0;
-}
-
-.podium-item {
-    text-align: center;
-}
-
-.podium-star-avatar {
-    position: relative;
-    display: inline-block;
-}
-
-.podium-avatar {
-    width: 60px;
-    height: 60px;
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    object-fit: cover;
-    border: 3px solid #F59E0B;
-}
-
-.podium-rank-badge {
-    position: absolute;
-    bottom: -6px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 22px;
-    height: 22px;
-    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-    color: #FFFFFF;
-    font-size: 0.75rem;
-    font-weight: 800;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-.podium-rank-1 { transform: scale(1.15); }
-.podium-rank-1 .podium-avatar { width: 70px; height: 70px; }
-
-.leaderboard-list-item {
-    background-color: var(--bg-surface-elevated);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 0.75rem 1rem;
-    margin-bottom: 0.6rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    transition: all 0.2s ease;
-}
-
-.leaderboard-list-item:hover {
-    border-color: var(--berry-pink);
-    transform: translateX(3px);
-}
-
-.star-badge-orange {
-    width: 26px;
-    height: 26px;
-    background: #FFEDD5;
-    color: #EA580C;
-    font-weight: 800;
-    font-size: 0.75rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* --------------------------------------------------------------------------
-   9. BUTTONS, BADGES & INPUTS
+   6. MODERN TEAL BUTTONS, BADGES & PILLS
    -------------------------------------------------------------------------- */
 .btn {
     border-radius: 50px;
     font-weight: 600;
-    padding: 0.6rem 1.3rem;
+    padding: 0.55rem 1.3rem;
     transition: all 0.2s ease;
 }
 
 .btn:active { transform: scale(0.98); }
 
-.btn-navy, .btn-primary, .btn-berry {
-    background: linear-gradient(135deg, #E11D74 0%, #C026D3 100%) !important;
+.btn-navy, .btn-primary, .btn-teal {
+    background: linear-gradient(135deg, #0D9488 0%, #06B6D4 100%) !important;
     color: #FFFFFF !important;
     border: none;
-    box-shadow: 0 4px 14px rgba(225, 29, 116, 0.28);
+    box-shadow: 0 4px 14px var(--teal-glow);
 }
 
-.btn-navy:hover, .btn-primary:hover, .btn-berry:hover {
-    background: linear-gradient(135deg, #F43F5E 0%, #E11D74 100%) !important;
-    box-shadow: 0 6px 18px rgba(225, 29, 116, 0.4);
+.btn-navy:hover, .btn-primary:hover, .btn-teal:hover {
+    background: linear-gradient(135deg, #0F766E 0%, #0891B2 100%) !important;
+    box-shadow: 0 6px 18px var(--teal-glow);
     transform: translateY(-1px);
+}
+
+.btn-orange, .btn-cyan {
+    background: linear-gradient(135deg, #06B6D4 0%, #0284C7 100%) !important;
+    color: #FFFFFF !important;
+    border: none;
+    box-shadow: 0 4px 14px rgba(6, 182, 212, 0.28);
+}
+
+.btn-outline-primary, .btn-outline-teal {
+    color: var(--teal-primary);
+    border-color: var(--teal-primary);
+}
+
+.btn-outline-primary:hover, .btn-outline-teal:hover {
+    background-color: var(--teal-primary);
+    color: #FFFFFF;
 }
 
 .badge {
@@ -397,6 +276,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0.45em 0.85em;
 }
 
+/* Status Pills */
 .status-pill {
     font-size: 0.72rem;
     font-weight: 800;
@@ -407,10 +287,33 @@ h1, h2, h3, h4, h5, h6 {
     display: inline-block;
 }
 
-.pill-in-progress { background: #FCE7F3; color: #BE185D; border: 1px solid #FBCFE8; }
+.pill-in-progress { background: #CCFBF1; color: #0F766E; border: 1px solid #99F6E4; }
 .pill-completed   { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
 .pill-pending     { background: #FEF3C7; color: #B45309; border: 1px solid #FCD34D; }
 .pill-overdue     { background: #FEF2F2; color: #BE123C; border: 1px solid #FDA4AF; }
+
+[data-theme="dark"] .pill-in-progress { background: rgba(20, 184, 166, 0.25); color: #2DD4BF; border-color: rgba(20, 184, 166, 0.4); }
+[data-theme="dark"] .pill-completed   { background: rgba(16, 185, 129, 0.25); color: #34D399; border-color: rgba(16, 185, 129, 0.4); }
+[data-theme="dark"] .pill-pending     { background: rgba(245, 158, 11, 0.25); color: #FBBF24; border-color: rgba(245, 158, 11, 0.4); }
+[data-theme="dark"] .pill-overdue     { background: rgba(244, 63, 94, 0.25); color: #FB7185; border-color: rgba(244, 63, 94, 0.4); }
+
+/* --------------------------------------------------------------------------
+   7. FORMS & INPUTS
+   -------------------------------------------------------------------------- */
+.login-field {
+    margin-bottom: 1.25rem;
+    text-align: left;
+}
+
+.login-label {
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin-bottom: 0.45rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
 
 .form-control, .form-select, .form-control-login {
     background-color: var(--input-bg);
@@ -424,11 +327,108 @@ h1, h2, h3, h4, h5, h6 {
 
 .form-control:focus, .form-select:focus, .form-control-login:focus {
     background-color: var(--input-bg);
-    border-color: var(--berry-pink);
+    border-color: var(--teal-primary);
     color: var(--input-text);
-    box-shadow: 0 0 0 4px rgba(225, 29, 116, 0.18);
+    box-shadow: 0 0 0 4px var(--teal-glow);
     outline: none;
 }
+
+.form-control::placeholder { color: var(--text-muted); }
+
+/* --------------------------------------------------------------------------
+   8. CIRCULAR PROGRESS RING GAUGE
+   -------------------------------------------------------------------------- */
+.progress-ring-wrapper {
+    position: relative;
+    width: 76px;
+    height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.75rem auto;
+}
+
+.progress-ring-svg { transform: rotate(-90deg); }
+.progress-ring-bg { stroke: var(--border-color); }
+.progress-ring-fill { stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
+
+.progress-ring-text {
+    position: absolute;
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: var(--teal-primary);
+}
+
+/* --------------------------------------------------------------------------
+   9. SIDEBAR & PROFILE WIDGETS
+   -------------------------------------------------------------------------- */
+.profile-sidebar {
+    padding: 1.6rem 1.25rem;
+    position: relative;
+}
+
+.avatar-profile {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--teal-light);
+    box-shadow: 0 6px 20px var(--teal-glow);
+}
+
+.online-dot {
+    width: 14px;
+    height: 14px;
+    background-color: #10B981;
+    border: 2px solid #FFFFFF;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+}
+
+.theme-toggle-btn {
+    background: var(--teal-light);
+    border: 1px solid var(--border-color);
+    color: var(--teal-primary);
+    border-radius: 50px;
+    padding: 0.38rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--teal-primary);
+    border-color: var(--teal-primary);
+    color: #FFFFFF !important;
+}
+
+/* Hexagon Badges */
+.hexagon-icon {
+    width: 54px;
+    height: 60px;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.25rem;
+    margin: 0 auto 0.5rem auto;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, #0D9488 0%, #06B6D4 100%);
+}
+
+.hexagon-emerald { background: linear-gradient(135deg, #10B981 0%, #059669 100%); }
+.hexagon-blue    { background: linear-gradient(135deg, #0D9488 0%, #06B6D4 100%); }
+.hexagon-purple  { background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%); }
+.hexagon-coral   { background: linear-gradient(135deg, #F43F5E 0%, #BE123C 100%); }
+.hexagon-amber   { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); }
+.hexagon-cyan    { background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%); }
 
 /* --------------------------------------------------------------------------
    10. TABLES, MODALS & SCROLLBARS
@@ -467,7 +467,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .modal-content {
     background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-color);
+    border: 1.5px solid var(--border-color);
     border-radius: 28px !important;
     box-shadow: var(--card-shadow);
     color: var(--text-primary);
@@ -488,10 +488,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .dropdown-item:hover, .dropdown-item:focus {
     background-color: var(--table-row-hover);
-    color: var(--text-primary);
+    color: var(--teal-primary);
 }
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--berry-pink); }
+::-webkit-scrollbar-thumb:hover { background: var(--teal-primary); }
