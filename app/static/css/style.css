@@ -1,6 +1,6 @@
 /* ==========================================================================
-   NARAYANA LEARNING HUB - HARMONIZED 3-FONT TYPOGRAPHY SYSTEM
-   Plus Jakarta Sans (Headings), Mulish (Body), IBM Plex Mono (Metrics/Badges)
+   NARAYANA LEARNING HUB - EXACT SPECIFICATION TYPOGRAPHY SYSTEM
+   Plus Jakarta Sans (Headings/Nav/Btns), Manrope (KPI Numbers), Inter (Body)
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -13,11 +13,12 @@
 }
 
 /* --------------------------------------------------------------------------
-   2. DESIGN TOKENS & TYPOGRAPHY VARS
+   2. DESIGN TOKENS & TYPOGRAPHY VARIABLES
    -------------------------------------------------------------------------- */
 :root, [data-theme="light"] {
     --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    --font-body: 'Mulish', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-kpi: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     --font-mono: 'IBM Plex Mono', monospace;
 
     --bg-app: radial-gradient(at 10% 10%, rgba(13, 148, 136, 0.15) 0px, transparent 55%),
@@ -106,10 +107,14 @@
 }
 
 /* --------------------------------------------------------------------------
-   3. BASE RESET & TYPOGRAPHY HIERARCHY
+   3. EXACT SPECIFICATION TYPOGRAPHY SCALE
    -------------------------------------------------------------------------- */
-body {
-    font-family: var(--font-body) !important;
+
+/* Body Text: Inter, 400 Weight, 16px */
+body, p, label, input, select, textarea, div, span {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 16px;
     color: var(--text-primary);
     background: var(--bg-app);
     background-size: 200% 200%;
@@ -119,22 +124,68 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* Headings (Plus Jakarta Sans) */
-h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .card-title, .modal-title {
+/* Hero Title: Plus Jakarta Sans, 700 Weight, 42px */
+.hero-title, h1.hero-title, h1 {
     font-family: var(--font-heading) !important;
-    color: var(--text-primary);
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-weight: 700 !important;
+    font-size: 42px !important;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
 }
 
-/* Body & Controls (Mulish) */
-p, span, div, a, td, th, label, input, select, textarea, button {
-    font-family: var(--font-body);
+/* Page Title: Plus Jakarta Sans, 700 Weight, 34px */
+.page-title, h2.page-title, h2, h3.page-title, h3 {
+    font-family: var(--font-heading) !important;
+    font-weight: 700 !important;
+    font-size: 34px !important;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
 }
 
-/* Monospace Numbers, Metrics, Badges & Timestamps (IBM Plex Mono) */
-.progress-ring-text, .badge, .status-pill, .font-monospace, .code, pre, code, .text-xs {
-    font-family: var(--font-mono) !important;
+/* Card Title: Plus Jakarta Sans, 600 Weight, 18px */
+.card-title, h4, h5, h6, .card-header h5, .card-header h6 {
+    font-family: var(--font-heading) !important;
+    font-weight: 600 !important;
+    font-size: 18px !important;
+    letter-spacing: -0.015em;
+}
+
+/* Navigation: Plus Jakarta Sans, 600 Weight, 16px */
+.ls-nav-tab, nav a, .navbar-nav .nav-link {
+    font-family: var(--font-heading) !important;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+}
+
+/* KPI Numbers: Manrope, 700 Weight, 42px */
+.kpi-number, .stat-number, h2.fw-bold, h2.fw-extrabold, .progress-ring-text {
+    font-family: var(--font-kpi) !important;
+    font-weight: 700 !important;
+    font-size: 42px !important;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+
+/* Button Text: Plus Jakarta Sans, 600 Weight, 15px */
+.btn, button, input[type="submit"] {
+    font-family: var(--font-heading) !important;
+    font-weight: 600 !important;
+    font-size: 15px !important;
+}
+
+/* Table Headers: Plus Jakarta Sans, 600 Weight, 15px */
+table thead th, .table th, .table thead th * {
+    font-family: var(--font-heading) !important;
+    font-weight: 600 !important;
+    font-size: 15px !important;
+    letter-spacing: 0.02em;
+}
+
+/* Table Content: Inter, 400 Weight, 15px */
+table tbody td, .table td, .table tbody td * {
+    font-family: var(--font-body) !important;
+    font-weight: 400 !important;
+    font-size: 15px !important;
 }
 
 .text-dark { color: var(--text-primary) !important; }
@@ -177,14 +228,14 @@ p, span, div, a, td, th, label, input, select, textarea, button {
 .ls-nav-tab {
     font-family: var(--font-heading) !important;
     color: var(--text-secondary);
-    font-weight: 600;
+    font-weight: 600 !important;
+    font-size: 16px !important;
     padding: 0.55rem 1.25rem;
     border-radius: 50px;
     transition: all 0.2s ease;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    font-size: 0.9rem;
     cursor: pointer;
     border: none;
 }
@@ -196,7 +247,7 @@ p, span, div, a, td, th, label, input, select, textarea, button {
 
 .ls-nav-tab.active {
     color: #FFFFFF !important;
-    font-weight: 700;
+    font-weight: 600 !important;
     background: linear-gradient(135deg, var(--teal-primary) 0%, var(--cyan-primary) 100%);
     box-shadow: 0 4px 12px var(--teal-glow);
 }
@@ -250,8 +301,9 @@ p, span, div, a, td, th, label, input, select, textarea, button {
    -------------------------------------------------------------------------- */
 .btn {
     font-family: var(--font-heading) !important;
+    font-weight: 600 !important;
+    font-size: 15px !important;
     border-radius: 50px;
-    font-weight: 600;
     padding: 0.55rem 1.3rem;
     transition: all 0.2s ease;
 }
@@ -289,14 +341,15 @@ p, span, div, a, td, th, label, input, select, textarea, button {
 }
 
 .badge {
-    font-family: var(--font-mono) !important;
+    font-family: var(--font-heading) !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
     border-radius: 50px;
-    font-weight: 600;
     padding: 0.45em 0.85em;
 }
 
 .status-pill {
-    font-family: var(--font-mono) !important;
+    font-family: var(--font-heading) !important;
     font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.5px;
@@ -326,8 +379,8 @@ p, span, div, a, td, th, label, input, select, textarea, button {
 
 .login-label {
     font-family: var(--font-heading) !important;
-    font-size: 0.88rem;
-    font-weight: 700;
+    font-size: 15px !important;
+    font-weight: 600 !important;
     margin-bottom: 0.45rem;
     color: var(--text-primary);
     display: flex;
@@ -337,12 +390,13 @@ p, span, div, a, td, th, label, input, select, textarea, button {
 
 .form-control, .form-select, .form-control-login {
     font-family: var(--font-body) !important;
+    font-weight: 400 !important;
+    font-size: 15px !important;
     background-color: var(--input-bg);
     border: 1.5px solid var(--input-border);
     color: var(--input-text);
     border-radius: 50px !important;
     padding: 0.65rem 1.2rem;
-    font-size: 0.95rem;
     transition: all 0.2s ease;
 }
 
@@ -357,12 +411,12 @@ p, span, div, a, td, th, label, input, select, textarea, button {
 .form-control::placeholder { color: var(--text-muted); }
 
 /* --------------------------------------------------------------------------
-   8. CIRCULAR PROGRESS RING GAUGE
+   8. CIRCULAR PROGRESS RING GAUGE (KPI MANROPE 42PX)
    -------------------------------------------------------------------------- */
 .progress-ring-wrapper {
     position: relative;
-    width: 76px;
-    height: 76px;
+    width: 84px;
+    height: 84px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -375,9 +429,9 @@ p, span, div, a, td, th, label, input, select, textarea, button {
 
 .progress-ring-text {
     position: absolute;
-    font-family: var(--font-mono) !important;
-    font-weight: 700;
-    font-size: 0.88rem;
+    font-family: var(--font-kpi) !important;
+    font-weight: 700 !important;
+    font-size: 24px !important;
     color: var(--teal-primary);
 }
 
@@ -411,13 +465,13 @@ p, span, div, a, td, th, label, input, select, textarea, button {
 
 .theme-toggle-btn {
     font-family: var(--font-heading) !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
     background: var(--teal-light);
     border: 1px solid var(--border-color);
     color: var(--teal-primary);
     border-radius: 50px;
     padding: 0.38rem 0.9rem;
-    font-size: 0.82rem;
-    font-weight: 700;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -446,18 +500,11 @@ p, span, div, a, td, th, label, input, select, textarea, button {
     background: linear-gradient(135deg, #0D9488 0%, #06B6D4 100%);
 }
 
-.hexagon-emerald { background: linear-gradient(135deg, #10B981 0%, #059669 100%); }
-.hexagon-blue    { background: linear-gradient(135deg, #0D9488 0%, #06B6D4 100%); }
-.hexagon-purple  { background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%); }
-.hexagon-coral   { background: linear-gradient(135deg, #F43F5E 0%, #BE123C 100%); }
-.hexagon-amber   { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); }
-.hexagon-cyan    { background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%); }
-
 /* --------------------------------------------------------------------------
    10. TABLES, MODALS & SCROLLBARS
    -------------------------------------------------------------------------- */
 .table {
-    font-family: var(--font-body);
+    font-family: var(--font-body) !important;
     color: var(--text-primary);
     border-color: var(--table-border);
 }
@@ -474,15 +521,20 @@ p, span, div, a, td, th, label, input, select, textarea, button {
     background-color: var(--table-header-bg) !important;
 }
 
-.table thead th {
+.table thead th, .table th {
     font-family: var(--font-heading) !important;
     color: var(--table-header-text) !important;
-    font-weight: 800;
-    text-transform: uppercase;
-    font-size: 0.76rem;
-    letter-spacing: 0.6px;
+    font-weight: 600 !important;
+    font-size: 15px !important;
+    letter-spacing: 0.01em;
     border-bottom: 2px solid var(--table-border) !important;
     background-color: transparent !important;
+}
+
+.table tbody td, .table td {
+    font-family: var(--font-body) !important;
+    font-weight: 400 !important;
+    font-size: 15px !important;
 }
 
 .table-hover > tbody > tr:hover > * {
@@ -506,7 +558,9 @@ p, span, div, a, td, th, label, input, select, textarea, button {
 }
 
 .dropdown-item {
-    font-family: var(--font-body);
+    font-family: var(--font-body) !important;
+    font-weight: 400 !important;
+    font-size: 15px !important;
     color: var(--text-primary);
     border-radius: 12px;
     padding: 0.5rem 1rem;
