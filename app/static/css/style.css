@@ -1,22 +1,20 @@
 /* ==========================================================================
-   NARAYANA LEARNING HUB - MODERN TECHNOLOGICAL GLASSMORPHIC DESIGN SYSTEM
-   Animated Cyber Mesh Canvas, High-Contrast Frosted Glass & Sharp Legibility
+   NARAYANA LEARNING HUB - CLEAN & MODULAR DESIGN SYSTEM
+   Modern Technological Glassmorphism with High-Contrast Typography
    ========================================================================== */
 
-/* --- Keyframe Animations for Animated Cyber Canvas --- */
+/* --------------------------------------------------------------------------
+   1. KEYFRAME ANIMATIONS
+   -------------------------------------------------------------------------- */
 @keyframes ambientMeshShift {
-    0% {
-        background-position: 0% 0%, 100% 0%, 100% 100%, 0% 100%;
-    }
-    50% {
-        background-position: 100% 50%, 0% 100%, 0% 0%, 100% 50%;
-    }
-    100% {
-        background-position: 0% 0%, 100% 0%, 100% 100%, 0% 100%;
-    }
+    0%   { background-position: 0% 0%, 100% 0%, 100% 100%, 0% 100%; }
+    50%  { background-position: 100% 50%, 0% 100%, 0% 0%, 100% 50%; }
+    100% { background-position: 0% 0%, 100% 0%, 100% 100%, 0% 100%; }
 }
 
-/* --- Light Mode Color System (High Contrast Frosted Glass) --- */
+/* --------------------------------------------------------------------------
+   2. DESIGN TOKENS (LIGHT & DARK THEMES)
+   -------------------------------------------------------------------------- */
 :root, [data-theme="light"] {
     --bg-app: radial-gradient(at 10% 10%, rgba(59, 130, 246, 0.2) 0px, transparent 55%),
               radial-gradient(at 90% 10%, rgba(139, 92, 246, 0.2) 0px, transparent 55%),
@@ -56,7 +54,6 @@
     --tech-grid-color: rgba(37, 99, 235, 0.07);
 }
 
-/* --- Dark Mode Color System (Cyber Obsidian Glass) --- */
 [data-theme="dark"] {
     --bg-app: radial-gradient(at 10% 10%, rgba(30, 58, 138, 0.65) 0px, transparent 55%),
               radial-gradient(at 90% 10%, rgba(91, 33, 182, 0.65) 0px, transparent 55%),
@@ -96,7 +93,9 @@
     --tech-grid-color: rgba(56, 189, 248, 0.08);
 }
 
-/* --- Base Reset, Tech Grid Overlay & Typography --- */
+/* --------------------------------------------------------------------------
+   3. BASE RESET & OVERLAYS
+   -------------------------------------------------------------------------- */
 body {
     font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: var(--text-primary);
@@ -110,7 +109,6 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* Futuristic Geometric Tech Grid Overlay */
 body::before {
     content: '';
     position: fixed;
@@ -124,7 +122,6 @@ body::before {
     z-index: 0;
 }
 
-/* Main Content Wrapper above Grid */
 main, header, footer {
     position: relative;
     z-index: 1;
@@ -136,54 +133,29 @@ h1, h2, h3, h4, h5, h6 {
     letter-spacing: -0.02em;
 }
 
-/* STRICT LEGIBILITY & HIGH-CONTRAST TEXT OVERRIDES */
-.text-dark {
-    color: var(--text-primary) !important;
-}
+/* Strict Legibility Overrides */
+.text-dark { color: var(--text-primary) !important; }
+.text-muted { color: var(--text-muted) !important; }
+.text-secondary { color: var(--text-secondary) !important; }
+.text-orange { color: var(--brand-orange) !important; }
 
-.text-muted {
-    color: var(--text-muted) !important;
-}
-
-.text-secondary {
-    color: var(--text-secondary) !important;
-}
-
-[data-theme="light"] .text-muted {
-    color: #334155 !important; /* Sharp readable dark slate */
-}
+[data-theme="light"] .text-muted { color: #334155 !important; }
 
 [data-theme="dark"] .text-dark,
-[data-theme="dark"] h1,
-[data-theme="dark"] h2,
-[data-theme="dark"] h3,
-[data-theme="dark"] h4,
-[data-theme="dark"] h5,
-[data-theme="dark"] h6 {
+[data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3,
+[data-theme="dark"] h4, [data-theme="dark"] h5, [data-theme="dark"] h6 {
     color: #FFFFFF !important;
 }
 
-[data-theme="dark"] .text-muted {
-    color: #CBD5E1 !important; /* High contrast light slate */
-}
-
-[data-theme="dark"] .bg-white,
-[data-theme="dark"] .bg-light {
+[data-theme="dark"] .text-muted { color: #CBD5E1 !important; }
+[data-theme="dark"] .bg-white, [data-theme="dark"] .bg-light {
     background-color: var(--bg-surface) !important;
     color: #FFFFFF !important;
 }
 
-.text-navy, .text-gradient-primary, .text-gradient-blue, .text-gradient-purple, .text-gradient-emerald, .text-gradient-coral, .text-gradient-amber, .text-gradient-cyan {
-    color: var(--text-primary) !important;
-    background: none !important;
-    -webkit-text-fill-color: initial !important;
-}
-
-.text-orange {
-    color: var(--brand-orange) !important;
-}
-
-/* --- Frosted Glassmorphic Cards --- */
+/* --------------------------------------------------------------------------
+   4. CARDS & CONTAINERS
+   -------------------------------------------------------------------------- */
 .card, .card-stat, .profile-sidebar, .modal-content, .card-circular, .glass-card {
     background: var(--bg-surface) !important;
     backdrop-filter: blur(20px) saturate(180%) !important;
@@ -227,7 +199,9 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--text-muted);
 }
 
-/* --- Top Header & Nav Tabs --- */
+/* --------------------------------------------------------------------------
+   5. HEADER NAVIGATION
+   -------------------------------------------------------------------------- */
 .ls-navbar {
     background-color: var(--header-bg);
     backdrop-filter: blur(20px) saturate(180%);
@@ -262,7 +236,9 @@ h1, h2, h3, h4, h5, h6 {
     background-color: rgba(37, 99, 235, 0.12);
 }
 
-/* --- Buttons & Badges --- */
+/* --------------------------------------------------------------------------
+   6. BUTTONS, BADGES & PILLS
+   -------------------------------------------------------------------------- */
 .btn {
     border-radius: 12px;
     font-weight: 600;
@@ -270,9 +246,7 @@ h1, h2, h3, h4, h5, h6 {
     transition: all 0.2s ease;
 }
 
-.btn:active {
-    transform: scale(0.98);
-}
+.btn:active { transform: scale(0.98); }
 
 .btn-navy, .btn-primary {
     background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
@@ -310,7 +284,6 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0.45em 0.75em;
 }
 
-/* Status Pills */
 .status-pill {
     font-size: 0.72rem;
     font-weight: 800;
@@ -322,36 +295,19 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
-.pill-in-progress {
-    background: #EFF6FF;
-    color: #1D4ED8;
-    border: 1px solid #BFDBFE;
-}
-
-.pill-completed {
-    background: #F0FDF4;
-    color: #15803D;
-    border: 1px solid #BBF7D0;
-}
-
-.pill-pending {
-    background: #FEF3C7;
-    color: #B45309;
-    border: 1px solid #FCD34D;
-}
-
-.pill-overdue {
-    background: #FEF2F2;
-    color: #BE123C;
-    border: 1px solid #FDA4AF;
-}
+.pill-in-progress { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
+.pill-completed   { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
+.pill-pending     { background: #FEF3C7; color: #B45309; border: 1px solid #FCD34D; }
+.pill-overdue     { background: #FEF2F2; color: #BE123C; border: 1px solid #FDA4AF; }
 
 [data-theme="dark"] .pill-in-progress { background: rgba(37, 99, 235, 0.25); color: #60A5FA; border-color: rgba(37, 99, 235, 0.4); }
-[data-theme="dark"] .pill-completed { background: rgba(16, 185, 129, 0.25); color: #34D399; border-color: rgba(16, 185, 129, 0.4); }
-[data-theme="dark"] .pill-pending { background: rgba(245, 158, 11, 0.25); color: #FBBF24; border-color: rgba(245, 158, 11, 0.4); }
-[data-theme="dark"] .pill-overdue { background: rgba(244, 63, 94, 0.25); color: #FB7185; border-color: rgba(244, 63, 94, 0.4); }
+[data-theme="dark"] .pill-completed   { background: rgba(16, 185, 129, 0.25); color: #34D399; border-color: rgba(16, 185, 129, 0.4); }
+[data-theme="dark"] .pill-pending     { background: rgba(245, 158, 11, 0.25); color: #FBBF24; border-color: rgba(245, 158, 11, 0.4); }
+[data-theme="dark"] .pill-overdue     { background: rgba(244, 63, 94, 0.25); color: #FB7185; border-color: rgba(244, 63, 94, 0.4); }
 
-/* --- Forms & Inputs --- */
+/* --------------------------------------------------------------------------
+   7. FORMS & INPUTS
+   -------------------------------------------------------------------------- */
 .login-field {
     margin-bottom: 1.25rem;
     text-align: left;
@@ -369,6 +325,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .form-control, .form-select, .form-control-login {
     background-color: var(--input-bg);
+    backdrop-filter: blur(12px);
     border: 1.5px solid var(--input-border);
     color: var(--input-text);
     border-radius: 12px !important;
@@ -385,11 +342,11 @@ h1, h2, h3, h4, h5, h6 {
     outline: none;
 }
 
-.form-control::placeholder {
-    color: var(--text-muted);
-}
+.form-control::placeholder { color: var(--text-muted); }
 
-/* --- Clean Table Header & Rows --- */
+/* --------------------------------------------------------------------------
+   8. TABLES & LISTS
+   -------------------------------------------------------------------------- */
 .table {
     color: var(--text-primary);
     border-color: var(--table-border);
@@ -422,7 +379,9 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--text-primary);
 }
 
-/* --- Profile Sidebar --- */
+/* --------------------------------------------------------------------------
+   9. SIDEBAR & WIDGETS
+   -------------------------------------------------------------------------- */
 .profile-sidebar {
     padding: 1.5rem 1.25rem;
     position: relative;
@@ -448,7 +407,6 @@ h1, h2, h3, h4, h5, h6 {
     right: 4px;
 }
 
-/* --- Theme Switcher Button --- */
 .theme-toggle-btn {
     background: rgba(37, 99, 235, 0.08);
     border: 1px solid var(--border-color);
@@ -470,7 +428,7 @@ h1, h2, h3, h4, h5, h6 {
     color: #FFFFFF !important;
 }
 
-/* --- Circular Progress Ring Gauge --- */
+/* Circular Progress Ring Gauge */
 .progress-ring-wrapper {
     position: relative;
     width: 72px;
@@ -481,18 +439,9 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0.75rem auto;
 }
 
-.progress-ring-svg {
-    transform: rotate(-90deg);
-}
-
-.progress-ring-bg {
-    stroke: var(--border-color);
-}
-
-.progress-ring-fill {
-    stroke-linecap: round;
-    transition: stroke-dashoffset 0.6s ease;
-}
+.progress-ring-svg { transform: rotate(-90deg); }
+.progress-ring-bg { stroke: var(--border-color); }
+.progress-ring-fill { stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
 
 .progress-ring-text {
     position: absolute;
@@ -516,13 +465,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .hexagon-emerald { background: linear-gradient(135deg, #10B981 0%, #059669 100%); }
-.hexagon-blue { background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%); }
-.hexagon-purple { background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%); }
-.hexagon-coral { background: linear-gradient(135deg, #F43F5E 0%, #BE123C 100%); }
-.hexagon-amber { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); }
-.hexagon-cyan { background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%); }
+.hexagon-blue    { background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%); }
+.hexagon-purple  { background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%); }
+.hexagon-coral   { background: linear-gradient(135deg, #F43F5E 0%, #BE123C 100%); }
+.hexagon-amber   { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); }
+.hexagon-cyan    { background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%); }
 
-/* Modals & Dropdowns */
+/* --------------------------------------------------------------------------
+   10. MODALS & SCROLLBARS
+   -------------------------------------------------------------------------- */
 .modal-content {
     background: var(--bg-surface-elevated);
     backdrop-filter: blur(20px) saturate(180%);
@@ -553,21 +504,7 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--text-primary);
 }
 
-/* Custom Scrollbars */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--brand-blue);
-}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--brand-blue); }
