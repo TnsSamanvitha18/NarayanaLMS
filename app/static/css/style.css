@@ -104,6 +104,10 @@
 /* --------------------------------------------------------------------------
    3. BASE RESET & IBM PLEX MONO TYPOGRAPHY
    -------------------------------------------------------------------------- */
+*, *::before, *::after {
+    font-family: 'IBM Plex Mono', monospace !important;
+}
+
 body {
     font-family: 'IBM Plex Mono', monospace !important;
     color: var(--text-primary);
