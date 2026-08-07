@@ -1,6 +1,6 @@
 /* ==========================================================================
    NARAYANA LEARNING HUB - BUDDYBOSS-INSPIRED WARM & INVITING DESIGN SYSTEM
-   Warm Cream Canvas, Terracotta Orange Accents, Crisp White Cards, Espresso Ink
+   Warm Cream Canvas, Terracotta Orange Accents, Crisp White Cards, High Contrast
    ========================================================================== */
 
 /* --- Light Mode Color System (BuddyBoss Warm Aesthetic) --- */
@@ -73,7 +73,7 @@
     --header-bg: #1C1815;
 }
 
-/* --- Base Reset & Typography --- */
+/* --- Base Reset & High Contrast Typography --- */
 body {
     font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: var(--text-primary);
@@ -89,6 +89,39 @@ h1, h2, h3, h4, h5, h6 {
     letter-spacing: -0.02em;
 }
 
+/* CRITICAL DARK MODE BOOTSTRAP OVERRIDES FOR PERFECT CONTRAST */
+.text-dark {
+    color: var(--text-primary) !important;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .text-dark,
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+    color: #FAFAF9 !important;
+}
+
+[data-theme="dark"] .text-muted {
+    color: #A8A29E !important;
+}
+
+[data-theme="dark"] .bg-white,
+[data-theme="dark"] .bg-light {
+    background-color: var(--bg-surface) !important;
+    color: #FAFAF9 !important;
+}
+
 .text-navy, .text-gradient-primary, .text-gradient-blue, .text-gradient-purple, .text-gradient-emerald, .text-gradient-coral, .text-gradient-amber, .text-gradient-cyan {
     color: var(--text-primary) !important;
     background: none !important;
@@ -99,7 +132,7 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--brand-orange) !important;
 }
 
-/* --- Crisp Pure White Cards --- */
+/* --- Crisp Cards --- */
 .card, .card-stat, .profile-sidebar, .modal-content, .card-circular, .glass-card {
     background-color: var(--bg-surface) !important;
     border: 1px solid var(--border-color) !important;
