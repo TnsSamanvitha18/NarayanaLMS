@@ -1,6 +1,6 @@
 /* ==========================================================================
    NARAYANA LEARNING HUB - MODERN TECHNOLOGICAL GLASSMORPHIC DESIGN SYSTEM
-   Animated Cyber Mesh Canvas, Frosted Glass Cards & High Contrast Typography
+   Animated Cyber Mesh Canvas, High-Contrast Frosted Glass & Sharp Legibility
    ========================================================================== */
 
 /* --- Keyframe Animations for Animated Cyber Canvas --- */
@@ -16,44 +16,44 @@
     }
 }
 
-/* --- Light Mode Color System (Modern Technological Glass) --- */
+/* --- Light Mode Color System (High Contrast Frosted Glass) --- */
 :root, [data-theme="light"] {
-    --bg-app: radial-gradient(at 10% 10%, rgba(59, 130, 246, 0.22) 0px, transparent 55%),
-              radial-gradient(at 90% 10%, rgba(139, 92, 246, 0.22) 0px, transparent 55%),
-              radial-gradient(at 90% 90%, rgba(245, 158, 11, 0.2) 0px, transparent 55%),
-              radial-gradient(at 10% 90%, rgba(16, 185, 129, 0.2) 0px, transparent 55%),
-              radial-gradient(at 50% 50%, rgba(6, 182, 212, 0.18) 0px, transparent 65%),
+    --bg-app: radial-gradient(at 10% 10%, rgba(59, 130, 246, 0.2) 0px, transparent 55%),
+              radial-gradient(at 90% 10%, rgba(139, 92, 246, 0.2) 0px, transparent 55%),
+              radial-gradient(at 90% 90%, rgba(245, 158, 11, 0.18) 0px, transparent 55%),
+              radial-gradient(at 10% 90%, rgba(16, 185, 129, 0.18) 0px, transparent 55%),
+              radial-gradient(at 50% 50%, rgba(6, 182, 212, 0.15) 0px, transparent 65%),
               #E2E8F0;
     
-    --bg-surface: rgba(255, 255, 255, 0.78);
-    --bg-surface-elevated: rgba(255, 255, 255, 0.88);
-    --bg-glass: rgba(255, 255, 255, 0.78);
+    --bg-surface: rgba(255, 255, 255, 0.88);
+    --bg-surface-elevated: rgba(255, 255, 255, 0.94);
+    --bg-glass: rgba(255, 255, 255, 0.88);
     
     --text-primary: #0F172A;
-    --text-secondary: #334155;
-    --text-muted: #64748B;
+    --text-secondary: #1E293B;
+    --text-muted: #334155;
     
-    --border-color: rgba(255, 255, 255, 0.8);
-    --border-subtle: rgba(226, 232, 240, 0.8);
+    --border-color: rgba(203, 213, 225, 0.9);
+    --border-subtle: rgba(226, 232, 240, 0.9);
     
     --brand-blue: #2563EB;
     --brand-blue-hover: #1D4ED8;
     --brand-orange: #EA580C;
     
-    --card-shadow: 0 12px 32px rgba(31, 38, 135, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.9);
-    --card-hover-shadow: 0 20px 42px rgba(37, 99, 235, 0.2);
+    --card-shadow: 0 10px 28px rgba(15, 23, 42, 0.06), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+    --card-hover-shadow: 0 18px 38px rgba(37, 99, 235, 0.18);
     
-    --table-header-bg: rgba(248, 250, 252, 0.85);
-    --table-header-text: #475569;
-    --table-row-hover: rgba(255, 255, 255, 0.8);
-    --table-border: rgba(226, 232, 240, 0.7);
+    --table-header-bg: rgba(241, 245, 249, 0.85);
+    --table-header-text: #1E293B;
+    --table-row-hover: rgba(255, 255, 255, 0.9);
+    --table-border: #CBD5E1;
     
-    --input-bg: rgba(255, 255, 255, 0.85);
+    --input-bg: #FFFFFF;
     --input-border: #CBD5E1;
     --input-text: #0F172A;
     
-    --header-bg: rgba(255, 255, 255, 0.82);
-    --tech-grid-color: rgba(37, 99, 235, 0.09);
+    --header-bg: rgba(255, 255, 255, 0.92);
+    --tech-grid-color: rgba(37, 99, 235, 0.07);
 }
 
 /* --- Dark Mode Color System (Cyber Obsidian Glass) --- */
@@ -65,13 +65,13 @@
               radial-gradient(at 50% 50%, rgba(14, 116, 144, 0.45) 0px, transparent 65%),
               #070B14;
     
-    --bg-surface: rgba(17, 24, 39, 0.78);
-    --bg-surface-elevated: rgba(30, 41, 59, 0.85);
-    --bg-glass: rgba(17, 24, 39, 0.78);
+    --bg-surface: rgba(17, 24, 39, 0.82);
+    --bg-surface-elevated: rgba(30, 41, 59, 0.88);
+    --bg-glass: rgba(17, 24, 39, 0.82);
     
     --text-primary: #FFFFFF;
-    --text-secondary: #E5E7EB;
-    --text-muted: #9CA3AF;
+    --text-secondary: #F1F5F9;
+    --text-muted: #CBD5E1;
     
     --border-color: rgba(255, 255, 255, 0.14);
     --border-subtle: rgba(255, 255, 255, 0.08);
@@ -83,16 +83,16 @@
     --card-shadow: 0 14px 40px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.12);
     --card-hover-shadow: 0 22px 48px rgba(59, 130, 246, 0.35);
     
-    --table-header-bg: rgba(31, 41, 55, 0.85);
+    --table-header-bg: rgba(31, 41, 55, 0.9);
     --table-header-text: #38BDF8;
-    --table-row-hover: rgba(30, 41, 59, 0.75);
-    --table-border: rgba(55, 65, 81, 0.7);
+    --table-row-hover: rgba(30, 41, 59, 0.8);
+    --table-border: rgba(55, 65, 81, 0.8);
     
     --input-bg: rgba(17, 24, 39, 0.85);
     --input-border: #374151;
     --input-text: #FFFFFF;
     
-    --header-bg: rgba(17, 24, 39, 0.85);
+    --header-bg: rgba(17, 24, 39, 0.88);
     --tech-grid-color: rgba(56, 189, 248, 0.08);
 }
 
@@ -136,7 +136,7 @@ h1, h2, h3, h4, h5, h6 {
     letter-spacing: -0.02em;
 }
 
-/* STRICT DARK & LIGHT CONTRAST OVERRIDES */
+/* STRICT LEGIBILITY & HIGH-CONTRAST TEXT OVERRIDES */
 .text-dark {
     color: var(--text-primary) !important;
 }
@@ -147,6 +147,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .text-secondary {
     color: var(--text-secondary) !important;
+}
+
+[data-theme="light"] .text-muted {
+    color: #334155 !important; /* Sharp readable dark slate */
 }
 
 [data-theme="dark"] .text-dark,
@@ -160,7 +164,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 [data-theme="dark"] .text-muted {
-    color: #9CA3AF !important;
+    color: #CBD5E1 !important; /* High contrast light slate */
 }
 
 [data-theme="dark"] .bg-white,
@@ -185,7 +189,7 @@ h1, h2, h3, h4, h5, h6 {
     backdrop-filter: blur(20px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
     border: 1.5px solid var(--border-color) !important;
-    border-radius: 22px !important;
+    border-radius: 20px !important;
     box-shadow: var(--card-shadow) !important;
     transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
 }
@@ -197,7 +201,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card-circular {
-    border-radius: 36px !important;
+    border-radius: 32px !important;
     padding: 1.6rem 1.25rem !important;
     text-align: center;
     display: flex;
@@ -319,25 +323,25 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .pill-in-progress {
-    background: linear-gradient(135deg, #E0EDFF 0%, #DBEAFE 100%);
+    background: #EFF6FF;
     color: #1D4ED8;
     border: 1px solid #BFDBFE;
 }
 
 .pill-completed {
-    background: linear-gradient(135deg, #DCFCE7 0%, #D1FAE5 100%);
+    background: #F0FDF4;
     color: #15803D;
     border: 1px solid #BBF7D0;
 }
 
 .pill-pending {
-    background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+    background: #FEF3C7;
     color: #B45309;
     border: 1px solid #FCD34D;
 }
 
 .pill-overdue {
-    background: linear-gradient(135deg, #FFE4E6 0%, #FECDD3 100%);
+    background: #FEF2F2;
     color: #BE123C;
     border: 1px solid #FDA4AF;
 }
@@ -365,7 +369,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .form-control, .form-select, .form-control-login {
     background-color: var(--input-bg);
-    backdrop-filter: blur(12px);
     border: 1.5px solid var(--input-border);
     color: var(--input-text);
     border-radius: 12px !important;
@@ -386,14 +389,14 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--text-muted);
 }
 
-/* --- Tables --- */
+/* --- Clean Table Header & Rows --- */
 .table {
     color: var(--text-primary);
     border-color: var(--table-border);
 }
 
 .table > :not(caption) > * > * {
-    padding: 0.9rem 1.1rem;
+    padding: 0.95rem 1.1rem;
     vertical-align: middle;
     background-color: transparent;
     color: var(--text-primary);
@@ -401,16 +404,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .table thead {
-    background-color: var(--table-header-bg);
+    background-color: var(--table-header-bg) !important;
 }
 
 .table thead th {
-    color: var(--table-header-text);
-    font-weight: 700;
+    color: var(--table-header-text) !important;
+    font-weight: 800;
     text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 0.5px;
-    border-bottom: 1.5px solid var(--border-color);
+    font-size: 0.78rem;
+    letter-spacing: 0.6px;
+    border-bottom: 2px solid var(--table-border) !important;
+    background-color: transparent !important;
 }
 
 .table-hover > tbody > tr:hover > * {
@@ -429,7 +433,7 @@ h1, h2, h3, h4, h5, h6 {
     height: 88px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid rgba(255, 255, 255, 0.5);
+    border: 3px solid rgba(255, 255, 255, 0.8);
     box-shadow: 0 6px 20px rgba(37, 99, 235, 0.25);
 }
 
