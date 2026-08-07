@@ -34,7 +34,12 @@ def list_courses():
     query = Course.query
 
     if search_query:
-        query = query.filter((Course.name.ilike(f'%{search_query}%')) | (Course.course_id.ilike(f'%{search_query}%')))
+        query = query.filter(
+            (Course.name.ilike(f'%{search_query}%')) |
+            (Course.course_id.ilike(f'%{search_query}%')) |
+            (Course.description.ilike(f'%{search_query}%')) |
+            (Course.mode.ilike(f'%{search_query}%'))
+        )
 
     if mode_filter and mode_filter != 'ALL':
         query = query.filter_by(mode=mode_filter)
@@ -53,6 +58,9 @@ def create_course():
         description = request.form.get('description', '').strip()
         mode = request.form.get('mode', 'Live').strip()
         pass_percentage = float(request.form.get('pass_percentage', 80.0))
+        fb_id = request.form.get('feedback_repo_id')
+        feedback_repo_id = int(fb_id) if fb_id else None
+        has_certificate = (request.form.get('has_certificate', '1') == '1')
 
         if not name:
             flash('Course Name is required.', 'danger')
@@ -65,19 +73,40 @@ def create_course():
             duration_hours=0.0, # Auto-calculated when lessons are added
             description=description,
             mode=mode,
-            pass_percentage=pass_percentage
+            pass_percentage=pass_percentage,
+            feedback_repo_id=feedback_repo_id,
+            has_certificate=has_certificate
         )
         db.session.add(new_course)
         db.session.commit()
 
-        # Handle CSV uploads for Summative, Pre and Post Assessments (all optional)
+        # Handle Thumbnail Upload
+        thumb_file = request.files.get('thumbnail_file')
+        if thumb_file and thumb_file.filename:
+            ext = os.path.splitext(thumb_file.filename)[1].lower()
+            if ext in ['.jpg', '.jpeg', '.png', '.gif', '.webp']:
+                thumb_filename = f"thumb_{new_course.course_id}_{uuid.uuid4().hex[:8]}{ext}"
+                thumb_dir = os.path.join(current_app.root_path, '..', 'uploads', 'thumbnails')
+                os.makedirs(thumb_dir, exist_ok=True)
+                thumb_file.save(os.path.join(thumb_dir, thumb_filename))
+                new_course.thumbnail_filename = thumb_filename
+
+        # Live Online duration set directly by admin at course level
+        if mode == 'Live Online':
+            try:
+                new_course.duration_hours = float(request.form.get('duration_hours', 1.0))
+            except Exception:
+                new_course.duration_hours = 1.0
+
+        # Handle CSV uploads enforcing mode-based assessment availability
         summative_file = request.files.get('summative_assessment_csv') or request.files.get('course_end_assessment_csv')
         pre_file = request.files.get('pre_assessment_csv')
         post_file = request.files.get('post_assessment_csv')
 
         summative_errs, pre_errs, post_errs = [], [], []
 
-        if summative_file and summative_file.filename:
+        # 1. Course End Assessment ONLY available for Self Paced courses
+        if mode == 'Self Paced' and summative_file and summative_file.filename:
             q_list, errs = parse_assessment_csv(summative_file.stream, filename=summative_file.filename)
             if errs:
                 summative_errs = errs
@@ -96,43 +125,45 @@ def create_course():
                     )
                     db.session.add(assessment)
 
-        if pre_file and pre_file.filename:
-            q_list, errs = parse_assessment_csv(pre_file.stream, filename=pre_file.filename)
-            if errs:
-                pre_errs = errs
-            else:
-                for q in q_list:
-                    assessment = CourseAssessment(
-                        course_id=new_course.id,
-                        assessment_type='PRE',
-                        serial_number=q['serial_number'],
-                        question=q['question'],
-                        option1=q['option1'],
-                        option2=q['option2'],
-                        option3=q['option3'],
-                        option4=q['option4'],
-                        correct_option=q['correct_option']
-                    )
-                    db.session.add(assessment)
+        # 2. Pre and Post Assessments ONLY available for Live In Person / Live Online courses
+        if mode != 'Self Paced':
+            if pre_file and pre_file.filename:
+                q_list, errs = parse_assessment_csv(pre_file.stream, filename=pre_file.filename)
+                if errs:
+                    pre_errs = errs
+                else:
+                    for q in q_list:
+                        assessment = CourseAssessment(
+                            course_id=new_course.id,
+                            assessment_type='PRE',
+                            serial_number=q['serial_number'],
+                            question=q['question'],
+                            option1=q['option1'],
+                            option2=q['option2'],
+                            option3=q['option3'],
+                            option4=q['option4'],
+                            correct_option=q['correct_option']
+                        )
+                        db.session.add(assessment)
 
-        if post_file and post_file.filename:
-            q_list, errs = parse_assessment_csv(post_file.stream, filename=post_file.filename)
-            if errs:
-                post_errs = errs
-            else:
-                for q in q_list:
-                    assessment = CourseAssessment(
-                        course_id=new_course.id,
-                        assessment_type='POST',
-                        serial_number=q['serial_number'],
-                        question=q['question'],
-                        option1=q['option1'],
-                        option2=q['option2'],
-                        option3=q['option3'],
-                        option4=q['option4'],
-                        correct_option=q['correct_option']
-                    )
-                    db.session.add(assessment)
+            if post_file and post_file.filename:
+                q_list, errs = parse_assessment_csv(post_file.stream, filename=post_file.filename)
+                if errs:
+                    post_errs = errs
+                else:
+                    for q in q_list:
+                        assessment = CourseAssessment(
+                            course_id=new_course.id,
+                            assessment_type='POST',
+                            serial_number=q['serial_number'],
+                            question=q['question'],
+                            option1=q['option1'],
+                            option2=q['option2'],
+                            option3=q['option3'],
+                            option4=q['option4'],
+                            correct_option=q['correct_option']
+                        )
+                        db.session.add(assessment)
 
         db.session.commit()
 
@@ -143,8 +174,10 @@ def create_course():
 
         return redirect(url_for('courses.view_course', course_id=new_course.id))
 
+    from app.models.feedback import FeedbackRepository
+    feedback_repos = FeedbackRepository.query.all()
     auto_id = Course.generate_course_id()
-    return render_template('courses/create_edit.html', auto_id=auto_id, course=None)
+    return render_template('courses/create_edit.html', auto_id=auto_id, course=None, feedback_repos=feedback_repos)
 
 
 @courses_bp.route('/<int:course_id>')
@@ -184,13 +217,22 @@ def view_course(course_id):
 
 def recalculate_course_duration(course_id):
     course = Course.query.get(course_id)
-    if course:
+    if course and course.mode != 'Live Online':
         lessons = CourseLesson.query.filter_by(course_id=course.id).all()
         if lessons:
             course.duration_hours = round(sum(l.duration_hours for l in lessons if l.duration_hours is not None), 2)
         else:
             course.duration_hours = 0.0
         db.session.commit()
+
+
+@courses_bp.route('/thumbnail/<filename>')
+def download_thumbnail(filename):
+    thumb_dir = os.path.join(current_app.root_path, '..', 'uploads', 'thumbnails')
+    file_path = os.path.join(thumb_dir, filename)
+    if os.path.exists(file_path):
+        return send_file(file_path)
+    return redirect(url_for('static', filename='images/default_course_thumb.png'))
 
 
 @courses_bp.route('/<int:course_id>/add_lesson', methods=['POST'])
@@ -606,16 +648,36 @@ def edit_course(course_id):
         course.description = request.form.get('description', '').strip()
         course.mode = request.form.get('mode', 'Live').strip()
         course.pass_percentage = float(request.form.get('pass_percentage', 80.0))
+        fb_id = request.form.get('feedback_repo_id')
+        course.feedback_repo_id = int(fb_id) if fb_id else None
+        course.has_certificate = (request.form.get('has_certificate', '1') == '1')
 
-        # Recalculate duration automatically from lessons
-        recalculate_course_duration(course.id)
+        # Handle Thumbnail Upload
+        thumb_file = request.files.get('thumbnail_file')
+        if thumb_file and thumb_file.filename:
+            ext = os.path.splitext(thumb_file.filename)[1].lower()
+            if ext in ['.jpg', '.jpeg', '.png', '.gif', '.webp']:
+                thumb_filename = f"thumb_{course.course_id}_{uuid.uuid4().hex[:8]}{ext}"
+                thumb_dir = os.path.join(current_app.root_path, '..', 'uploads', 'thumbnails')
+                os.makedirs(thumb_dir, exist_ok=True)
+                thumb_file.save(os.path.join(thumb_dir, thumb_filename))
+                course.thumbnail_filename = thumb_filename
 
-        # Replace CSV questions if uploaded
+        # Live Online duration defined directly by admin at course level
+        if course.mode == 'Live Online':
+            try:
+                course.duration_hours = float(request.form.get('duration_hours', course.duration_hours or 1.0))
+            except Exception:
+                pass
+        else:
+            recalculate_course_duration(course.id)
+
+        # Replace CSV questions enforcing mode-based assessment rules
         summative_file = request.files.get('summative_assessment_csv') or request.files.get('course_end_assessment_csv')
         pre_file = request.files.get('pre_assessment_csv')
         post_file = request.files.get('post_assessment_csv')
 
-        if summative_file and summative_file.filename:
+        if course.mode == 'Self Paced' and summative_file and summative_file.filename:
             q_list, errs = parse_assessment_csv(summative_file.stream, filename=summative_file.filename)
             if not errs:
                 CourseAssessment.query.filter((CourseAssessment.course_id == course.id) & (CourseAssessment.assessment_type == 'COURSE_END') & (CourseAssessment.lesson_id == None)).delete()
@@ -633,47 +695,50 @@ def edit_course(course_id):
                     )
                     db.session.add(assessment)
 
-        if pre_file and pre_file.filename:
-            q_list, errs = parse_assessment_csv(pre_file.stream, filename=pre_file.filename)
-            if not errs:
-                CourseAssessment.query.filter_by(course_id=course.id, assessment_type='PRE').delete()
-                for q in q_list:
-                    assessment = CourseAssessment(
-                        course_id=course.id,
-                        assessment_type='PRE',
-                        serial_number=q['serial_number'],
-                        question=q['question'],
-                        option1=q['option1'],
-                        option2=q['option2'],
-                        option3=q['option3'],
-                        option4=q['option4'],
-                        correct_option=q['correct_option']
-                    )
-                    db.session.add(assessment)
+        if course.mode != 'Self Paced':
+            if pre_file and pre_file.filename:
+                q_list, errs = parse_assessment_csv(pre_file.stream, filename=pre_file.filename)
+                if not errs:
+                    CourseAssessment.query.filter_by(course_id=course.id, assessment_type='PRE').delete()
+                    for q in q_list:
+                        assessment = CourseAssessment(
+                            course_id=course.id,
+                            assessment_type='PRE',
+                            serial_number=q['serial_number'],
+                            question=q['question'],
+                            option1=q['option1'],
+                            option2=q['option2'],
+                            option3=q['option3'],
+                            option4=q['option4'],
+                            correct_option=q['correct_option']
+                        )
+                        db.session.add(assessment)
 
-        if post_file and post_file.filename:
-            q_list, errs = parse_assessment_csv(post_file.stream, filename=post_file.filename)
-            if not errs:
-                CourseAssessment.query.filter_by(course_id=course.id, assessment_type='POST').delete()
-                for q in q_list:
-                    assessment = CourseAssessment(
-                        course_id=course.id,
-                        assessment_type='POST',
-                        serial_number=q['serial_number'],
-                        question=q['question'],
-                        option1=q['option1'],
-                        option2=q['option2'],
-                        option3=q['option3'],
-                        option4=q['option4'],
-                        correct_option=q['correct_option']
-                    )
-                    db.session.add(assessment)
+            if post_file and post_file.filename:
+                q_list, errs = parse_assessment_csv(post_file.stream, filename=post_file.filename)
+                if not errs:
+                    CourseAssessment.query.filter_by(course_id=course.id, assessment_type='POST').delete()
+                    for q in q_list:
+                        assessment = CourseAssessment(
+                            course_id=course.id,
+                            assessment_type='POST',
+                            serial_number=q['serial_number'],
+                            question=q['question'],
+                            option1=q['option1'],
+                            option2=q['option2'],
+                            option3=q['option3'],
+                            option4=q['option4'],
+                            correct_option=q['correct_option']
+                        )
+                        db.session.add(assessment)
 
         db.session.commit()
         flash(f"Course {course.course_id} updated successfully.", "success")
         return redirect(url_for('courses.view_course', course_id=course.id))
 
-    return render_template('courses/create_edit.html', course=course, auto_id=course.course_id)
+    from app.models.feedback import FeedbackRepository
+    feedback_repos = FeedbackRepository.query.all()
+    return render_template('courses/create_edit.html', course=course, auto_id=course.course_id, feedback_repos=feedback_repos)
 
 
 @courses_bp.route('/<int:course_id>/delete', methods=['POST'])

@@ -11,6 +11,9 @@ class Course(db.Model):
     description = db.Column(db.Text, nullable=True)
     mode = db.Column(db.String(20), nullable=False, default='Live') # 'Self Paced', 'Live'
     pass_percentage = db.Column(db.Float, nullable=False, default=80.0)
+    feedback_repo_id = db.Column(db.Integer, db.ForeignKey('feedback_repositories.id'), nullable=True)
+    has_certificate = db.Column(db.Boolean, nullable=False, default=True)
+    thumbnail_filename = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     assessments = db.relationship('CourseAssessment', backref='course', lazy=True, cascade='all, delete-orphan')
@@ -18,6 +21,7 @@ class Course(db.Model):
     lessons = db.relationship('CourseLesson', backref='course', lazy=True, cascade='all, delete-orphan')
     classes = db.relationship('LiveClass', backref='course', lazy=True, cascade='all, delete-orphan')
     enrollments = db.relationship('LearnerEnrollment', backref='course', lazy=True, cascade='all, delete-orphan')
+    feedback_repository = db.relationship('FeedbackRepository', backref='courses', lazy=True)
 
     @staticmethod
     def generate_course_id():

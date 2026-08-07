@@ -50,6 +50,38 @@
                     <small class="text-muted">Required pass score for certification</small>
                 </div>
 
+                <div class="col-md-6">
+                    <label for="feedback_repo_id" class="form-label fw-bold"><i class="fa-solid fa-comment-dots text-primary me-1"></i> Attached Feedback Form</label>
+                    <select class="form-select" id="feedback_repo_id" name="feedback_repo_id">
+                        <option value="">-- Select Feedback Form --</option>
+                        {% for repo in feedback_repos %}
+                        <option value="{{ repo.id }}" {% if course and course.feedback_repo_id == repo.id %}selected{% endif %}>{{ repo.title }}</option>
+                        {% endfor %}
+                    </select>
+                    <small class="text-muted">Feedback form required for course completion & certification</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="has_certificate" class="form-label fw-bold"><i class="fa-solid fa-certificate text-warning me-1"></i> Certificate Issue</label>
+                    <select class="form-select" id="has_certificate" name="has_certificate">
+                        <option value="1" {% if not course or course.has_certificate %}selected{% endif %}>Yes - Issue PDF Certificate on Feedback Submission</option>
+                        <option value="0" {% if course and not course.has_certificate %}selected{% endif %}>No - Mark Course Completed without Certificate</option>
+                    </select>
+                    <small class="text-muted">Generates PDF Certificate upon feedback submission if enabled</small>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="thumbnail_file" class="form-label fw-bold"><i class="fa-solid fa-image text-info me-1"></i> Course Thumbnail Image <span class="badge bg-outline-secondary border text-muted">Optional</span></label>
+                    <input type="file" class="form-control" id="thumbnail_file" name="thumbnail_file" accept="image/*">
+                    <small class="text-muted">Upload JPG, PNG, GIF, or WebP thumbnail image for course cards</small>
+                    {% if course and course.thumbnail_filename %}
+                    <div class="mt-2">
+                        <small class="text-success me-2"><i class="fa-solid fa-circle-check me-1"></i> Current Thumbnail:</small>
+                        <img src="{{ url_for('courses.download_thumbnail', filename=course.thumbnail_filename) }}" alt="Thumbnail" class="rounded border" style="height: 40px; object-fit: cover;">
+                    </div>
+                    {% endif %}
+                </div>
+
                 <div class="col-12">
                     <label for="description" class="form-label fw-bold">Brief Description</label>
                     <textarea class="form-control" id="description" name="description" rows="3" placeholder="Provide overview of learning objectives...">{{ course.description if course else '' }}</textarea>
@@ -57,35 +89,37 @@
 
                 <hr class="my-4">
                 <h5 class="fw-bold text-navy mb-1"><i class="fa-solid fa-file-csv text-success me-2"></i> Assessment Questions CSV Upload <span class="badge bg-secondary font-monospace">Optional</span></h5>
-                <p class="text-muted small mb-3">Assessment CSV uploads are optional during course creation. For <strong>Self-Paced Courses</strong>, Pre & Post assessments are not required — only a Course-End Summative Assessment is used, which can be uploaded now or added later at any time.</p>
+                <p class="text-muted small mb-3">Assessment CSV uploads are optional during course creation. Available assessment types depend on the selected Course Mode.</p>
 
                 <div class="alert alert-info py-2 small">
                     <i class="fa-solid fa-info-circle me-1"></i> <strong>CSV Column Structure:</strong> Column1: Serial Number, Column2: Question, Column3: Option1, Column4: Option2, Column5: Option3, Column6: Option4, Column7: Correct Option (e.g. Option1).
                 </div>
 
-                <div class="col-md-12">
+                <!-- Course-End Assessment CSV (ONLY FOR SELF-PACED COURSES) -->
+                <div class="col-md-12" id="summative_csv_container">
                     <div class="card bg-light border-warning p-3">
                         <label for="summative_assessment_csv" class="form-label fw-bold text-navy">
-                            <i class="fa-solid fa-award text-warning me-1"></i> Course-End Summative Assessment CSV File <span class="badge bg-outline-secondary border text-muted">Optional</span>
+                            <i class="fa-solid fa-award text-warning me-1"></i> Course-End Summative Assessment CSV File <span class="badge bg-outline-secondary border text-muted">Self-Paced Only</span>
                         </label>
                         <input type="file" class="form-control mb-2" id="summative_assessment_csv" name="summative_assessment_csv" accept=".csv,.xlsx,.xls">
-                        <small class="text-muted">Upload CSV for final Course-End Summative Assessment (recommended for Self-Paced courses). Can also be uploaded later from Course Details.</small>
+                        <small class="text-muted">Upload CSV for final Course-End Summative Assessment (Self-Paced courses only).</small>
                     </div>
                 </div>
 
-                <div class="col-md-6">
+                <!-- Pre & Post Assessment CSVs (ONLY FOR LIVE IN PERSON & LIVE ONLINE COURSES) -->
+                <div class="col-md-6" id="pre_csv_container">
                     <div class="card bg-light border-0 p-3">
-                        <label for="pre_assessment_csv" class="form-label fw-bold text-navy">Pre Assessment CSV File <span class="badge bg-outline-secondary border text-muted">Optional</span></label>
+                        <label for="pre_assessment_csv" class="form-label fw-bold text-navy"><i class="fa-solid fa-pen-nib text-primary me-1"></i> Pre Assessment CSV File <span class="badge bg-outline-secondary border text-muted">Live Courses Only</span></label>
                         <input type="file" class="form-control mb-2" id="pre_assessment_csv" name="pre_assessment_csv" accept=".csv,.xlsx,.xls">
-                        <small class="text-muted">Optional: Upload CSV for Pre-Assessment question bank (Live courses).</small>
+                        <small class="text-muted">Upload CSV for Pre-Assessment question bank (Live In-Person & Live Online courses).</small>
                     </div>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-6" id="post_csv_container">
                     <div class="card bg-light border-0 p-3">
-                        <label for="post_assessment_csv" class="form-label fw-bold text-navy">Post Assessment CSV File <span class="badge bg-outline-secondary border text-muted">Optional</span></label>
+                        <label for="post_assessment_csv" class="form-label fw-bold text-navy"><i class="fa-solid fa-list-check text-success me-1"></i> Post Assessment CSV File <span class="badge bg-outline-secondary border text-muted">Live Courses Only</span></label>
                         <input type="file" class="form-control mb-2" id="post_assessment_csv" name="post_assessment_csv" accept=".csv,.xlsx,.xls">
-                        <small class="text-muted">Optional: Upload CSV for Post-Assessment question bank (Live courses).</small>
+                        <small class="text-muted">Upload CSV for Post-Assessment question bank (Live In-Person & Live Online courses).</small>
                     </div>
                 </div>
             </div>
@@ -99,4 +133,46 @@
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modeSelect = document.getElementById('mode');
+    const durationInput = document.getElementById('duration_hours');
+    const summativeContainer = document.getElementById('summative_csv_container');
+    const preContainer = document.getElementById('pre_csv_container');
+    const postContainer = document.getElementById('post_csv_container');
+
+    function updateModeVisibility() {
+        const mode = modeSelect.value;
+        if (mode === 'Self Paced') {
+            // Self-Paced: Course End Assessment ONLY (No Pre/Post)
+            summativeContainer.style.display = 'block';
+            preContainer.style.display = 'none';
+            postContainer.style.display = 'none';
+
+            durationInput.readOnly = true;
+            durationInput.classList.add('bg-light');
+        } else if (mode === 'Live Online') {
+            // Live Online: Pre/Post ONLY (No Course End); Duration pre-defined by admin
+            summativeContainer.style.display = 'none';
+            preContainer.style.display = 'block';
+            postContainer.style.display = 'block';
+
+            durationInput.readOnly = false;
+            durationInput.classList.remove('bg-light');
+        } else {
+            // Live In Person: Pre/Post ONLY (No Course End); Duration auto-calculated
+            summativeContainer.style.display = 'none';
+            preContainer.style.display = 'block';
+            postContainer.style.display = 'block';
+
+            durationInput.readOnly = true;
+            durationInput.classList.add('bg-light');
+        }
+    }
+
+    modeSelect.addEventListener('change', updateModeVisibility);
+    updateModeVisibility();
+});
+</script>
 {% endblock %}

@@ -289,7 +289,7 @@
                             <span class="badge bg-danger">Attempts: {{ enrollment.attempts_count }} / 3 Allowed</span>
                         </div>
                         <p class="text-muted small mb-3">Final comprehensive examination covering all course lessons.
-                            Requires {{ course.pass_percentage }}% pass mark to unlock certificate.</p>
+                            Requires {{ course.pass_percentage }}% pass mark to unlock course feedback & certification.</p>
 
                         {% if has_pre_questions and not pre_attempt %}
                         <div class="alert alert-warning py-2 mb-0">
@@ -301,22 +301,60 @@
                         <div class="alert alert-success d-flex align-items-center py-2 mb-0">
                             <i class="fa-solid fa-circle-check fs-4 me-2"></i>
                             <div>
-                                <strong>Course Passed!</strong> Final Score: {{ course_end_attempt.score_percentage }}%.
+                                <strong>Course Assessment Passed!</strong> Final Score: {{ course_end_attempt.score_percentage }}%.
                             </div>
                         </div>
                         {% else %}
-                        {% if enrollment.attempts_count < 3 %} <a
-                            href="{{ url_for('learners.take_assessment', course_id=course.id, assessment_type='COURSE_END') }}"
+                        {% if enrollment.attempts_count < 3 %}
+                        <a href="{{ url_for('learners.take_assessment', course_id=course.id, assessment_type='COURSE_END') }}"
                             class="btn btn-warning fw-bold text-dark w-100 shadow-sm">
                             <i class="fa-solid fa-file-signature me-1"></i> Take Course End Assessment
-                            </a>
+                        </a>
+                        {% else %}
+                        <div class="alert alert-danger py-2 mb-0">
+                            <i class="fa-solid fa-circle-xmark me-1"></i> Maximum 3 attempts limit exhausted.
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                        {% endif %}
+                    </div>
+
+                    <!-- MANDATORY COURSE FEEDBACK CARD -->
+                    <div class="p-4 border rounded-3 bg-white shadow-sm mt-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="fw-bold text-navy mb-0"><i class="fa-solid fa-comment-dots me-2 text-primary"></i>
+                                Mandatory Course Feedback</h5>
+                            {% if feedback_resp %}
+                            <span class="badge bg-success"><i class="fa-solid fa-check me-1"></i> Feedback Submitted</span>
                             {% else %}
-                            <div class="alert alert-danger py-2 mb-0">
-                                <i class="fa-solid fa-circle-xmark me-1"></i> Maximum 3 attempts limit exhausted.
+                            <span class="badge bg-warning text-dark"><i class="fa-solid fa-hourglass-half me-1"></i> Pending Submission</span>
+                            {% endif %}
+                        </div>
+                        <p class="text-muted small mb-3">Your feedback is required to complete this course{% if course.has_certificate %} and issue your official completion certificate{% endif %}.</p>
+
+                        {% if course_end_attempt and course_end_attempt.passed %}
+                            {% if feedback_resp %}
+                            <div class="alert alert-success py-2.5 mb-0 d-flex align-items-center">
+                                <i class="fa-solid fa-heart text-danger me-2 fs-5"></i>
+                                <div>
+                                    <strong>Feedback Recorded!</strong> Thank you for sharing your evaluation.
+                                </div>
                             </div>
+                            {% else %}
+                                {% if feedback_repo %}
+                                <a href="{{ url_for('learners.submit_feedback', repo_id=feedback_repo.id, course_id=course.id) }}"
+                                    class="btn btn-primary bg-navy fw-bold text-white w-100 shadow-sm py-2">
+                                    <i class="fa-solid fa-pen-to-square me-1"></i> Fill Course Feedback Form Now
+                                </a>
+                                {% else %}
+                                <div class="text-muted small border p-2 rounded bg-light text-center">No feedback form attached to this course.</div>
+                                {% endif %}
                             {% endif %}
-                            {% endif %}
-                            {% endif %}
+                        {% else %}
+                        <div class="alert alert-warning py-2 mb-0">
+                            <i class="fa-solid fa-lock me-1"></i> Locked: Pass the Course End Assessment to unlock the Feedback Form.
+                        </div>
+                        {% endif %}
                     </div>
 
                 </div>
@@ -362,25 +400,34 @@
         </div>
     </div>
 
-    <!-- Certificate Card -->
-    <div class="card border-0 shadow-sm text-center p-3">
+    <!-- Certificate & Completion Card -->
+    <div class="card border-0 shadow-sm text-center p-4">
         <div class="card-body">
             <i class="fa-solid fa-certificate text-gold fa-4x mb-3"></i>
-            <h5 class="fw-bold text-navy">L&D Completion Certificate</h5>
-            <p class="text-muted small mb-3">Issued automatically upon passing the Course End Assessment.</p>
+            <h5 class="fw-bold text-navy">Course Completion & Certification</h5>
 
-            {% if certificate %}
-            <div class="alert alert-success py-2 small mb-3">
-                <i class="fa-solid fa-check me-1"></i> Issued: {{ certificate.certificate_id }}
-            </div>
-            <a href="{{ url_for('certificates.download_certificate', cert_id_str=certificate.certificate_id) }}"
-                class="btn btn-navy bg-navy text-white w-100 fw-bold shadow-sm">
-                <i class="fa-solid fa-download me-1"></i> Download PDF Certificate
-            </a>
+            {% if enrollment.completion_status == 'Completed' %}
+                <div class="alert alert-success py-2.5 mb-3">
+                    <i class="fa-solid fa-circle-check text-success me-1"></i> Status: <strong>Course Completed!</strong>
+                </div>
+                {% if certificate %}
+                <div class="badge bg-gold text-dark font-monospace p-2 mb-3 fs-6 d-inline-block">
+                    <i class="fa-solid fa-award me-1"></i> Issued ID: {{ certificate.certificate_id }}
+                </div>
+                <div class="mt-2">
+                    <a href="{{ url_for('certificates.download_certificate', cert_id_str=certificate.certificate_id) }}"
+                        class="btn btn-navy bg-navy text-white w-100 fw-bold shadow-sm py-2">
+                        <i class="fa-solid fa-file-pdf me-1"></i> Download PDF Certificate
+                    </a>
+                </div>
+                {% else %}
+                <p class="text-muted small mb-0">Course marked as completed successfully. (No certificate generated for this course).</p>
+                {% endif %}
             {% else %}
-            <div class="text-muted small border p-3 rounded bg-light">
-                <i class="fa-solid fa-lock me-1"></i> Complete Course End Assessment to unlock certificate.
-            </div>
+                <p class="text-muted small mb-3">Course status: <strong class="text-dark">{{ enrollment.completion_status }}</strong></p>
+                <div class="text-muted small border p-3 rounded bg-light">
+                    <i class="fa-solid fa-lock text-warning me-1"></i> Submit the Course Feedback Form above to mark course as completed{% if course.has_certificate %} and generate your PDF certificate{% endif %}.
+                </div>
             {% endif %}
         </div>
     </div>

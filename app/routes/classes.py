@@ -29,7 +29,10 @@ def list_classes():
         query = query.filter(
             (LiveClass.class_name.ilike(f'%{search_query}%')) |
             (LiveClass.class_id.ilike(f'%{search_query}%')) |
-            (LiveClass.facilitator_name.ilike(f'%{search_query}%'))
+            (LiveClass.facilitator_name.ilike(f'%{search_query}%')) |
+            (LiveClass.co_facilitator_name.ilike(f'%{search_query}%')) |
+            (LiveClass.location.ilike(f'%{search_query}%')) |
+            (LiveClass.branch.ilike(f'%{search_query}%'))
         )
 
     if mode_filter and mode_filter != 'ALL':
@@ -58,7 +61,7 @@ def create_class():
         location = request.form.get('location', '').strip()
         branch = request.form.get('branch', '').strip()
         session_time = request.form.get('session_time', 'Morning').strip()
-        meet_link = request.form.get('meet_link', '').strip()
+        meet_link = request.form.get('meet_link', '').strip() if class_mode == 'Online' else None
 
         facilitator_name = request.form.get('facilitator_name', '').strip()
         co_facilitator_name = request.form.get('co_facilitator_name', '').strip()
@@ -245,3 +248,66 @@ def download_qr(class_id_str):
         generate_class_qr(class_id_str)
         
     return send_file(qr_file_path, as_attachment=True, download_name=f"QR_{class_id_str}.png")
+
+
+@classes_bp.route('/<int:class_id>/assign_learners', methods=['POST'])
+def assign_learners_to_class(class_id):
+    if not check_admin():
+        return redirect(url_for('auth.admin_login'))
+
+    live_class = LiveClass.query.get_or_404(class_id)
+    course = live_class.course
+
+    global_ids_text = request.form.get('global_ids', '').strip()
+    csv_file = request.files.get('learner_csv')
+
+    parsed_global_ids = []
+
+    if global_ids_text:
+        lines = global_ids_text.split('\n')
+        parsed_global_ids.extend([line.strip() for line in lines if line.strip()])
+
+    if csv_file and csv_file.filename:
+        try:
+            import pandas as pd
+            df = pd.read_csv(csv_file.stream)
+            col_name = df.columns[0]
+            for col in df.columns:
+                if 'global' in str(col).lower() or 'id' in str(col).lower():
+                    col_name = col
+                    break
+            for val in df[col_name].dropna():
+                clean_val = str(val).strip()
+                if clean_val and clean_val not in parsed_global_ids:
+                    parsed_global_ids.append(clean_val)
+        except Exception as e:
+            flash(f"Error parsing Learner CSV: {str(e)}", "danger")
+
+    if not parsed_global_ids:
+        flash("No valid Global IDs provided.", "warning")
+        return redirect(url_for('courses.view_course', course_id=course.id))
+
+    assigned_count = 0
+    from app.models.user import Learner
+    from app.models.enrollment import LearnerEnrollment
+    for gid in parsed_global_ids:
+        learner = Learner.query.filter_by(global_id=gid).first()
+        if not learner:
+            learner = Learner(global_id=gid, name=f"Learner {gid}", department="L&D")
+            db.session.add(learner)
+            db.session.commit()
+
+        existing_en = LearnerEnrollment.query.filter_by(learner_id=learner.id, course_id=course.id, class_id=live_class.id).first()
+        if not existing_en:
+            en = LearnerEnrollment(
+                learner_id=learner.id,
+                course_id=course.id,
+                class_id=live_class.id,
+                completion_status='Enrolled'
+            )
+            db.session.add(en)
+            assigned_count += 1
+
+    db.session.commit()
+    flash(f"Successfully assigned {assigned_count} learners to Live Class '{live_class.class_name}'.", "success")
+    return redirect(url_for('courses.view_course', course_id=course.id))

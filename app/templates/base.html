@@ -4,100 +4,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Narayana Learning Hub - L&D Management System{% endblock %}</title>
-    <!-- Google Fonts Inter -->
+    <!-- Google Fonts Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
     {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-light">
+<body>
 
-    {% if admin_logged_in %}
-    <!-- Top Horizontal Header Navbar -->
-    <header class="sticky-top shadow-sm" style="background-color: var(--navy-blue);">
-        <!-- Top Utility Bar -->
-        <div class="container-fluid px-4 py-2 border-bottom border-secondary d-flex align-items-center justify-content-between text-white">
-            <div class="d-flex align-items-center gap-3">
-                <i class="fa-solid fa-graduation-cap text-gold fa-2x"></i>
-                <div>
-                    <h5 class="m-0 fw-bold tracking-wider text-uppercase text-white">Narayana Learning Hub</h5>
-                    <small class="text-white-50 text-xs">Learning & Development (L&D) Portal</small>
+    <!-- Narayana Learning Hub Main Header Navigation -->
+    <header class="ls-navbar sticky-top shadow-sm">
+        <div class="container-fluid px-4">
+            <div class="d-flex align-items-center justify-content-between py-2">
+                <!-- Brand Logo (Restored Narayana L&D Branding) -->
+                <div class="d-flex align-items-center gap-3">
+                    <a href="{{ url_for('dashboard.index') if admin_logged_in else url_for('learners.my_portal') }}" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa-solid fa-graduation-cap text-gold fa-2x me-2"></i>
+                        <span class="fs-4 fw-extrabold tracking-tight text-dark" style="font-family: 'Plus Jakarta Sans', sans-serif;">Narayana Learning Hub</span>
+                    </a>
                 </div>
-            </div>
 
-            <div class="d-flex align-items-center gap-3">
-                <span class="badge bg-gold text-dark font-monospace px-3 py-1.5"><i class="fa-solid fa-user-shield me-1"></i> Admin Mode</span>
-                <div class="dropdown">
-                    <button class="btn btn-navy-dark dropdown-toggle d-flex align-items-center gap-2 border border-secondary text-white py-1 px-3 rounded-pill" type="button" data-bs-toggle="dropdown">
-                        <div class="avatar bg-gold text-dark rounded-circle fw-bold d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; font-size: 13px;">
-                            A
-                        </div>
-                        <span class="fw-medium small">{{ admin_username }}</span>
+                <!-- Navigation Tabs (With Dummy Tab View Triggers) -->
+                <div class="d-none d-lg-flex align-items-center gap-1">
+                    {% if admin_logged_in %}
+                    <a href="{{ url_for('dashboard.index') }}" class="ls-nav-tab {% if request.endpoint == 'dashboard.index' %}active{% endif %}">
+                        Home
+                    </a>
+                    <a href="{{ url_for('courses.list_courses') }}" class="ls-nav-tab {% if 'courses' in request.endpoint or 'classes' in request.endpoint %}active{% endif %}">
+                        Course & Classes
+                    </a>
+                    <a href="{{ url_for('learners.list_learners') }}" class="ls-nav-tab {% if 'learners' in request.endpoint %}active{% endif %}">
+                        Learners
+                    </a>
+                    <a href="{{ url_for('attendance.list_attendance') }}" class="ls-nav-tab {% if 'attendance' in request.endpoint %}active{% endif %}">
+                        Attendance
+                    </a>
+                    <a href="{{ url_for('certificates.list_certificates') }}" class="ls-nav-tab {% if 'certificates' in request.endpoint %}active{% endif %}">
+                        Certificates
+                    </a>
+                    <a href="{{ url_for('reports.index') }}" class="ls-nav-tab {% if 'reports' in request.endpoint %}active{% endif %}">
+                        Reports
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('learners.my_portal') }}" class="ls-nav-tab {% if request.endpoint == 'learners.my_portal' %}active{% endif %}">
+                        Home
+                    </a>
+                    <a href="{{ url_for('learners.my_portal') }}" class="ls-nav-tab">
+                        My Learning
+                    </a>
+                    <a href="#" class="ls-nav-tab dummy-nav-tab" data-tab-name="Skills Matrix & Catalog">
+                        Skills
+                    </a>
+                    <a href="#" class="ls-nav-tab dummy-nav-tab" data-tab-name="Learning Wall & Community">
+                        Learning Wall
+                    </a>
+                    <a href="#" class="ls-nav-tab dummy-nav-tab" data-tab-name="My Completion Certificates">
+                        Certificates
+                    </a>
+                    <a href="#" class="ls-nav-tab dummy-nav-tab" data-tab-name="Learning Resources & Repositories">
+                        Resources
+                    </a>
+                    {% endif %}
+                </div>
+
+                <!-- Right Utility Bar -->
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Search Icon Button -->
+                    <button type="button" class="btn btn-link text-muted p-1 text-decoration-none" title="Search">
+                        <i class="fa-solid fa-magnifying-glass fs-5"></i>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                        <li><a class="dropdown-item text-danger fw-semibold" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
-                    </ul>
+
+                    <!-- Notifications Bell with Counter Badge -->
+                    <div class="position-relative">
+                        <button type="button" class="btn btn-link text-muted p-1 text-decoration-none" title="Notifications">
+                            <i class="fa-regular fa-bell fs-5"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-primary" style="font-size: 0.65rem; padding: 0.35em 0.55em;">
+                                3
+                            </span>
+                        </button>
+                    </div>
+
+                    <!-- Theme Toggle Switcher -->
+                    <button type="button" class="theme-toggle-btn ms-1" title="Toggle Light/Dark Theme">
+                        <i class="fa-solid fa-moon text-primary me-1"></i> <span>Dark Mode</span>
+                    </button>
+
+                    <!-- Profile / Account Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn p-0 border-0 d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
+                            <div class="avatar bg-navy text-white rounded-circle fw-bold d-flex align-items-center justify-content-center shadow-sm" style="width: 38px; height: 38px;">
+                                {% if admin_logged_in %}A{% else %}<img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" alt="Avatar" class="rounded-circle" style="width: 38px; height: 38px; object-fit: cover;">{% endif %}
+                            </div>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                            {% if admin_logged_in %}
+                            <li class="px-3 py-2 border-bottom">
+                                <span class="d-block fw-bold text-dark">{{ admin_username }}</span>
+                                <small class="text-muted">Administrator</small>
+                            </li>
+                            <li><a class="dropdown-item text-danger fw-semibold" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+                            {% else %}
+                            <li class="px-3 py-2 border-bottom">
+                                <span class="d-block fw-bold text-dark">Learner Portal</span>
+                                <small class="text-muted">Student Mode</small>
+                            </li>
+                            <li><a class="dropdown-item text-danger fw-semibold" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Horizontal Main Navigation Bar -->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark-slate py-1 px-4">
-            <div class="container-fluid p-0">
-                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#topNavMenu" aria-controls="topNavMenu" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="topNavMenu">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-1">
-                        <li class="nav-item">
-                            <a class="nav-link px-3 py-2 rounded-2 d-flex align-items-center {% if request.endpoint == 'dashboard.index' %}active-top-nav{% endif %}" href="{{ url_for('dashboard.index') }}">
-                                <i class="fa-solid fa-chart-line text-gold me-2"></i> Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link px-3 py-2 rounded-2 d-flex align-items-center {% if 'courses' in request.endpoint or 'classes' in request.endpoint %}active-top-nav{% endif %}" href="{{ url_for('courses.list_courses') }}">
-                                <i class="fa-solid fa-book-open text-info me-2"></i> Course & Class Management
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link px-3 py-2 rounded-2 d-flex align-items-center {% if 'learners' in request.endpoint %}active-top-nav{% endif %}" href="{{ url_for('learners.list_learners') }}">
-                                <i class="fa-solid fa-user-graduate text-warning me-2"></i> Learner Management
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link px-3 py-2 rounded-2 d-flex align-items-center {% if 'attendance' in request.endpoint %}active-top-nav{% endif %}" href="{{ url_for('attendance.list_attendance') }}">
-                                <i class="fa-solid fa-clipboard-user text-primary me-2"></i> Attendance Tracking
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link px-3 py-2 rounded-2 d-flex align-items-center {% if 'feedback' in request.endpoint %}active-top-nav{% endif %}" href="{{ url_for('feedback.list_repositories') }}">
-                                <i class="fa-solid fa-comments text-danger me-2"></i> Feedback Repository
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link px-3 py-2 rounded-2 d-flex align-items-center {% if 'certificates' in request.endpoint %}active-top-nav{% endif %}" href="{{ url_for('certificates.list_certificates') }}">
-                                <i class="fa-solid fa-certificate text-gold me-2"></i> Certificates
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link px-3 py-2 rounded-2 d-flex align-items-center {% if 'reports' in request.endpoint %}active-top-nav{% endif %}" href="{{ url_for('reports.index') }}">
-                                <i class="fa-solid fa-file-invoice text-light me-2"></i> Reports
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
     </header>
 
-    <!-- Main Content Area -->
-    <main class="container-fluid p-4" style="max-width: 1600px;">
+    <!-- Main Body Container -->
+    <main class="container-fluid py-4 px-4">
         <!-- Toast Notifications Container -->
         <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
             {% with messages = get_flashed_messages(with_categories=true) %}
@@ -116,14 +155,12 @@
             {% endwith %}
         </div>
 
-        {% block content %}{% endblock %}
+        {% if admin_logged_in %}
+            {% block content %}{% endblock %}
+        {% else %}
+            {% block public_content %}{% endblock %}
+        {% endif %}
     </main>
-    {% else %}
-    <!-- Public / Learner Layout -->
-    <div class="container-fluid p-0 min-vh-100 bg-light d-flex flex-column">
-        {% block public_content %}{% endblock %}
-    </div>
-    {% endif %}
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

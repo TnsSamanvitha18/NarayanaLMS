@@ -27,6 +27,27 @@ def init_db_if_needed():
             db.session.commit()
         except Exception:
             db.session.rollback()
+
+        try:
+            db.session.execute(db.text("ALTER TABLE courses ADD COLUMN feedback_repo_id INTEGER;"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+
+        try:
+            db.session.execute(db.text("ALTER TABLE courses ADD COLUMN has_certificate BOOLEAN DEFAULT 1;"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+
+        try:
+            db.session.execute(db.text("ALTER TABLE courses ADD COLUMN thumbnail_filename VARCHAR(255);"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+
+        os.makedirs(os.path.join(app.root_path, '..', 'uploads', 'thumbnails'), exist_ok=True)
+
         admin = AdminUser.query.filter_by(username='admin').first()
         if not admin:
             print("Database empty. Seeding initial data...")
@@ -59,7 +80,9 @@ def init_db_if_needed():
                 duration_hours=6.0,
                 description='Self-paced course covering lists, dictionaries, trees, graphs, dynamic programming, and complexity analysis.',
                 mode='Self Paced',
-                pass_percentage=80.0
+                pass_percentage=80.0,
+                feedback_repo_id=fb_repo.id,
+                has_certificate=True
             )
             db.session.add(c1)
             db.session.commit()
@@ -80,7 +103,9 @@ def init_db_if_needed():
                 duration_hours=8.0,
                 description='Live in-person campus training covering supervised learning, neural networks, and model deployment.',
                 mode='Live In Person',
-                pass_percentage=80.0
+                pass_percentage=80.0,
+                feedback_repo_id=fb_repo.id,
+                has_certificate=True
             )
             db.session.add(c2)
             db.session.commit()
@@ -119,7 +144,9 @@ def init_db_if_needed():
                 duration_hours=5.0,
                 description='Live virtual online classroom training with Google Meet integration, containers, and microservices.',
                 mode='Live Online',
-                pass_percentage=80.0
+                pass_percentage=80.0,
+                feedback_repo_id=fb_repo.id,
+                has_certificate=True
             )
             db.session.add(c3)
             db.session.commit()

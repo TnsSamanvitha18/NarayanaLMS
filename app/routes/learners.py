@@ -29,7 +29,11 @@ def list_learners():
     query = Learner.query
 
     if search_query:
-        query = query.filter((Learner.global_id.ilike(f'%{search_query}%')) | (Learner.name.ilike(f'%{search_query}%')))
+        query = query.filter(
+            (Learner.global_id.ilike(f'%{search_query}%')) |
+            (Learner.name.ilike(f'%{search_query}%')) |
+            (Learner.department.ilike(f'%{search_query}%'))
+        )
 
     learners = query.order_by(Learner.id.desc()).all()
     courses = Course.query.all()
@@ -185,6 +189,7 @@ def class_flow(class_id_str):
     pre_attempt = AssessmentAttempt.query.filter((AssessmentAttempt.enrollment_id == enrollment.id) & (AssessmentAttempt.assessment_type.in_(['PRE', 'LESSON_PRE']))).order_by(AssessmentAttempt.id.desc()).first()
     post_attempt = AssessmentAttempt.query.filter((AssessmentAttempt.enrollment_id == enrollment.id) & (AssessmentAttempt.assessment_type.in_(['POST', 'LESSON_POST']))).order_by(AssessmentAttempt.id.desc()).first()
     feedback_resp = FeedbackResponse.query.filter_by(class_id=live_class.id, learner_id=learner.id).first()
+    cert = Certificate.query.filter_by(learner_id=learner.id, course_id=course.id).first()
 
     return render_template(
         'learner_portal/class_flow.html',
@@ -197,7 +202,8 @@ def class_flow(class_id_str):
         has_pre_questions=has_pre_questions,
         pre_attempt=pre_attempt,
         post_attempt=post_attempt,
-        feedback_resp=feedback_resp
+        feedback_resp=feedback_resp,
+        certificate=cert
     )
 
 
@@ -232,6 +238,11 @@ def self_paced_flow(course_id_str):
     reviewed_reviews = LessonReview.query.filter_by(enrollment_id=enrollment.id).all()
     reviewed_lesson_ids = [r.lesson_id for r in reviewed_reviews]
 
+    feedback_repo = course.feedback_repository or FeedbackRepository.query.first()
+    feedback_resp = None
+    if feedback_repo:
+        feedback_resp = FeedbackResponse.query.filter_by(repo_id=feedback_repo.id, learner_id=learner.id).first()
+
     cert = Certificate.query.filter_by(learner_id=learner.id, course_id=course.id).first()
 
     return render_template(
@@ -244,6 +255,8 @@ def self_paced_flow(course_id_str):
         post_attempt=post_attempt,
         course_end_attempt=course_end_attempt,
         reviewed_lesson_ids=reviewed_lesson_ids,
+        feedback_repo=feedback_repo,
+        feedback_resp=feedback_resp,
         certificate=cert
     )
 
@@ -351,29 +364,7 @@ def take_assessment(course_id, assessment_type):
 
         if is_course_end:
             enrollment.final_score = score_pct
-            if passed:
-                enrollment.completion_status = 'Completed'
-                enrollment.completion_date = datetime.utcnow()
-                
-                # Auto generate certificate
-                existing_cert = Certificate.query.filter_by(learner_id=learner.id, course_id=course.id).first()
-                if not existing_cert:
-                    cert_id = Certificate.generate_certificate_id()
-                    cert_filename = f"cert_{cert_id}.pdf"
-                    cert_file_path = os.path.join(learners_bp.root_path, '..', '..', 'uploads', 'certificates', cert_filename)
-                    os.makedirs(os.path.dirname(cert_file_path), exist_ok=True)
-
-                    date_str = datetime.now().strftime('%d-%b-%Y')
-                    generate_certificate_pdf(learner.name, course.name, date_str, cert_id, cert_file_path)
-
-                    cert = Certificate(
-                        certificate_id=cert_id,
-                        learner_id=learner.id,
-                        course_id=course.id,
-                        pdf_filename=cert_filename
-                    )
-                    db.session.add(cert)
-            else:
+            if not passed:
                 if enrollment.attempts_count >= 3:
                     enrollment.completion_status = 'Failed'
 
@@ -381,7 +372,7 @@ def take_assessment(course_id, assessment_type):
 
         if is_course_end:
             if passed:
-                flash(f"Congratulations! You passed the Course-End Assessment with {score_pct}% ({correct}/{total}).", "success")
+                flash(f"Congratulations! You passed the Course-End Assessment with {score_pct}% ({correct}/{total}). Please submit the Course Feedback form below to complete your course and receive your certificate!", "success")
             else:
                 flash(f"Course-End Assessment score: {score_pct}% ({correct}/{total}). Pass mark is {course.pass_percentage}%. Attempts remaining: {max(0, 3 - enrollment.attempts_count)}.", "warning" if enrollment.attempts_count < 3 else "danger")
         else:
@@ -409,26 +400,87 @@ def submit_feedback(repo_id):
 
     repo = FeedbackRepository.query.get_or_404(repo_id)
     class_id_str = request.args.get('class_id')
+    course_id_param = request.args.get('course_id')
+
     live_class = LiveClass.query.filter_by(class_id=class_id_str).first() if class_id_str else None
+    
+    course = None
+    enrollment = None
+
+    if live_class:
+        course = live_class.course
+        enrollment = LearnerEnrollment.query.filter_by(learner_id=learner_id, course_id=course.id, class_id=live_class.id).first()
+        if not enrollment:
+            enrollment = LearnerEnrollment.query.filter_by(learner_id=learner_id, course_id=course.id).first()
+    elif course_id_param:
+        course = Course.query.get(int(course_id_param))
+        if course:
+            enrollment = LearnerEnrollment.query.filter_by(learner_id=learner_id, course_id=course.id).first()
+    else:
+        # Fallback to course linked to repo
+        course = Course.query.filter_by(feedback_repo_id=repo.id).first()
+        if course:
+            enrollment = LearnerEnrollment.query.filter_by(learner_id=learner_id, course_id=course.id).first()
 
     if request.method == 'POST':
         resp_dict = request.form.to_dict()
         import json
-        
-        fb_resp = FeedbackResponse(
+
+        existing_resp = FeedbackResponse.query.filter_by(
             repo_id=repo.id,
-            class_id=live_class.id if live_class else None,
             learner_id=learner_id,
-            responses_json=json.dumps(resp_dict)
-        )
-        db.session.add(fb_resp)
+            class_id=live_class.id if live_class else None
+        ).first()
+
+        if not existing_resp:
+            fb_resp = FeedbackResponse(
+                repo_id=repo.id,
+                class_id=live_class.id if live_class else None,
+                learner_id=learner_id,
+                responses_json=json.dumps(resp_dict)
+            )
+            db.session.add(fb_resp)
+
+        # Trigger Course Completion & Certificate Generation ONLY ON FEEDBACK SUBMISSION
+        if enrollment:
+            enrollment.completion_status = 'Completed'
+            enrollment.completion_date = datetime.utcnow()
+
+            # Check if certificate exists/is enabled for this course
+            has_cert = getattr(course, 'has_certificate', True) if course else True
+            if has_cert and course:
+                existing_cert = Certificate.query.filter_by(learner_id=learner_id, course_id=course.id).first()
+                if not existing_cert:
+                    cert_id = Certificate.generate_certificate_id()
+                    cert_filename = f"cert_{cert_id}.pdf"
+                    cert_file_path = os.path.join(learners_bp.root_path, '..', '..', 'uploads', 'certificates', cert_filename)
+                    os.makedirs(os.path.dirname(cert_file_path), exist_ok=True)
+
+                    learner_obj = Learner.query.get(learner_id)
+                    date_str = datetime.now().strftime('%d-%b-%Y')
+                    generate_certificate_pdf(learner_obj.name, course.name, date_str, cert_id, cert_file_path)
+
+                    cert = Certificate(
+                        certificate_id=cert_id,
+                        learner_id=learner_id,
+                        course_id=course.id,
+                        pdf_filename=cert_filename
+                    )
+                    db.session.add(cert)
+                    flash("Thank you! Feedback recorded. Your course is marked as COMPLETED and Certificate generated!", "success")
+                else:
+                    flash("Thank you! Feedback recorded. Your course is marked as COMPLETED!", "success")
+            else:
+                flash("Thank you! Feedback recorded. Your course is marked as COMPLETED!", "success")
+
         db.session.commit()
 
-        flash("Thank you! Your feedback has been recorded successfully.", "success")
         if live_class:
             return redirect(url_for('learners.class_flow', class_id_str=live_class.class_id))
+        elif course:
+            return redirect(url_for('learners.self_paced_flow', course_id_str=course.course_id))
         else:
             return redirect(url_for('learners.my_portal'))
 
     questions = FeedbackQuestion.query.filter_by(repo_id=repo.id).all()
-    return render_template('learner_portal/feedback.html', repo=repo, questions=questions, live_class=live_class)
+    return render_template('learner_portal/feedback.html', repo=repo, questions=questions, live_class=live_class, course=course)

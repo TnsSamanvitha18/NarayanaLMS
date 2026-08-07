@@ -67,4 +67,25 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('input[name="search"]');
+    const tableRows = document.querySelectorAll('tbody tr');
+
+    if (searchInput && tableRows.length > 0) {
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            tableRows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    }
+});
+</script>
 {% endblock %}

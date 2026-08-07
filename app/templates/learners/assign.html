@@ -21,13 +21,58 @@
             <div class="row g-4">
                 <div class="col-md-6">
                     <label for="course_id" class="form-label fw-bold">Select Self-Paced Course <span class="text-danger">*</span></label>
-                    <select class="form-select" id="course_id" name="course_id" required>
+                    <div class="input-group mb-2">
+                        <span class="input-group-text bg-white"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                        <input type="text" id="course_search_input" class="form-control" placeholder="Search course by name or Course ID..." autocomplete="off">
+                    </div>
+                    <select class="form-select font-monospace" id="course_id" name="course_id" required style="max-height: 240px;">
                         <option value="">-- Choose Self-Paced Course --</option>
                         {% for crs in courses %}
-                        <option value="{{ crs.id }}">{{ crs.name }} ({{ crs.course_id }}) - Pass Score: {{ crs.pass_percentage }}%</option>
+                        <option value="{{ crs.id }}" data-name="{{ crs.name|lower }}" data-code="{{ crs.course_id|lower }}">{{ crs.name }} ({{ crs.course_id }}) - Pass Score: {{ crs.pass_percentage }}%</option>
                         {% endfor %}
                     </select>
+                    <small class="text-muted">Type in the search box above to filter course names in real-time.</small>
                 </div>
+
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const searchInput = document.getElementById('course_search_input');
+                    const courseSelect = document.getElementById('course_id');
+
+                    if (searchInput && courseSelect) {
+                        searchInput.addEventListener('input', function() {
+                            const query = this.value.toLowerCase().trim();
+                            let firstMatchIndex = -1;
+
+                            for (let i = 0; i < courseSelect.options.length; i++) {
+                                const opt = courseSelect.options[i];
+                                if (opt.value === "") {
+                                    opt.hidden = false;
+                                    opt.style.display = "";
+                                    continue;
+                                }
+                                const name = opt.getAttribute('data-name') || opt.text.toLowerCase();
+                                const code = opt.getAttribute('data-code') || '';
+
+                                if (name.includes(query) || code.includes(query)) {
+                                    opt.hidden = false;
+                                    opt.style.display = "";
+                                    if (firstMatchIndex === -1 && query.length > 0) {
+                                        firstMatchIndex = i;
+                                    }
+                                } else {
+                                    opt.hidden = true;
+                                    opt.style.display = "none";
+                                }
+                            }
+
+                            if (firstMatchIndex !== -1 && query.length > 0) {
+                                courseSelect.selectedIndex = firstMatchIndex;
+                            }
+                        });
+                    }
+                });
+                </script>
 
                 <div class="col-12">
                     <hr class="my-2">

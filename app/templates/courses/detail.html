@@ -43,6 +43,11 @@
                 <h5 class="fw-bold text-navy mb-0"><i class="fa-solid fa-circle-info me-2"></i> Course Overview</h5>
             </div>
             <div class="card-body">
+                {% if course.thumbnail_filename %}
+                <div class="mb-3 text-center">
+                    <img src="{{ url_for('courses.download_thumbnail', filename=course.thumbnail_filename) }}" alt="Course Thumbnail" class="img-fluid rounded border shadow-sm" style="max-height: 160px; width: 100%; object-fit: cover;">
+                </div>
+                {% endif %}
                 <p class="text-muted">{{ course.description or 'No description provided.' }}</p>
                 <hr>
                 <div class="d-flex justify-content-between mb-2">
@@ -57,10 +62,70 @@
                     <span class="text-muted">Pass Mark:</span>
                     <span class="fw-bold text-success">{{ course.pass_percentage }}%</span>
                 </div>
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Feedback Form:</span>
+                    <span class="fw-bold text-primary">
+                        {% if course.feedback_repository %}
+                        <i class="fa-solid fa-comment-dots me-1"></i>{{ course.feedback_repository.title }}
+                        {% else %}
+                        <span class="text-muted font-italic">Default Feedback Survey</span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Certificate Issued:</span>
+                    <span class="fw-bold {% if course.has_certificate %}text-success{% else %}text-secondary{% endif %}">
+                        {% if course.has_certificate %}
+                        <i class="fa-solid fa-check-circle me-1"></i>Yes (PDF Generated on Feedback)
+                        {% else %}
+                        <i class="fa-solid fa-times-circle me-1"></i>No (Mark Completed Only)
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
                     <span class="text-muted">Created On:</span>
                     <span class="fw-bold text-dark">{{ course.created_at.strftime('%d-%b-%Y') }}</span>
                 </div>
+
+                {% if course.mode == 'Self Paced' %}
+                <!-- Course-Level Learner Assignment for Self-Paced Courses -->
+                <div class="pt-2 border-top">
+                    <button type="button" class="btn btn-navy bg-navy text-white w-100 fw-bold shadow-sm py-2" data-bs-toggle="modal" data-bs-target="#assignCourseModal">
+                        <i class="fa-solid fa-user-plus me-1"></i> Assign Learners to Course
+                    </button>
+                </div>
+
+                <!-- Self-Paced Course Learner Assignment Modal -->
+                <div class="modal fade" id="assignCourseModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content border-0 shadow-lg text-start">
+                            <div class="modal-header bg-navy text-white">
+                                <h5 class="modal-title fw-bold"><i class="fa-solid fa-user-plus me-2 text-gold"></i> Assign Learners - {{ course.course_id }}</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body p-4">
+                                <form action="{{ url_for('learners.assign_learners') }}" method="POST" enctype="multipart/form-data">
+                                    <input type="hidden" name="course_id" value="{{ course.id }}">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold text-navy">Option A: Enter Global IDs (One per line)</label>
+                                        <textarea class="form-control font-monospace" name="global_ids" rows="4" placeholder="10001&#10;10002&#10;10003"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold text-navy">Option B: Upload Learner CSV</label>
+                                        <input type="file" class="form-control" name="learner_csv" accept=".csv">
+                                    </div>
+                                    <div class="text-end mt-4">
+                                        <button type="button" class="btn btn-light border me-1" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-navy bg-navy text-white fw-bold px-4">
+                                            <i class="fa-solid fa-user-check me-1"></i> Assign Course Learners
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -421,6 +486,9 @@
                                     <strong class="font-monospace text-gold me-2">{{ cls.class_id }}</strong> {{ cls.class_name }}
                                 </div>
                                 <div>
+                                    <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 fw-bold text-white me-2" data-bs-toggle="modal" data-bs-target="#assignClassModal{{ cls.id }}">
+                                        <i class="fa-solid fa-user-plus me-1"></i> Assign Learners
+                                    </button>
                                     <button type="button" class="btn btn-sm btn-outline-success py-0 px-2 fw-bold text-white me-2" data-bs-toggle="modal" data-bs-target="#attModal{{ cls.id }}">
                                         <i class="fa-solid fa-user-check me-1"></i> Mark Attendance (CSV/IDs)
                                     </button>
@@ -433,6 +501,36 @@
                                     <a href="{{ url_for('classes.view_class', class_id=cls.id) }}" class="btn btn-sm btn-outline-info py-0 px-2 fw-bold text-white">
                                         <i class="fa-solid fa-eye me-1"></i> Class Details
                                     </a>
+                                </div>
+                            </div>
+
+                            <!-- Assign Learners to Class Modal -->
+                            <div class="modal fade" id="assignClassModal{{ cls.id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content border-0 shadow-lg text-start">
+                                        <div class="modal-header bg-navy text-white py-2.5">
+                                            <h6 class="modal-title fw-bold"><i class="fa-solid fa-user-plus me-2 text-gold"></i> Assign Learners to Class Batch - {{ cls.class_id }}</h6>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body p-4">
+                                            <form action="{{ url_for('classes.assign_learners_to_class', class_id=cls.id) }}" method="POST" enctype="multipart/form-data">
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold text-navy">Option A: Enter Global IDs (One per line)</label>
+                                                    <textarea class="form-control font-monospace" name="global_ids" rows="4" placeholder="10001&#10;10002&#10;10003"></textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold text-navy">Option B: Upload Learner CSV</label>
+                                                    <input type="file" class="form-control" name="learner_csv" accept=".csv">
+                                                </div>
+                                                <div class="text-end mt-4">
+                                                    <button type="button" class="btn btn-light border me-1" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-navy bg-navy text-white fw-bold px-4">
+                                                        <i class="fa-solid fa-user-check me-1"></i> Enroll Learners in Class
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-body p-3 small text-dark">

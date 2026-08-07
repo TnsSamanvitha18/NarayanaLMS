@@ -177,18 +177,50 @@
                     </div>
                     {% else %}
                     {% if feedback_resp %}
-                    <div class="alert alert-secondary py-2 mb-0">
+                    <div class="alert alert-success py-2 mb-0">
                         <i class="fa-solid fa-heart text-danger me-1"></i> Feedback Submitted! Thank you.
                     </div>
                     {% else %}
-                        {% if live_class.feedback_repo_id %}
-                        <a href="{{ url_for('learners.submit_feedback', repo_id=live_class.feedback_repo_id, class_id=live_class.class_id) }}" class="btn btn-outline-danger w-100 fw-bold shadow-sm">
-                            <i class="fa-solid fa-comment-dots me-1"></i> Fill Feedback Form
+                        {% set fb_repo_id = live_class.feedback_repo_id or course.feedback_repo_id %}
+                        {% if fb_repo_id %}
+                        <a href="{{ url_for('learners.submit_feedback', repo_id=fb_repo_id, class_id=live_class.class_id) }}" class="btn btn-danger w-100 fw-bold shadow-sm py-2">
+                            <i class="fa-solid fa-comment-dots me-1"></i> Fill Feedback Form Now
                         </a>
                         {% else %}
-                        <div class="text-muted small">No feedback form attached to this class.</div>
+                        <div class="text-muted small">No feedback form attached to this course.</div>
                         {% endif %}
                     {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 6: Course Completion & Certificate -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="badge rounded-circle bg-gold text-dark p-3 me-3 fs-5" style="width:42px; height:42px; display:flex; align-items:center; justify-content:center;">6</span>
+                        <div>
+                            <h5 class="fw-bold text-navy mb-0">Completion & Certificate</h5>
+                            <small class="text-muted">Unlocked upon Feedback Form submission</small>
+                        </div>
+                    </div>
+                    {% if enrollment.completion_status == 'Completed' %}
+                    <div class="alert alert-success py-2 mb-2">
+                        <i class="fa-solid fa-circle-check text-success me-1"></i> Status: <strong>Course Completed!</strong>
+                    </div>
+                    {% if certificate %}
+                    <a href="{{ url_for('certificates.download_certificate', cert_id_str=certificate.certificate_id) }}" class="btn btn-navy bg-navy text-white w-100 fw-bold shadow-sm py-2">
+                        <i class="fa-solid fa-file-pdf me-1"></i> Download PDF Certificate ({{ certificate.certificate_id }})
+                    </a>
+                    {% else %}
+                    <div class="small text-muted border p-2 rounded bg-light text-center">Course marked completed! (No certificate issued for this course).</div>
+                    {% endif %}
+                    {% else %}
+                    <div class="alert alert-warning py-2 text-dark mb-0">
+                        <i class="fa-solid fa-lock text-warning me-1"></i> Complete Step 5 (Course Feedback) to mark course as completed{% if course.has_certificate %} and generate your certificate{% endif %}.
+                    </div>
                     {% endif %}
                 </div>
             </div>

@@ -1,93 +1,445 @@
 {% extends 'base.html' %}
 
+{% block title %}My Learning Dashboard - Narayana Learning Hub{% endblock %}
+
 {% block public_content %}
-<div class="bg-navy text-white py-4 px-4 shadow-sm mb-4">
-    <div class="container d-flex justify-content-between align-items-center">
-        <div>
-            <h4 class="fw-bold mb-1"><i class="fa-solid fa-user-graduate text-gold me-2"></i> Welcome, {{ learner.name }}</h4>
-            <span class="badge bg-gold text-dark font-monospace">Global ID: {{ learner.global_id }}</span>
+<div class="row g-4" id="portalMainWrapper">
+    <!-- Left Column: Learner Profile Sidebar -->
+    <div class="col-lg-3 col-xl-2 sidebar-col" id="sidebarCol">
+        <div class="profile-sidebar text-center h-100 d-flex flex-column justify-content-between" id="learnerSidebar">
+            <div>
+                <!-- Collapse / Expand Top Icon Button -->
+                <div class="text-end mb-2">
+                    <button id="toggleSidebarBtn" class="btn btn-link text-muted p-0 text-decoration-none" title="Collapse / Expand Sidebar">
+                        <i class="fa-solid fa-angles-left" id="toggleSidebarIcon"></i> <span id="toggleSidebarText" class="small ms-1 sidebar-expand-only">Collapse</span>
+                    </button>
+                </div>
+
+                <!-- Avatar Profile Picture -->
+                <div class="position-relative d-inline-block mb-3">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Profile Avatar" class="avatar-profile">
+                    <div class="online-dot"></div>
+                </div>
+
+                <!-- Learner Name & GID (Expanded Only) -->
+                <div class="sidebar-expand-only">
+                    <h5 class="fw-bold text-dark mb-1">{{ learner.name }}</h5>
+                    <div class="small text-muted font-monospace mb-4 d-flex align-items-center justify-content-center gap-1">
+                        <span>GID: {{ learner.global_id }}</span>
+                        <i class="fa-regular fa-copy text-muted cursor-pointer" onclick="navigator.clipboard.writeText('{{ learner.global_id }}'); alert('GID copied to clipboard!');" title="Copy GID"></i>
+                    </div>
+
+                    <hr class="my-3 opacity-25">
+
+                    <!-- Current Title Widget -->
+                    <div class="text-start mb-4">
+                        <small class="text-muted text-uppercase fw-semibold d-block fs-7 mb-1">Current Title</small>
+                        <div class="fw-bold text-dark fs-6">Associate Learning Specialist</div>
+                    </div>
+
+                    <!-- Next Title Widget -->
+                    <div class="text-start mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <small class="text-muted text-uppercase fw-semibold fs-7">Next Title</small>
+                            <i class="fa-solid fa-chevron-right text-muted fs-7"></i>
+                        </div>
+                        <div class="fw-bold text-dark fs-6 mb-2">Learning Specialist</div>
+                        <div class="progress rounded-pill bg-light mb-1" style="height: 6px;">
+                            <div class="progress-bar rounded-pill" role="progressbar" style="width: 68%; background: linear-gradient(90deg, #2563EB 0%, #8B5CF6 100%);" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="text-muted fs-7 fw-semibold">68% to next title</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Collapse Button Footer -->
+            <div class="pt-3 border-top text-start">
+                <button id="toggleSidebarFooterBtn" class="btn btn-link text-muted text-decoration-none p-0 small d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-angles-left"></i> <span id="toggleSidebarFooterText">Collapse</span>
+                </button>
+            </div>
         </div>
-        <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-light btn-sm"><i class="fa-solid fa-right-from-bracket me-1"></i> Logout</a>
     </div>
-</div>
 
-<div class="container mb-5">
-    <h5 class="fw-bold text-navy mb-3">My Enrolled Training Courses & Classes</h5>
-    <div class="row g-4">
-        {% for en in enrollments %}
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm rounded-3 h-100">
-                <div class="card-body p-4 d-flex flex-column justify-content-between">
-                    <div>
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h5 class="fw-bold text-navy mb-0">{{ en.course.name }}</h5>
-                            <span class="badge {% if en.course.mode == 'Live' %}bg-success{% else %}bg-info{% endif %}">
-                                {{ en.course.mode }}
-                            </span>
+    <!-- Center Main Column: Continue Next Banner & My Programs Grid -->
+    <div class="col-lg-6 col-xl-7 main-content-col" id="mainContentCol">
+        <!-- Section 1: Continue Next -->
+        <div class="mb-4">
+            <h5 class="fw-bold text-dark mb-3">Continue Next</h5>
+            {% set first_en = enrollments[0] if enrollments else None %}
+            <div class="card border-0 shadow-sm rounded-4 p-4 position-relative gradient-multi-hero border-top-blue">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="gradient-purple text-white p-3 rounded-4 d-flex align-items-center justify-content-center shadow-sm" style="width: 56px; height: 56px;">
+                            <i class="fa-regular fa-file-lines fs-3"></i>
                         </div>
-                        <p class="text-muted small mb-3">{{ en.course.description or 'No course description.' }}</p>
-                        
-                        <div class="small text-muted mb-2">
-                            <i class="fa-solid fa-clock me-1"></i> Duration: {{ en.course.duration_hours }} Hours
-                        </div>
-                        <div class="small text-muted mb-3">
-                            <i class="fa-solid fa-flag-checkered me-1"></i> Status: 
-                            <strong class="text-dark">{{ en.completion_status }}</strong>
+                        <div>
+                            <span class="status-pill pill-in-progress mb-1">In Progress</span>
+                            <h5 class="fw-bold text-dark mb-1">
+                                {% if first_en %}{{ first_en.course.name }}{% else %}New Employee Orientation{% endif %}
+                            </h5>
+                            <small class="text-muted d-flex align-items-center gap-1">
+                                <i class="fa-regular fa-clock text-primary"></i> Follow-up Quiz Pending
+                            </small>
                         </div>
                     </div>
-
-                    <div>
-                        {% if en.course.mode == 'Live' and en.live_class %}
-                        <a href="{{ url_for('learners.class_flow', class_id_str=en.live_class.class_id) }}" class="btn btn-navy bg-navy text-white w-100 fw-bold shadow-sm">
-                            <i class="fa-solid fa-play me-1"></i> Enter Live Class Training
+                    <div class="d-flex align-items-center gap-3">
+                        {% if first_en %}
+                        <a href="{{ url_for('learners.self_paced_flow', course_id_str=first_en.course.course_id) }}" class="btn btn-navy px-4 py-2 fw-bold shadow-sm">
+                            Continue
                         </a>
                         {% else %}
-                        <a href="{{ url_for('learners.self_paced_flow', course_id_str=en.course.course_id) }}" class="btn btn-primary w-100 fw-bold shadow-sm">
-                            <i class="fa-solid fa-book-reader me-1"></i> Launch Self-Paced Course
-                        </a>
+                        <button class="btn btn-navy px-4 py-2 fw-bold shadow-sm">
+                            Continue
+                        </button>
                         {% endif %}
+                        <button class="btn btn-link text-muted p-0 text-decoration-none">
+                            <i class="fa-solid fa-ellipsis-vertical fs-5"></i>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-        {% else %}
-        <div class="col-12 mb-3">
-            <div class="alert alert-info py-2"><i class="fa-solid fa-info-circle me-1"></i> You are logged in as <strong>{{ learner.global_id }}</strong>. Select any course below to begin learning:</div>
-        </div>
-        {% for crs in all_courses %}
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm rounded-3 h-100">
-                <div class="card-body p-4 d-flex flex-column justify-content-between">
-                    <div>
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h5 class="fw-bold text-navy mb-0">{{ crs.name }}</h5>
-                            <span class="badge {% if crs.mode == 'Live' %}bg-success{% else %}bg-info{% endif %}">
-                                {{ crs.mode }}
-                            </span>
+
+        <!-- Section 2: My Programs Grid -->
+        <div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-dark mb-0">My Programs</h5>
+                <a href="#" class="text-primary fw-bold text-decoration-none small">View all <i class="fa-solid fa-chevron-right ms-1"></i></a>
+            </div>
+
+            <div class="row g-3">
+                {% if enrollments %}
+                    {% for en in enrollments %}
+                    {% set pct = 65 if loop.index == 1 else (40 if loop.index == 2 else (0 if loop.index == 3 else (100 if loop.index == 4 else 20))) %}
+                    {% set border_class = 'border-top-blue' if loop.index == 1 else ('border-top-purple' if loop.index == 2 else ('border-top-amber' if loop.index == 3 else ('border-top-emerald' if loop.index == 4 else ('border-top-coral' if loop.index == 5 else 'border-top-cyan')))) %}
+                    {% set stroke_color = '#2563EB' if loop.index == 1 else ('#8B5CF6' if loop.index == 2 else ('#F59E0B' if loop.index == 3 else ('#10B981' if loop.index == 4 else ('#F43F5E' if loop.index == 5 else '#06B6D4')))) %}
+                    {% set status_class = 'pill-in-progress' if pct > 0 and pct < 100 else ('pill-completed' if pct == 100 else ('pill-overdue' if loop.index == 5 else 'pill-pending')) %}
+                    {% set status_label = 'IN PROGRESS' if pct > 0 and pct < 100 else ('COMPLETED' if pct == 100 else ('OVERDUE' if loop.index == 5 else 'PENDING')) %}
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm rounded-4 h-100 p-3 d-flex flex-column justify-content-between {{ border_class }}">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="status-pill {{ status_class }}">{{ status_label }}</span>
+                                    <i class="fa-solid fa-ellipsis-vertical text-muted cursor-pointer"></i>
+                                </div>
+                                <h6 class="fw-bold text-dark mb-3 text-truncate" title="{{ en.course.name }}">{{ en.course.name }}</h6>
+                                
+                                <!-- Progress Ring Chart & Next Step -->
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <div class="progress-ring-wrapper">
+                                        <svg class="progress-ring-svg" width="64" height="64">
+                                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="25" cx="32" cy="32"/>
+                                            <circle class="progress-ring-fill" stroke="{{ stroke_color }}" stroke-width="6" stroke-dasharray="157" stroke-dashoffset="{{ 157 - (157 * pct / 100) }}" fill="transparent" r="25" cx="32" cy="32"/>
+                                        </svg>
+                                        <span class="progress-ring-text" style="color: {{ stroke_color }};">{{ pct }}%</span>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted text-uppercase fw-semibold fs-7 d-block">Next Step</small>
+                                        <small class="fw-bold text-dark">
+                                            {% if pct == 100 %}View Certificate{% elif pct > 0 %}Complete Module {{ loop.index }}{% else %}Start Program{% endif %}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                {% if en.course.mode == 'Live' or 'Live' in en.course.mode %}
+                                <a href="{{ url_for('learners.class_flow', class_id_str=en.live_class.class_id if en.live_class else 'CRS-CLS-000001') }}" class="fw-bold text-decoration-none small" style="color: {{ stroke_color }};">
+                                    Continue <i class="fa-solid fa-chevron-right ms-1"></i>
+                                </a>
+                                {% else %}
+                                <a href="{{ url_for('learners.self_paced_flow', course_id_str=en.course.course_id) }}" class="fw-bold text-decoration-none small" style="color: {{ stroke_color }};">
+                                    {% if pct == 0 %}View <i class="fa-solid fa-chevron-right ms-1"></i>{% else %}Continue <i class="fa-solid fa-chevron-right ms-1"></i>{% endif %}
+                                </a>
+                                {% endif %}
+                            </div>
                         </div>
-                        <p class="text-muted small mb-3">{{ crs.description or 'No course description.' }}</p>
-                        
-                        <div class="small text-muted mb-2">
-                            <i class="fa-solid fa-clock me-1"></i> Duration: {{ crs.duration_hours }} Hours
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- Vibrant Sample Program Grid Cards -->
+                    <!-- Card 1: Compliance Essentials (Blue) -->
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm rounded-4 h-100 p-3 d-flex flex-column justify-content-between border-top-blue">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="status-pill pill-in-progress">IN PROGRESS</span>
+                                    <i class="fa-solid fa-ellipsis-vertical text-muted"></i>
+                                </div>
+                                <h6 class="fw-bold text-dark mb-3">Compliance Essentials</h6>
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <div class="progress-ring-wrapper">
+                                        <svg class="progress-ring-svg" width="64" height="64">
+                                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="25" cx="32" cy="32"/>
+                                            <circle class="progress-ring-fill" stroke="#2563EB" stroke-width="6" stroke-dasharray="157" stroke-dashoffset="55" fill="transparent" r="25" cx="32" cy="32"/>
+                                        </svg>
+                                        <span class="progress-ring-text text-primary">65%</span>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted text-uppercase fw-semibold fs-7 d-block">Next Step</small>
+                                        <small class="fw-bold text-dark">Complete Module 3</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <a href="#" class="text-primary fw-bold text-decoration-none small">Continue <i class="fa-solid fa-chevron-right ms-1"></i></a>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="mt-3">
-                        {% if crs.mode == 'Live' %}
-                        <a href="{{ url_for('learners.class_flow', class_id_str='CRS-CLS-000001') }}" class="btn btn-navy bg-navy text-white w-100 fw-bold shadow-sm">
-                            <i class="fa-solid fa-play me-1"></i> Launch Training Session
-                        </a>
-                        {% else %}
-                        <a href="{{ url_for('learners.self_paced_flow', course_id_str=crs.course_id) }}" class="btn btn-primary w-100 fw-bold shadow-sm">
-                            <i class="fa-solid fa-book-reader me-1"></i> Launch Self-Paced Course
-                        </a>
-                        {% endif %}
+                    <!-- Card 2: Data Privacy Fundamentals (Purple) -->
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm rounded-4 h-100 p-3 d-flex flex-column justify-content-between border-top-purple">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="status-pill pill-in-progress">IN PROGRESS</span>
+                                    <i class="fa-solid fa-ellipsis-vertical text-muted"></i>
+                                </div>
+                                <h6 class="fw-bold text-dark mb-3">Data Privacy Fundamentals</h6>
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <div class="progress-ring-wrapper">
+                                        <svg class="progress-ring-svg" width="64" height="64">
+                                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="25" cx="32" cy="32"/>
+                                            <circle class="progress-ring-fill" stroke="#8B5CF6" stroke-width="6" stroke-dasharray="157" stroke-dashoffset="94" fill="transparent" r="25" cx="32" cy="32"/>
+                                        </svg>
+                                        <span class="progress-ring-text" style="color: #8B5CF6;">40%</span>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted text-uppercase fw-semibold fs-7 d-block">Next Step</small>
+                                        <small class="fw-bold text-dark">Watch Lesson 4</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <a href="#" class="fw-bold text-decoration-none small" style="color: #8B5CF6;">Continue <i class="fa-solid fa-chevron-right ms-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Cybersecurity Awareness (Amber) -->
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm rounded-4 h-100 p-3 d-flex flex-column justify-content-between border-top-amber">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="status-pill pill-pending">PENDING</span>
+                                    <i class="fa-solid fa-ellipsis-vertical text-muted"></i>
+                                </div>
+                                <h6 class="fw-bold text-dark mb-3">Cybersecurity Awareness</h6>
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <div class="progress-ring-wrapper">
+                                        <svg class="progress-ring-svg" width="64" height="64">
+                                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="25" cx="32" cy="32"/>
+                                            <circle class="progress-ring-fill" stroke="#F59E0B" stroke-width="6" stroke-dasharray="157" stroke-dashoffset="157" fill="transparent" r="25" cx="32" cy="32"/>
+                                        </svg>
+                                        <span class="progress-ring-text" style="color: #F59E0B;">0%</span>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted text-uppercase fw-semibold fs-7 d-block">Next Step</small>
+                                        <small class="fw-bold text-dark">Start Program</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <a href="#" class="fw-bold text-decoration-none small" style="color: #F59E0B;">View <i class="fa-solid fa-chevron-right ms-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Workplace Communication (Emerald Green) -->
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm rounded-4 h-100 p-3 d-flex flex-column justify-content-between border-top-emerald">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="status-pill pill-completed">COMPLETED</span>
+                                    <i class="fa-solid fa-ellipsis-vertical text-muted"></i>
+                                </div>
+                                <h6 class="fw-bold text-dark mb-3">Workplace Communication</h6>
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <div class="progress-ring-wrapper">
+                                        <svg class="progress-ring-svg" width="64" height="64">
+                                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="25" cx="32" cy="32"/>
+                                            <circle class="progress-ring-fill" stroke="#10B981" stroke-width="6" stroke-dasharray="157" stroke-dashoffset="0" fill="transparent" r="25" cx="32" cy="32"/>
+                                        </svg>
+                                        <span class="progress-ring-text" style="color: #10B981;">100%</span>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted text-uppercase fw-semibold fs-7 d-block">Next Step</small>
+                                        <small class="fw-bold text-dark">View Certificate</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <a href="#" class="fw-bold text-decoration-none small" style="color: #10B981;">View <i class="fa-solid fa-chevron-right ms-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 5: Code of Conduct Refresher (Coral Red) -->
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm rounded-4 h-100 p-3 d-flex flex-column justify-content-between border-top-coral">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="status-pill pill-overdue">OVERDUE</span>
+                                    <i class="fa-solid fa-ellipsis-vertical text-muted"></i>
+                                </div>
+                                <h6 class="fw-bold text-dark mb-3">Code of Conduct Refresher</h6>
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <div class="progress-ring-wrapper">
+                                        <svg class="progress-ring-svg" width="64" height="64">
+                                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="25" cx="32" cy="32"/>
+                                            <circle class="progress-ring-fill" stroke="#F43F5E" stroke-width="6" stroke-dasharray="157" stroke-dashoffset="125" fill="transparent" r="25" cx="32" cy="32"/>
+                                        </svg>
+                                        <span class="progress-ring-text" style="color: #F43F5E;">20%</span>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted text-uppercase fw-semibold fs-7 d-block">Next Step</small>
+                                        <small class="fw-bold text-dark">Complete Assessment</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <a href="#" class="fw-bold text-decoration-none small" style="color: #F43F5E;">Continue <i class="fa-solid fa-chevron-right ms-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 6: Leadership Foundations (Cyan) -->
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm rounded-4 h-100 p-3 d-flex flex-column justify-content-between border-top-cyan">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="status-pill pill-pending">PENDING</span>
+                                    <i class="fa-solid fa-ellipsis-vertical text-muted"></i>
+                                </div>
+                                <h6 class="fw-bold text-dark mb-3">Leadership Foundations</h6>
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <div class="progress-ring-wrapper">
+                                        <svg class="progress-ring-svg" width="64" height="64">
+                                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="25" cx="32" cy="32"/>
+                                            <circle class="progress-ring-fill" stroke="#06B6D4" stroke-width="6" stroke-dasharray="157" stroke-dashoffset="157" fill="transparent" r="25" cx="32" cy="32"/>
+                                        </svg>
+                                        <span class="progress-ring-text" style="color: #06B6D4;">0%</span>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted text-uppercase fw-semibold fs-7 d-block">Next Step</small>
+                                        <small class="fw-bold text-dark">Start Program</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <a href="#" class="fw-bold text-decoration-none small" style="color: #06B6D4;">View <i class="fa-solid fa-chevron-right ms-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Titles, Badges, and Certificates Widgets -->
+    <div class="col-lg-3 col-xl-3">
+        <!-- Widget 1: My Titles -->
+        <div class="card border-0 shadow-sm rounded-4 p-3 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold text-dark mb-0">My Titles</h6>
+                <a href="#" class="text-primary fw-bold text-decoration-none fs-7">View all</a>
+            </div>
+            
+            <div class="p-3 border rounded-4 bg-light text-center">
+                <div class="hexagon-icon hexagon-blue shadow-sm">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <h6 class="fw-bold text-dark mb-1 fs-6">Associate Learning Specialist</h6>
+                <span class="badge bg-primary-subtle text-primary text-uppercase font-monospace fs-8 px-2.5 py-1 mb-2">CURRENT TITLE</span>
+                
+                <div class="mt-3 text-start">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small class="text-muted fs-7">Next: Learning Specialist</small>
+                        <small class="fw-bold text-dark fs-7">68%</small>
+                    </div>
+                    <div class="progress rounded-pill bg-white border" style="height: 6px;">
+                        <div class="progress-bar rounded-pill" role="progressbar" style="width: 68%; background: linear-gradient(90deg, #2563EB 0%, #06B6D4 100%);"></div>
                     </div>
                 </div>
             </div>
         </div>
-        {% endfor %}
-        {% endfor %}
+
+        <!-- Widget 2: My Badges -->
+        <div class="card border-0 shadow-sm rounded-4 p-3 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold text-dark mb-0">My Badges</h6>
+                <a href="#" class="text-primary fw-bold text-decoration-none fs-7">View all</a>
+            </div>
+            
+            <div class="row text-center g-2">
+                <!-- Badge 1: Compliance Champion -->
+                <div class="col-4">
+                    <div class="hexagon-icon hexagon-emerald">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <small class="fw-semibold text-dark d-block fs-8 lh-sm">Compliance Champion</small>
+                </div>
+                <!-- Badge 2: Collaboration Star -->
+                <div class="col-4">
+                    <div class="hexagon-icon hexagon-blue">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <small class="fw-semibold text-dark d-block fs-8 lh-sm">Collaboration Star</small>
+                </div>
+                <!-- Badge 3: Continuous Learner -->
+                <div class="col-4">
+                    <div class="hexagon-icon hexagon-purple">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <small class="fw-semibold text-dark d-block fs-8 lh-sm">Continuous Learner</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Widget 3: My Certificates -->
+        <div class="card border-0 shadow-sm rounded-4 p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold text-dark mb-0">My Certificates</h6>
+                <a href="#" class="text-primary fw-bold text-decoration-none fs-7">View all</a>
+            </div>
+
+            <!-- Cert Item 1 -->
+            <div class="p-2.5 border rounded-3 mb-2.5 bg-light d-flex align-items-center justify-content-between border-start border-4 border-primary">
+                <div class="d-flex align-items-center gap-2.5">
+                    <div class="bg-white border rounded p-1 shadow-xs" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-certificate text-gold fs-5"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold text-dark mb-0 fs-7">Workplace Communication</h6>
+                        <small class="text-muted fs-8">Issued on May 10, 2024</small>
+                    </div>
+                </div>
+                <button class="btn btn-link text-primary p-1 text-decoration-none" title="Download PDF">
+                    <i class="fa-solid fa-download"></i>
+                </button>
+            </div>
+
+            <!-- Cert Item 2 -->
+            <div class="p-2.5 border rounded-3 mb-3 bg-light d-flex align-items-center justify-content-between border-start border-4 border-info">
+                <div class="d-flex align-items-center gap-2.5">
+                    <div class="bg-white border rounded p-1 shadow-xs" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-certificate text-gold fs-5"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold text-dark mb-0 fs-7">Data Privacy Fundamentals</h6>
+                        <small class="text-muted fs-8">Issued on Apr 22, 2024</small>
+                    </div>
+                </div>
+                <button class="btn btn-link text-primary p-1 text-decoration-none" title="Download PDF">
+                    <i class="fa-solid fa-download"></i>
+                </button>
+            </div>
+
+            <a href="#" class="text-primary fw-bold text-decoration-none fs-7 text-center d-block">
+                View all certificates <i class="fa-solid fa-chevron-right ms-1"></i>
+            </a>
+        </div>
     </div>
 </div>
 {% endblock %}

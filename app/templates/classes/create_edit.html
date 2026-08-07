@@ -115,4 +115,36 @@
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const classModeSelect = document.getElementById('class_mode');
+    const inPersonFields = document.querySelectorAll('.in-person-field');
+    const onlineFields = document.querySelectorAll('.online-field');
+    const meetInput = document.getElementById('meet_link');
+
+    function toggleClassModeFields() {
+        const mode = classModeSelect.value;
+        if (mode === 'In Person') {
+            inPersonFields.forEach(el => el.style.display = 'block');
+            onlineFields.forEach(el => el.style.display = 'none');
+            if (meetInput) {
+                meetInput.disabled = true;
+                meetInput.value = '';
+            }
+        } else {
+            inPersonFields.forEach(el => el.style.display = 'none');
+            onlineFields.forEach(el => el.style.display = 'block');
+            if (meetInput) {
+                meetInput.disabled = false;
+            }
+        }
+    }
+
+    if (classModeSelect) {
+        classModeSelect.addEventListener('change', toggleClassModeFields);
+        toggleClassModeFields();
+    }
+});
+</script>
 {% endblock %}

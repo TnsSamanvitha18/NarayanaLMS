@@ -59,10 +59,21 @@
                     <tr>
                         <td class="fw-bold font-monospace text-navy">{{ c.course_id }}</td>
                         <td>
-                            <a href="{{ url_for('courses.view_course', course_id=c.id) }}" class="fw-bold text-navy text-decoration-none">
-                                {{ c.name }}
-                            </a>
-                            <small class="text-muted d-block text-truncate" style="max-width: 300px;">{{ c.description }}</small>
+                            <div class="d-flex align-items-center">
+                                {% if c.thumbnail_filename %}
+                                <img src="{{ url_for('courses.download_thumbnail', filename=c.thumbnail_filename) }}" alt="Thumbnail" class="rounded me-2 border shadow-sm" style="width: 42px; height: 42px; object-fit: cover;">
+                                {% else %}
+                                <div class="bg-navy-subtle text-navy rounded me-2 d-flex align-items-center justify-content-center border" style="width: 42px; height: 42px; font-size: 1.2rem;">
+                                    <i class="fa-solid fa-graduation-cap"></i>
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <a href="{{ url_for('courses.view_course', course_id=c.id) }}" class="fw-bold text-navy text-decoration-none">
+                                        {{ c.name }}
+                                    </a>
+                                    <small class="text-muted d-block text-truncate" style="max-width: 280px;">{{ c.description }}</small>
+                                </div>
+                            </div>
                         </td>
                         <td>
                             {% if c.mode == 'Self Paced' %}
@@ -106,4 +117,25 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('input[name="search"]');
+    const tableRows = document.querySelectorAll('tbody tr');
+
+    if (searchInput && tableRows.length > 0) {
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            tableRows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    }
+});
+</script>
 {% endblock %}
