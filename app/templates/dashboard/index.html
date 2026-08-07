@@ -1,37 +1,37 @@
 {% extends 'base.html' %}
 
-{% block title %}Dashboard - Narayana Learning Hub{% endblock %}
+{% block title %}Dashboard - Siksha LMS{% endblock %}
 
 {% block content %}
 <!-- Page Header -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h3 class="fw-bold mb-1"><i class="fa-solid fa-gauge-high me-2 text-primary"></i> L&D Dashboard</h3>
+        <h3 class="fw-bold mb-1"><i class="fa-solid fa-gauge-high me-2 text-berry"></i> L&D Analytics Dashboard</h3>
         <p class="text-muted mb-0">Overview of courses, live classes, learners, and facilitation metrics.</p>
     </div>
     <div>
         <a href="{{ url_for('courses.create_course') }}" class="btn btn-navy text-white btn-sm px-3.5 py-2 me-2">
             <i class="fa-solid fa-plus me-1"></i> New Course
         </a>
-        <a href="{{ url_for('classes.create_class') }}" class="btn btn-success btn-sm px-3.5 py-2">
+        <a href="{{ url_for('classes.create_class') }}" class="btn btn-berry btn-sm px-3.5 py-2">
             <i class="fa-solid fa-calendar-plus me-1"></i> Schedule Class
         </a>
     </div>
 </div>
 
-<!-- Stat Cards Grid - Frosted Glass & Sharp Contrast -->
+<!-- Stat Cards Grid - Siksha Aesthetic -->
 <div class="row g-3 mb-4">
     <div class="col-xl-3 col-md-6">
         <div class="card card-stat card-stat-interactive p-3 shadow-sm" onclick="window.location.href='{{ url_for('courses.list_courses') }}';" title="Click to view Course Management">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <span class="text-uppercase text-muted fw-bold small">Total Courses</span>
-                    <h2 class="fw-bold text-dark my-1">{{ total_courses }}</h2>
-                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle">
+                    <h2 class="fw-extrabold text-dark my-1">{{ total_courses }}</h2>
+                    <span class="badge bg-danger-subtle text-berry border border-danger-subtle">
                         <i class="fa-solid fa-book me-1"></i> Active Repository <i class="fa-solid fa-arrow-right ms-1"></i>
                     </span>
                 </div>
-                <div class="bg-primary text-white rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs" style="width: 48px; height: 48px;">
+                <div class="text-white rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs" style="width: 48px; height: 48px; background: linear-gradient(135deg, #E11D74 0%, #C026D3 100%);">
                     <i class="fa-solid fa-book-open fs-4"></i>
                 </div>
             </div>
@@ -42,10 +42,10 @@
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <span class="text-uppercase text-muted fw-bold small">Self Paced / Live</span>
-                    <h2 class="fw-bold text-dark my-1">{{ self_paced_courses }} / {{ live_courses }}</h2>
-                    <span class="badge bg-info-subtle text-info border border-info-subtle">Course Modes <i class="fa-solid fa-arrow-right ms-1"></i></span>
+                    <h2 class="fw-extrabold text-dark my-1">{{ self_paced_courses }} / {{ live_courses }}</h2>
+                    <span class="badge bg-purple-subtle text-purple border border-purple-subtle">Course Modes <i class="fa-solid fa-arrow-right ms-1"></i></span>
                 </div>
-                <div class="bg-info text-white rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs" style="width: 48px; height: 48px;">
+                <div class="text-white rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs" style="width: 48px; height: 48px; background: linear-gradient(135deg, #7C3AED 0%, #6B21A8 100%);">
                     <i class="fa-solid fa-laptop-code fs-4"></i>
                 </div>
             </div>
@@ -56,7 +56,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <span class="text-uppercase text-muted fw-bold small">Total / Upcoming Classes</span>
-                    <h2 class="fw-bold text-dark my-1">{{ total_classes }} ({{ upcoming_classes_count }})</h2>
+                    <h2 class="fw-extrabold text-dark my-1">{{ total_classes }} ({{ upcoming_classes_count }})</h2>
                     <span class="badge bg-success-subtle text-success border border-success-subtle">Live Batches <i class="fa-solid fa-arrow-right ms-1"></i></span>
                 </div>
                 <div class="bg-success text-white rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs" style="width: 48px; height: 48px;">
@@ -70,7 +70,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <span class="text-uppercase text-muted fw-bold small">Total Learners</span>
-                    <h2 class="fw-bold text-dark my-1">{{ total_learners }}</h2>
+                    <h2 class="fw-extrabold text-dark my-1">{{ total_learners }}</h2>
                     <span class="badge bg-warning-subtle text-warning border border-warning-subtle">Global ID Directory <i class="fa-solid fa-arrow-right ms-1"></i></span>
                 </div>
                 <div class="bg-warning text-dark rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs" style="width: 48px; height: 48px;">
@@ -87,8 +87,8 @@
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <span class="text-uppercase text-muted fw-bold small">Attendance Rate</span>
-                    <h2 class="fw-bold text-dark my-1">{{ attendance_pct }}%</h2>
-                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle">Overall Participation <i class="fa-solid fa-arrow-right ms-1"></i></span>
+                    <h2 class="fw-extrabold text-dark my-1">{{ attendance_pct }}%</h2>
+                    <span class="badge bg-danger-subtle text-berry border border-danger-subtle">Overall Participation <i class="fa-solid fa-arrow-right ms-1"></i></span>
                 </div>
                 <div class="bg-danger text-white rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs" style="width: 48px; height: 48px;">
                     <i class="fa-solid fa-clipboard-check fs-4"></i>
@@ -101,7 +101,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <span class="text-uppercase text-muted fw-bold small">Certificates Issued</span>
-                    <h2 class="fw-bold text-dark my-1">{{ certificates_count }}</h2>
+                    <h2 class="fw-extrabold text-dark my-1">{{ certificates_count }}</h2>
                     <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">ReportLab PDF <i class="fa-solid fa-arrow-right ms-1"></i></span>
                 </div>
                 <div class="bg-secondary text-white rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs" style="width: 48px; height: 48px;">
@@ -114,20 +114,20 @@
     <div class="col-xl-6 col-md-12">
         <div class="card card-stat card-stat-interactive p-3 shadow-sm" onclick="window.location.href='{{ url_for('reports.index') }}';" title="Click to view Facilitation Reports">
             <div class="d-flex align-items-center justify-content-between mb-2">
-                <span class="text-uppercase text-muted fw-bold small"><i class="fa-solid fa-clock-rotate-left me-1 text-primary"></i> Facilitation Credits Summary</span>
+                <span class="text-uppercase text-muted fw-bold small"><i class="fa-solid fa-clock-rotate-left me-1 text-berry"></i> Facilitation Credits Summary</span>
                 <span class="badge bg-warning-subtle text-warning border border-warning-subtle font-monospace fw-bold">Auto-Calculated <i class="fa-solid fa-arrow-right ms-1"></i></span>
             </div>
             <div class="row text-center pt-2">
                 <div class="col-4 border-end">
-                    <h4 class="fw-bold text-dark mb-0">{{ current_month_hours }} hrs</h4>
+                    <h4 class="fw-extrabold text-dark mb-0">{{ current_month_hours }} hrs</h4>
                     <small class="text-muted fw-semibold">Current Month</small>
                 </div>
                 <div class="col-4 border-end">
-                    <h4 class="fw-bold text-primary mb-0">{{ overall_facilitator_hours }} hrs</h4>
+                    <h4 class="fw-extrabold text-berry mb-0">{{ overall_facilitator_hours }} hrs</h4>
                     <small class="text-muted fw-semibold">Facilitator</small>
                 </div>
                 <div class="col-4">
-                    <h4 class="fw-bold text-dark mb-0">{{ overall_co_facilitator_hours }} hrs</h4>
+                    <h4 class="fw-extrabold text-purple mb-0">{{ overall_co_facilitator_hours }} hrs</h4>
                     <small class="text-muted fw-semibold">Co-Facilitator</small>
                 </div>
             </div>
@@ -141,8 +141,8 @@
     <div class="col-lg-7">
         <div class="card border-0 shadow-sm p-3">
             <div class="d-flex align-items-center justify-content-between mb-3">
-                <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-calendar-days me-2 text-primary"></i> Upcoming Live Classes</h5>
-                <a href="{{ url_for('classes.list_classes') }}" class="btn btn-sm btn-outline-primary fw-bold">View All</a>
+                <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-calendar-days me-2 text-berry"></i> Upcoming Live Classes</h5>
+                <a href="{{ url_for('classes.list_classes') }}" class="btn btn-sm btn-berry text-white fw-bold">View All</a>
             </div>
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
@@ -174,7 +174,7 @@
                             <td>{{ c.facilitator_name }}</td>
                             <td>
                                 <a href="{{ url_for('classes.view_class', class_id=c.id) }}" class="btn btn-sm btn-light border">
-                                    <i class="fa-solid fa-qrcode text-primary"></i> QR
+                                    <i class="fa-solid fa-qrcode text-berry"></i> QR
                                 </a>
                             </td>
                         </tr>

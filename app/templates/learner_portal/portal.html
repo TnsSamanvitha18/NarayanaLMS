@@ -1,281 +1,234 @@
 {% extends 'base.html' %}
 
-{% block title %}Learner Portal - Narayana Learning Hub{% endblock %}
+{% block title %}Analytics & Learning - Siksha LMS{% endblock %}
 
 {% block content %}
 <div class="container-fluid px-0">
     <div class="row g-4">
-        <!-- Collapsible Profile Sidebar (Left Column) -->
-        <div class="col-lg-3 col-xl-2 profile-sidebar-col" id="sidebarCol">
-            <div class="profile-sidebar text-center" id="learnerSidebar">
-                <!-- Toggle Collapse Button Header -->
-                <button type="button" class="btn btn-sm btn-light border position-absolute top-0 end-0 m-2 rounded-circle p-1" id="toggleSidebarBtn" title="Collapse Sidebar">
-                    <i class="fa-solid fa-chevron-left text-muted fs-6" id="toggleSidebarIcon"></i>
-                </button>
-
-                <div class="avatar-wrapper mx-auto mb-3 position-relative d-inline-block mt-2">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80" alt="Profile" class="avatar-profile">
-                    <span class="online-dot" title="Online"></span>
-                </div>
-                
-                <h5 class="fw-bold text-dark mb-1 sidebar-expand-only text-truncate">Alex Morgan</h5>
-                <p class="text-muted small mb-3 sidebar-expand-only"><i class="fa-solid fa-id-badge me-1 text-primary"></i> ID: 10001</p>
-
-                <!-- Gamification Hexagon Badge -->
-                <div class="mb-3 sidebar-expand-only">
-                    <div class="hexagon-icon hexagon-purple mb-2">
-                        <i class="fa-solid fa-award"></i>
+        <!-- Left & Middle Column (Analytics & Progress) -->
+        <div class="col-lg-8 col-xl-8">
+            <!-- Top Hero Card: Donut Gauge & Key Factors of Mastering Design System -->
+            <div class="card p-4 mb-4 shadow-sm">
+                <div class="row align-items-center g-4">
+                    <!-- Donut Gauge Column -->
+                    <div class="col-md-5 text-center border-end-md">
+                        <div class="progress-ring-siksha mb-3">
+                            <svg class="progress-ring-svg" width="140" height="140">
+                                <circle class="progress-ring-bg" stroke-width="10" fill="transparent" r="58" cx="70" cy="70"/>
+                                <circle class="progress-ring-fill-berry" stroke-width="10" stroke-dasharray="364" stroke-dashoffset="29" fill="transparent" r="58" cx="70" cy="70"/>
+                            </svg>
+                            <div class="progress-ring-text">
+                                <div class="progress-ring-number">92%</div>
+                                <div class="progress-ring-label">Total marks</div>
+                            </div>
+                        </div>
+                        <p class="text-muted small mb-0 fw-semibold">You have scored 92% out of 100%</p>
                     </div>
-                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle font-monospace fw-bold">LEVEL 4 Facilitator</span>
-                </div>
 
-                <div class="border-top pt-3 text-start sidebar-expand-only">
-                    <div class="d-flex justify-content-between text-muted small mb-2">
-                        <span><i class="fa-solid fa-graduation-cap me-1 text-primary"></i> Enrolled:</span>
-                        <strong class="text-dark">5 Programs</strong>
-                    </div>
-                    <div class="d-flex justify-content-between text-muted small mb-2">
-                        <span><i class="fa-solid fa-circle-check me-1 text-success"></i> Completed:</span>
-                        <strong class="text-success">1 Course</strong>
-                    </div>
-                    <div class="d-flex justify-content-between text-muted small mb-2">
-                        <span><i class="fa-solid fa-fire me-1 text-danger"></i> Learning Streak:</span>
-                        <strong class="text-danger">12 Days</strong>
-                    </div>
-                </div>
+                    <!-- Key Factors Skill Progress Bars Column -->
+                    <div class="col-md-7">
+                        <h5 class="fw-bold text-dark mb-3">Key Factors of Mastering Design System</h5>
+                        
+                        <div class="progress-bar-siksha-wrapper">
+                            <div class="d-flex justify-content-between small fw-bold mb-1">
+                                <span class="text-muted">Design Principles</span>
+                                <span class="text-dark">82%</span>
+                            </div>
+                            <div class="progress-bar-siksha-bg">
+                                <div class="progress-bar-siksha-fill" style="width: 82%;"></div>
+                            </div>
+                        </div>
 
-                <div class="border-top pt-3 sidebar-expand-only">
-                    <a href="{{ url_for('auth.learner_login') }}" class="btn btn-outline-danger btn-sm w-100 rounded-pill fw-bold">
-                        <i class="fa-solid fa-right-from-bracket me-1"></i> Sign Out
-                    </a>
-                </div>
+                        <div class="progress-bar-siksha-wrapper">
+                            <div class="d-flex justify-content-between small fw-bold mb-1">
+                                <span class="text-muted">Component Library</span>
+                                <span class="text-dark">70%</span>
+                            </div>
+                            <div class="progress-bar-siksha-bg">
+                                <div class="progress-bar-siksha-fill" style="width: 70%;"></div>
+                            </div>
+                        </div>
 
-                <!-- Footer Expand Button for Collapsed State -->
-                <div class="sidebar-collapsed-only d-none pt-2">
-                    <button type="button" class="btn btn-sm btn-navy rounded-circle p-2" id="toggleSidebarFooterBtn" title="Expand Sidebar">
-                        <i class="fa-solid fa-chevron-right text-white"></i>
-                    </button>
+                        <div class="progress-bar-siksha-wrapper">
+                            <div class="d-flex justify-content-between small fw-bold mb-1">
+                                <span class="text-muted">Design Tokens</span>
+                                <span class="text-dark">68%</span>
+                            </div>
+                            <div class="progress-bar-siksha-bg">
+                                <div class="progress-bar-siksha-fill" style="width: 68%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-bar-siksha-wrapper">
+                            <div class="d-flex justify-content-between small fw-bold mb-1">
+                                <span class="text-muted">Documentation</span>
+                                <span class="text-dark">72%</span>
+                            </div>
+                            <div class="progress-bar-siksha-bg">
+                                <div class="progress-bar-siksha-fill" style="width: 72%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-bar-siksha-wrapper mb-0">
+                            <div class="d-flex justify-content-between small fw-bold mb-1">
+                                <span class="text-muted">Collaboration Workflows</span>
+                                <span class="text-dark">91%</span>
+                            </div>
+                            <div class="progress-bar-siksha-bg">
+                                <div class="progress-bar-siksha-fill" style="width: 91%;"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Main Content Area (Middle Column) -->
-        <div class="col-lg-6 col-xl-7" id="mainContentCol">
-            <!-- Top Hero Banner: Continue Learning -->
-            <div class="card border-0 mb-4 p-4">
-                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-                    <div>
-                        <span class="status-pill pill-in-progress mb-2"><i class="fa-solid fa-play me-1"></i> CONTINUE NEXT</span>
-                        <h3 class="fw-bold text-dark mb-1">AWS Certified Solutions Architect</h3>
-                        <p class="text-muted small mb-0">Module 3: Virtual Private Cloud (VPC) & Security Groups</p>
-                    </div>
-                    <div>
-                        <a href="{{ url_for('learner_portal.self_paced_flow', course_id=1) }}" class="btn btn-navy px-4 py-2.5 shadow-sm fw-bold">
-                            Resume Course <i class="fa-solid fa-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Program Directory Title -->
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-layer-group me-2 text-primary"></i> Enrolled Learning Programs</h5>
-                <span class="text-muted small">Showing 5 Assigned Programs</span>
-            </div>
-
-            <!-- Circular Bubble Cards Grid -->
-            <div class="row g-4 mb-4">
-                <!-- Program Card 1 -->
-                <div class="col-md-6 col-xl-4">
-                    <div class="card card-circular shadow-sm">
-                        <span class="status-pill pill-in-progress mb-2"><i class="fa-solid fa-spinner fa-spin me-1"></i> IN PROGRESS</span>
+            <!-- Bottom Row: Total Time & Accuracy Donut Grid -->
+            <div class="row g-4">
+                <!-- Total Time Card -->
+                <div class="col-md-6">
+                    <div class="card p-4 h-100 shadow-sm">
+                        <h6 class="fw-bold text-dark mb-1">Total time</h6>
+                        <p class="text-muted small mb-3">Your Time on Test</p>
                         
-                        <!-- SVG Circular Progress Gauge -->
-                        <div class="progress-ring-wrapper">
-                            <svg class="progress-ring-svg" width="68" height="68">
-                                <circle class="progress-ring-bg" stroke-width="5" fill="transparent" r="28" cx="34" cy="34"/>
-                                <circle class="progress-ring-fill" stroke="#2563EB" stroke-width="5" stroke-dasharray="176" stroke-dashoffset="61" fill="transparent" r="28" cx="34" cy="34"/>
-                            </svg>
-                            <span class="progress-ring-text text-dark">65%</span>
+                        <h3 class="fw-extrabold text-dark mb-2">108 Minutes</h3>
+                        <div class="progress-bar-siksha-bg mb-1">
+                            <div class="progress-bar-siksha-fill" style="width: 90%;"></div>
+                        </div>
+                        <div class="d-flex justify-content-between text-muted text-xs mb-4">
+                            <span>0 Min</span>
+                            <span>120 Min</span>
                         </div>
 
-                        <div>
-                            <h6 class="fw-bold text-dark mb-1 text-truncate" style="max-width: 180px;">AWS Solutions Architect</h6>
-                            <small class="text-muted d-block mb-3">Self Paced • 12 Hours</small>
+                        <p class="text-muted small mb-1">Your Time on Test</p>
+                        <h3 class="fw-extrabold text-dark mb-2">70 Minutes</h3>
+                        <div class="progress-bar-siksha-bg mb-1">
+                            <div class="progress-bar-siksha-fill" style="width: 58%;"></div>
                         </div>
-
-                        <a href="{{ url_for('learner_portal.self_paced_flow', course_id=1) }}" class="btn btn-navy btn-sm px-4 py-2 w-100 fw-bold">
-                            Continue <i class="fa-solid fa-chevron-right ms-1"></i>
-                        </a>
+                        <div class="d-flex justify-content-between text-muted text-xs">
+                            <span>0 Min</span>
+                            <span>120 Min</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Program Card 2 -->
-                <div class="col-md-6 col-xl-4">
-                    <div class="card card-circular shadow-sm">
-                        <span class="status-pill pill-in-progress mb-2"><i class="fa-solid fa-chalkboard-user me-1"></i> LIVE SESSION</span>
-                        
-                        <!-- SVG Circular Progress Gauge -->
-                        <div class="progress-ring-wrapper">
-                            <svg class="progress-ring-svg" width="68" height="68">
-                                <circle class="progress-ring-bg" stroke-width="5" fill="transparent" r="28" cx="34" cy="34"/>
-                                <circle class="progress-ring-fill" stroke="#8B5CF6" stroke-width="5" stroke-dasharray="176" stroke-dashoffset="105" fill="transparent" r="28" cx="34" cy="34"/>
+                <!-- Accuracy Donut Ring & Metrics Card -->
+                <div class="col-md-6">
+                    <div class="card p-4 h-100 shadow-sm text-center">
+                        <!-- Berry Purple Donut Ring -->
+                        <div class="progress-ring-siksha mb-2" style="width: 120px; height: 120px;">
+                            <svg class="progress-ring-svg" width="120" height="120">
+                                <circle class="progress-ring-bg" stroke-width="8" fill="transparent" r="50" cx="60" cy="60"/>
+                                <circle class="progress-ring-fill-purple" stroke-width="8" stroke-dasharray="314" stroke-dashoffset="213" fill="transparent" r="50" cx="60" cy="60"/>
                             </svg>
-                            <span class="progress-ring-text text-dark">40%</span>
+                            <div class="progress-ring-text">
+                                <div class="progress-ring-number fs-4 text-berry">32%</div>
+                            </div>
                         </div>
+                        <span class="text-muted small fw-semibold d-block mb-3">Accuracy</span>
 
-                        <div>
-                            <h6 class="fw-bold text-dark mb-1 text-truncate" style="max-width: 180px;">Agile Leadership Masterclass</h6>
-                            <small class="text-muted d-block mb-3">Live Batch • Today 2:00 PM</small>
+                        <!-- Attempted / Correct / Wrong Grid -->
+                        <div class="bg-light p-3 rounded-4 border">
+                            <div class="row text-center">
+                                <div class="col-4 border-end">
+                                    <small class="text-muted d-block text-xs">Attempted</small>
+                                    <strong class="fw-extrabold text-dark fs-6">135/180</strong>
+                                </div>
+                                <div class="col-4 border-end">
+                                    <small class="text-muted d-block text-xs">Correct</small>
+                                    <strong class="fw-extrabold text-success fs-6">90</strong>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted d-block text-xs">Wrong</small>
+                                    <strong class="fw-extrabold text-danger fs-6">45</strong>
+                                </div>
+                            </div>
                         </div>
-
-                        <a href="{{ url_for('learner_portal.class_flow', class_id=1) }}" class="btn btn-primary btn-sm px-4 py-2 w-100 fw-bold">
-                            Join Class <i class="fa-solid fa-video ms-1"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Program Card 3 -->
-                <div class="col-md-6 col-xl-4">
-                    <div class="card card-circular shadow-sm">
-                        <span class="status-pill pill-pending mb-2"><i class="fa-solid fa-clock me-1"></i> NOT STARTED</span>
-                        
-                        <!-- SVG Circular Progress Gauge -->
-                        <div class="progress-ring-wrapper">
-                            <svg class="progress-ring-svg" width="68" height="68">
-                                <circle class="progress-ring-bg" stroke-width="5" fill="transparent" r="28" cx="34" cy="34"/>
-                                <circle class="progress-ring-fill" stroke="#06B6D4" stroke-width="5" stroke-dasharray="176" stroke-dashoffset="176" fill="transparent" r="28" cx="34" cy="34"/>
-                            </svg>
-                            <span class="progress-ring-text text-dark">0%</span>
-                        </div>
-
-                        <div>
-                            <h6 class="fw-bold text-dark mb-1 text-truncate" style="max-width: 180px;">Cybersecurity Fundamentals</h6>
-                            <small class="text-muted d-block mb-3">Self Paced • 8 Hours</small>
-                        </div>
-
-                        <a href="{{ url_for('learner_portal.self_paced_flow', course_id=2) }}" class="btn btn-navy btn-sm px-4 py-2 w-100 fw-bold">
-                            Start <i class="fa-solid fa-play ms-1"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Program Card 4 -->
-                <div class="col-md-6 col-xl-4">
-                    <div class="card card-circular shadow-sm">
-                        <span class="status-pill pill-completed mb-2"><i class="fa-solid fa-circle-check me-1"></i> COMPLETED</span>
-                        
-                        <!-- SVG Circular Progress Gauge -->
-                        <div class="progress-ring-wrapper">
-                            <svg class="progress-ring-svg" width="68" height="68">
-                                <circle class="progress-ring-bg" stroke-width="5" fill="transparent" r="28" cx="34" cy="34"/>
-                                <circle class="progress-ring-fill" stroke="#10B981" stroke-width="5" stroke-dasharray="176" stroke-dashoffset="0" fill="transparent" r="28" cx="34" cy="34"/>
-                            </svg>
-                            <span class="progress-ring-text text-dark">100%</span>
-                        </div>
-
-                        <div>
-                            <h6 class="fw-bold text-dark mb-1 text-truncate" style="max-width: 180px;">Python Data Science BootCamp</h6>
-                            <small class="text-muted d-block mb-3">Certified • Passed 92%</small>
-                        </div>
-
-                        <a href="#" class="btn btn-outline-success btn-sm px-4 py-2 w-100 fw-bold dummy-nav-tab" data-tab-name="Certificates">
-                            Certificate <i class="fa-solid fa-certificate ms-1"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Program Card 5 -->
-                <div class="col-md-6 col-xl-4">
-                    <div class="card card-circular shadow-sm">
-                        <span class="status-pill pill-overdue mb-2"><i class="fa-solid fa-triangle-exclamation me-1"></i> ACTION NEEDED</span>
-                        
-                        <!-- SVG Circular Progress Gauge -->
-                        <div class="progress-ring-wrapper">
-                            <svg class="progress-ring-svg" width="68" height="68">
-                                <circle class="progress-ring-bg" stroke-width="5" fill="transparent" r="28" cx="34" cy="34"/>
-                                <circle class="progress-ring-fill" stroke="#F43F5E" stroke-width="5" stroke-dasharray="176" stroke-dashoffset="140" fill="transparent" r="28" cx="34" cy="34"/>
-                            </svg>
-                            <span class="progress-ring-text text-dark">20%</span>
-                        </div>
-
-                        <div>
-                            <h6 class="fw-bold text-dark mb-1 text-truncate" style="max-width: 180px;">Design Thinking & UX</h6>
-                            <small class="text-muted d-block mb-3">Quiz Due Tomorrow</small>
-                        </div>
-
-                        <a href="{{ url_for('learner_portal.assessment', course_id=1) }}" class="btn btn-danger btn-sm px-4 py-2 w-100 fw-bold">
-                            Take Assessment <i class="fa-solid fa-pen-to-square ms-1"></i>
-                        </a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Right Side Widgets Column -->
-        <div class="col-lg-3 col-xl-3">
-            <!-- My Titles Widget -->
-            <div class="card border-0 p-3 mb-4">
-                <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-trophy me-2 text-warning"></i> My Achievements & Titles</h6>
-                <div class="d-flex align-items-center mb-3">
-                    <div class="hexagon-icon hexagon-emerald me-3" style="width: 42px; height: 46px; font-size: 1rem;">
-                        <i class="fa-solid fa-shield-halved"></i>
-                    </div>
-                    <div>
-                        <h6 class="fw-bold text-dark mb-0">Cloud Explorer</h6>
-                        <small class="text-muted">Earned for AWS Module 1</small>
-                    </div>
+        <!-- Right Side Leaderboard Widget (Siksha Style) -->
+        <div class="col-lg-4 col-xl-4">
+            <div class="card p-4 shadow-sm h-100">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="fw-bold text-dark mb-0">Leaderboard 🏆</h5>
+                    <select class="form-select form-select-sm w-auto rounded-pill border py-1">
+                        <option>Practical</option>
+                        <option>Theoretical</option>
+                    </select>
                 </div>
-                <div class="d-flex align-items-center">
-                    <div class="hexagon-icon hexagon-amber me-3" style="width: 42px; height: 46px; font-size: 1rem;">
-                        <i class="fa-solid fa-bolt"></i>
-                    </div>
-                    <div>
-                        <h6 class="fw-bold text-dark mb-0">Speed Learner</h6>
-                        <small class="text-muted">Completed 3 lessons in 1 day</small>
-                    </div>
-                </div>
-            </div>
 
-            <!-- My Badges Widget -->
-            <div class="card border-0 p-3 mb-4">
-                <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-hexagon-nodes me-2 text-primary"></i> Badges Unlocked</h6>
-                <div class="d-flex justify-content-around text-center">
-                    <div>
-                        <div class="hexagon-icon hexagon-blue mb-1" style="width: 42px; height: 46px; font-size: 1rem;">
-                            <i class="fa-solid fa-code"></i>
+                <!-- Top 3 Podium -->
+                <div class="leaderboard-podium mb-4">
+                    <!-- Rank 2: Sam Alexander -->
+                    <div class="podium-item">
+                        <div class="podium-star-avatar">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80" alt="Sam" class="podium-avatar">
+                            <span class="podium-rank-badge" style="background: #F59E0B;">2</span>
                         </div>
-                        <small class="text-muted d-block text-xs fw-bold">Coder</small>
+                        <div class="fw-bold text-dark small mt-2">Sam Alexander</div>
+                        <small class="text-muted text-xs d-block">125 mins</small>
                     </div>
-                    <div>
-                        <div class="hexagon-icon hexagon-purple mb-1" style="width: 42px; height: 46px; font-size: 1rem;">
-                            <i class="fa-solid fa-brain"></i>
+
+                    <!-- Rank 1: Courtney Henry -->
+                    <div class="podium-item podium-rank-1">
+                        <div class="podium-star-avatar">
+                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80" alt="Courtney" class="podium-avatar">
+                            <span class="podium-rank-badge" style="background: #E11D74;">1</span>
                         </div>
-                        <small class="text-muted d-block text-xs fw-bold">Strategist</small>
+                        <div class="fw-bold text-dark small mt-2">Courtney Henry</div>
+                        <small class="text-muted text-xs d-block">120 mins</small>
                     </div>
-                    <div>
-                        <div class="hexagon-icon hexagon-coral mb-1" style="width: 42px; height: 46px; font-size: 1rem;">
-                            <i class="fa-solid fa-fire"></i>
+
+                    <!-- Rank 3: Annette Black -->
+                    <div class="podium-item">
+                        <div class="podium-star-avatar">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80" alt="Annette" class="podium-avatar">
+                            <span class="podium-rank-badge" style="background: #EA580C;">3</span>
                         </div>
-                        <small class="text-muted d-block text-xs fw-bold">10 Streak</small>
+                        <div class="fw-bold text-dark small mt-2">Annette Black</div>
+                        <small class="text-muted text-xs d-block">130 mins</small>
                     </div>
                 </div>
-            </div>
 
-            <!-- My Certificates Widget -->
-            <div class="card border-0 p-3">
-                <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-certificate me-2 text-success"></i> My Certificates</h6>
-                <div class="d-flex align-items-center justify-content-between p-2 rounded border bg-light mb-2">
-                    <div class="d-flex align-items-center">
-                        <i class="fa-solid fa-file-pdf text-danger fs-4 me-2"></i>
-                        <div>
-                            <div class="fw-bold text-dark small">Python BootCamp</div>
-                            <small class="text-muted text-xs">Issued 28-Jul-2026</small>
+                <!-- Rank List Items -->
+                <div class="leaderboard-list">
+                    <div class="leaderboard-list-item">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="star-badge-orange">4</span>
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Jenny" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
+                            <span class="fw-bold text-dark small">Jenny Wilson</span>
                         </div>
+                        <strong class="text-dark small">131 mins</strong>
                     </div>
-                    <button class="btn btn-sm btn-light border dummy-nav-tab" data-tab-name="Certificates" title="Download Certificate">
-                        <i class="fa-solid fa-download text-primary"></i>
-                    </button>
+
+                    <div class="leaderboard-list-item">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="star-badge-orange">5</span>
+                            <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&auto=format&fit=crop&q=80" alt="Jacob" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
+                            <span class="fw-bold text-dark small">Jacob Jones</span>
+                        </div>
+                        <strong class="text-dark small">135 mins</strong>
+                    </div>
+
+                    <div class="leaderboard-list-item">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="star-badge-orange">6</span>
+                            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&auto=format&fit=crop&q=80" alt="Robert" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
+                            <span class="fw-bold text-dark small">Robert Murphy</span>
+                        </div>
+                        <strong class="text-dark small">140 mins</strong>
+                    </div>
+
+                    <div class="leaderboard-list-item mb-0">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="star-badge-orange">7</span>
+                            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80" alt="Fritny" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;">
+                            <span class="fw-bold text-dark small">Fritny Flores</span>
+                        </div>
+                        <strong class="text-dark small">145 mins</strong>
+                    </div>
                 </div>
             </div>
         </div>

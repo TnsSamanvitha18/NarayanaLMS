@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Narayana Learning Hub - L&D Management System{% endblock %}</title>
+    <title>{% block title %}Siksha - Narayana Learning Hub{% endblock %}</title>
     <!-- Google Fonts Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,62 +30,67 @@
 </head>
 <body>
 
-    <!-- Narayana Learning Hub Main Header Navigation -->
-    <header class="ls-navbar sticky-top shadow-sm">
+    <!-- SVG Donut Ring Gradient Definitions -->
+    <svg width="0" height="0" style="position: absolute;">
+        <defs>
+            <linearGradient id="berryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#E11D74" />
+                <stop offset="100%" stop-color="#C026D3" />
+            </linearGradient>
+            <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#7C3AED" />
+                <stop offset="100%" stop-color="#E11D74" />
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <!-- Siksha Floating Capsule Main Header Navigation -->
+    <header class="ls-navbar sticky-top">
         <div class="container-fluid px-4">
-            <div class="d-flex align-items-center justify-content-between py-2">
-                <!-- Brand Logo (Restored Narayana L&D Branding) -->
-                <div class="d-flex align-items-center gap-3">
+            <div class="ls-navbar-capsule d-flex align-items-center justify-content-between">
+                <!-- Brand Logo & Capsule Navigation -->
+                <div class="d-flex align-items-center gap-4">
                     <a href="{{ url_for('dashboard.index') if admin_logged_in else url_for('learners.my_portal') }}" class="d-flex align-items-center text-decoration-none">
-                        <i class="fa-solid fa-graduation-cap text-orange fa-2x me-2"></i>
-                        <span class="fs-4 fw-extrabold tracking-tight text-dark" style="font-family: 'Plus Jakarta Sans', sans-serif;">Narayana Learning Hub</span>
+                        <i class="fa-solid fa-book-open-reader text-berry fa-xl me-2"></i>
+                        <span class="fs-4 fw-extrabold tracking-tight text-dark" style="font-family: 'Plus Jakarta Sans', sans-serif;">Siksha</span>
                     </a>
+
+                    <!-- Siksha Floating Capsule Nav Tabs -->
+                    <div class="d-none d-lg-flex align-items-center gap-1">
+                        {% if admin_logged_in %}
+                        <a href="{{ url_for('dashboard.index') }}" class="ls-nav-tab {% if request.endpoint == 'dashboard.index' %}active{% endif %}">
+                            Dashboard
+                        </a>
+                        <a href="{{ url_for('courses.list_courses') }}" class="ls-nav-tab {% if 'courses' in request.endpoint or 'classes' in request.endpoint %}active{% endif %}">
+                            Course & Classes
+                        </a>
+                        <a href="{{ url_for('learners.list_learners') }}" class="ls-nav-tab {% if 'learners' in request.endpoint %}active{% endif %}">
+                            Learners
+                        </a>
+                        <a href="{{ url_for('attendance.list_attendance') }}" class="ls-nav-tab {% if 'attendance' in request.endpoint %}active{% endif %}">
+                            Attendance
+                        </a>
+                        <a href="{{ url_for('certificates.list_certificates') }}" class="ls-nav-tab {% if 'certificates' in request.endpoint %}active{% endif %}">
+                            Certificates
+                        </a>
+                        <a href="{{ url_for('reports.index') }}" class="ls-nav-tab {% if 'reports' in request.endpoint %}active{% endif %}">
+                            Analytics
+                        </a>
+                        {% else %}
+                        <a href="{{ url_for('learners.my_portal') }}" class="ls-nav-tab {% if request.endpoint == 'learners.my_portal' %}active{% endif %}">
+                            My Learning
+                        </a>
+                        <a href="#" class="ls-nav-tab dummy-nav-tab" data-tab-name="Discover Learning Catalog">
+                            Discover
+                        </a>
+                        <a href="#" class="ls-nav-tab active dummy-nav-tab" data-tab-name="Learning Analytics & Performance">
+                            Analytics
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
 
-                <!-- Navigation Tabs (With Dummy Tab View Triggers) -->
-                <div class="d-none d-lg-flex align-items-center gap-1">
-                    {% if admin_logged_in %}
-                    <a href="{{ url_for('dashboard.index') }}" class="ls-nav-tab {% if request.endpoint == 'dashboard.index' %}active{% endif %}">
-                        Home
-                    </a>
-                    <a href="{{ url_for('courses.list_courses') }}" class="ls-nav-tab {% if 'courses' in request.endpoint or 'classes' in request.endpoint %}active{% endif %}">
-                        Course & Classes
-                    </a>
-                    <a href="{{ url_for('learners.list_learners') }}" class="ls-nav-tab {% if 'learners' in request.endpoint %}active{% endif %}">
-                        Learners
-                    </a>
-                    <a href="{{ url_for('attendance.list_attendance') }}" class="ls-nav-tab {% if 'attendance' in request.endpoint %}active{% endif %}">
-                        Attendance
-                    </a>
-                    <a href="{{ url_for('certificates.list_certificates') }}" class="ls-nav-tab {% if 'certificates' in request.endpoint %}active{% endif %}">
-                        Certificates
-                    </a>
-                    <a href="{{ url_for('reports.index') }}" class="ls-nav-tab {% if 'reports' in request.endpoint %}active{% endif %}">
-                        Reports
-                    </a>
-                    {% else %}
-                    <a href="{{ url_for('learners.my_portal') }}" class="ls-nav-tab {% if request.endpoint == 'learners.my_portal' %}active{% endif %}">
-                        Home
-                    </a>
-                    <a href="{{ url_for('learners.my_portal') }}" class="ls-nav-tab">
-                        My Learning
-                    </a>
-                    <a href="#" class="ls-nav-tab dummy-nav-tab" data-tab-name="Skills Matrix & Catalog">
-                        Skills
-                    </a>
-                    <a href="#" class="ls-nav-tab dummy-nav-tab" data-tab-name="Learning Wall & Community">
-                        Learning Wall
-                    </a>
-                    <a href="#" class="ls-nav-tab dummy-nav-tab" data-tab-name="My Completion Certificates">
-                        Certificates
-                    </a>
-                    <a href="#" class="ls-nav-tab dummy-nav-tab" data-tab-name="Learning Resources & Repositories">
-                        Resources
-                    </a>
-                    {% endif %}
-                </div>
-
-                <!-- Right Utility Bar -->
+                <!-- Right Utility Bar (Capsule Pill User Profile) -->
                 <div class="d-flex align-items-center gap-3">
                     <!-- Search Icon Button -->
                     <button type="button" class="btn btn-link text-muted p-1 text-decoration-none" title="Search">
@@ -96,7 +101,7 @@
                     <div class="position-relative">
                         <button type="button" class="btn btn-link text-muted p-1 text-decoration-none" title="Notifications">
                             <i class="fa-regular fa-bell fs-5"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle text-white" style="background-color: var(--brand-orange); font-size: 0.65rem; padding: 0.35em 0.55em;">
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle text-white" style="background-color: var(--berry-pink); font-size: 0.65rem; padding: 0.35em 0.55em;">
                                 3
                             </span>
                         </button>
@@ -104,24 +109,22 @@
 
                     <!-- Theme Toggle Switcher -->
                     <button type="button" class="theme-toggle-btn ms-1" title="Toggle Light/Dark Theme">
-                        <i class="fa-solid fa-moon text-primary me-1"></i> <span>Dark Mode</span>
+                        <i class="fa-solid fa-moon text-berry me-1"></i> <span>Dark Mode</span>
                     </button>
 
                     <!-- Profile / Account Dropdown -->
                     <div class="dropdown">
-                        <button class="btn p-0 border-0 d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Account Menu">
-                            <div class="position-relative">
-                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" alt="Profile Avatar" class="rounded-circle border border-2 border-primary shadow-sm" style="width: 40px; height: 40px; object-fit: cover;">
-                                <span class="online-dot" style="width: 11px; height: 11px; right: 0; bottom: 0;"></span>
-                            </div>
+                        <button class="btn p-1 border-0 d-flex align-items-center gap-2 rounded-pill bg-light shadow-xs px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Account Menu">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" alt="Profile Avatar" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
+                            <span class="fw-bold text-dark small d-none d-md-inline pe-1">{% if admin_logged_in %}{{ admin_username }}{% else %}Thorfinn Thorsson{% endif %}</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2">
                             <li class="px-3 py-2 border-bottom">
-                                <span class="d-block fw-bold text-dark">{% if admin_logged_in %}{{ admin_username }}{% else %}Alex Morgan{% endif %}</span>
+                                <span class="d-block fw-bold text-dark">{% if admin_logged_in %}{{ admin_username }}{% else %}Thorfinn Thorsson{% endif %}</span>
                                 <small class="text-muted">{% if admin_logged_in %}L&D Administrator{% else %}Learner ID: 10001{% endif %}</small>
                             </li>
                             {% if not admin_logged_in %}
-                            <li><a class="dropdown-item fw-semibold" href="{{ url_for('learners.my_portal') }}"><i class="fa-solid fa-user me-2 text-primary"></i> My Profile</a></li>
+                            <li><a class="dropdown-item fw-semibold" href="{{ url_for('learners.my_portal') }}"><i class="fa-solid fa-user me-2 text-berry"></i> My Profile</a></li>
                             {% endif %}
                             <li><a class="dropdown-item text-danger fw-semibold" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
                         </ul>
