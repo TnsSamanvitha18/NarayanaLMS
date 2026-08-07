@@ -1,6 +1,6 @@
 /* ==========================================================================
-   NARAYANA LEARNING HUB - IBM PLEX MONO TYPOGRAPHY SYSTEM
-   Modern Capsule Header, Frosted Glass Cards & Electric Teal Accents
+   NARAYANA LEARNING HUB - HARMONIZED 3-FONT TYPOGRAPHY SYSTEM
+   Plus Jakarta Sans (Headings), Mulish (Body), IBM Plex Mono (Metrics/Badges)
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -13,9 +13,13 @@
 }
 
 /* --------------------------------------------------------------------------
-   2. ELECTRIC TEAL DESIGN TOKENS
+   2. DESIGN TOKENS & TYPOGRAPHY VARS
    -------------------------------------------------------------------------- */
 :root, [data-theme="light"] {
+    --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-body: 'Mulish', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+
     --bg-app: radial-gradient(at 10% 10%, rgba(13, 148, 136, 0.15) 0px, transparent 55%),
               radial-gradient(at 90% 10%, rgba(6, 182, 212, 0.15) 0px, transparent 55%),
               radial-gradient(at 90% 90%, rgba(59, 130, 246, 0.12) 0px, transparent 55%),
@@ -102,14 +106,10 @@
 }
 
 /* --------------------------------------------------------------------------
-   3. BASE RESET & IBM PLEX MONO TYPOGRAPHY
+   3. BASE RESET & TYPOGRAPHY HIERARCHY
    -------------------------------------------------------------------------- */
-*, *::before, *::after {
-    font-family: 'IBM Plex Mono', monospace !important;
-}
-
 body {
-    font-family: 'IBM Plex Mono', monospace !important;
+    font-family: var(--font-body) !important;
     color: var(--text-primary);
     background: var(--bg-app);
     background-size: 200% 200%;
@@ -119,15 +119,22 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-    font-family: 'IBM Plex Mono', monospace !important;
+/* Headings (Plus Jakarta Sans) */
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .card-title, .modal-title {
+    font-family: var(--font-heading) !important;
     color: var(--text-primary);
     font-weight: 700;
     letter-spacing: -0.02em;
 }
 
-button, input, select, textarea, p, span, div, a, td, th {
-    font-family: 'IBM Plex Mono', monospace !important;
+/* Body & Controls (Mulish) */
+p, span, div, a, td, th, label, input, select, textarea, button {
+    font-family: var(--font-body);
+}
+
+/* Monospace Numbers, Metrics, Badges & Timestamps (IBM Plex Mono) */
+.progress-ring-text, .badge, .status-pill, .font-monospace, .code, pre, code, .text-xs {
+    font-family: var(--font-mono) !important;
 }
 
 .text-dark { color: var(--text-primary) !important; }
@@ -168,7 +175,7 @@ button, input, select, textarea, p, span, div, a, td, th {
 }
 
 .ls-nav-tab {
-    font-family: 'IBM Plex Mono', monospace !important;
+    font-family: var(--font-heading) !important;
     color: var(--text-secondary);
     font-weight: 600;
     padding: 0.55rem 1.25rem;
@@ -177,7 +184,7 @@ button, input, select, textarea, p, span, div, a, td, th {
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     cursor: pointer;
     border: none;
 }
@@ -242,7 +249,7 @@ button, input, select, textarea, p, span, div, a, td, th {
    6. BUTTONS, BADGES & PILLS
    -------------------------------------------------------------------------- */
 .btn {
-    font-family: 'IBM Plex Mono', monospace !important;
+    font-family: var(--font-heading) !important;
     border-radius: 50px;
     font-weight: 600;
     padding: 0.55rem 1.3rem;
@@ -282,14 +289,14 @@ button, input, select, textarea, p, span, div, a, td, th {
 }
 
 .badge {
-    font-family: 'IBM Plex Mono', monospace !important;
+    font-family: var(--font-mono) !important;
     border-radius: 50px;
     font-weight: 600;
     padding: 0.45em 0.85em;
 }
 
 .status-pill {
-    font-family: 'IBM Plex Mono', monospace !important;
+    font-family: var(--font-mono) !important;
     font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.5px;
@@ -318,7 +325,7 @@ button, input, select, textarea, p, span, div, a, td, th {
 }
 
 .login-label {
-    font-family: 'IBM Plex Mono', monospace !important;
+    font-family: var(--font-heading) !important;
     font-size: 0.88rem;
     font-weight: 700;
     margin-bottom: 0.45rem;
@@ -329,13 +336,13 @@ button, input, select, textarea, p, span, div, a, td, th {
 }
 
 .form-control, .form-select, .form-control-login {
-    font-family: 'IBM Plex Mono', monospace !important;
+    font-family: var(--font-body) !important;
     background-color: var(--input-bg);
     border: 1.5px solid var(--input-border);
     color: var(--input-text);
     border-radius: 50px !important;
     padding: 0.65rem 1.2rem;
-    font-size: 0.92rem;
+    font-size: 0.95rem;
     transition: all 0.2s ease;
 }
 
@@ -368,7 +375,7 @@ button, input, select, textarea, p, span, div, a, td, th {
 
 .progress-ring-text {
     position: absolute;
-    font-family: 'IBM Plex Mono', monospace !important;
+    font-family: var(--font-mono) !important;
     font-weight: 700;
     font-size: 0.88rem;
     color: var(--teal-primary);
@@ -403,7 +410,7 @@ button, input, select, textarea, p, span, div, a, td, th {
 }
 
 .theme-toggle-btn {
-    font-family: 'IBM Plex Mono', monospace !important;
+    font-family: var(--font-heading) !important;
     background: var(--teal-light);
     border: 1px solid var(--border-color);
     color: var(--teal-primary);
@@ -450,7 +457,7 @@ button, input, select, textarea, p, span, div, a, td, th {
    10. TABLES, MODALS & SCROLLBARS
    -------------------------------------------------------------------------- */
 .table {
-    font-family: 'IBM Plex Mono', monospace !important;
+    font-family: var(--font-body);
     color: var(--text-primary);
     border-color: var(--table-border);
 }
@@ -468,9 +475,9 @@ button, input, select, textarea, p, span, div, a, td, th {
 }
 
 .table thead th {
-    font-family: 'IBM Plex Mono', monospace !important;
+    font-family: var(--font-heading) !important;
     color: var(--table-header-text) !important;
-    font-weight: 700;
+    font-weight: 800;
     text-transform: uppercase;
     font-size: 0.76rem;
     letter-spacing: 0.6px;
@@ -499,7 +506,7 @@ button, input, select, textarea, p, span, div, a, td, th {
 }
 
 .dropdown-item {
-    font-family: 'IBM Plex Mono', monospace !important;
+    font-family: var(--font-body);
     color: var(--text-primary);
     border-radius: 12px;
     padding: 0.5rem 1rem;
