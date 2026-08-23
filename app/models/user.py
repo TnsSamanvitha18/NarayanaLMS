@@ -22,6 +22,7 @@ class Learner(db.Model):
     name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), nullable=True)
     department = db.Column(db.String(100), nullable=True, default='L&D')
+    date_of_birth = db.Column(db.Date, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     enrollments = db.relationship('LearnerEnrollment', backref='learner', lazy=True, cascade='all, delete-orphan')

@@ -9,13 +9,24 @@ from app.models.live_class import LiveClass
 from app.models.enrollment import LearnerEnrollment, AssessmentAttempt, LessonReview
 from app.models.attendance import Attendance
 from app.models.feedback import FeedbackRepository, FeedbackQuestion
+from app.models.notification import LearnerNotification
 from app.config import Config
 
 app = create_app()
 
 def init_db_if_needed():
     with app.app_context():
-        db.create_all()
+        try:
+            db.create_all()
+        except Exception as e:
+            db.session.rollback()
+            print(f"db.create_all warning handled: {e}")
+
+        try:
+            db.session.execute(db.text("ALTER TABLE learners ADD COLUMN date_of_birth DATE;"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
         try:
             db.session.execute(db.text("ALTER TABLE course_lessons ADD COLUMN duration_hours FLOAT DEFAULT 1.0;"))
             db.session.commit()
@@ -46,21 +57,48 @@ def init_db_if_needed():
         except Exception:
             db.session.rollback()
 
+        try:
+            db.session.execute(db.text("ALTER TABLE courses ADD COLUMN is_sequential BOOLEAN DEFAULT 1;"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+
+        try:
+            db.session.execute(db.text("ALTER TABLE courses ADD COLUMN completion_date DATETIME;"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+
+        try:
+            db.session.execute(db.text("ALTER TABLE course_lessons ADD COLUMN deadline DATETIME;"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+
+        try:
+            db.session.execute(db.text("ALTER TABLE course_materials ADD COLUMN description TEXT;"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+
         os.makedirs(os.path.join(app.root_path, '..', 'uploads', 'thumbnails'), exist_ok=True)
 
         admin = AdminUser.query.filter_by(username='admin').first()
-        if not admin:
-            print("Database empty. Seeding initial data...")
-            # 1. Seed Admin User
-            admin = AdminUser(username='admin', password_hash='admin')
-            db.session.add(admin)
+        if not admin or Course.query.count() == 0:
+            print("Database missing initial seed. Seeding data...")
+            if not admin:
+                admin = AdminUser(username='admin', password_hash='admin')
+                db.session.add(admin)
 
-            # 2. Seed Learners
-            learner1 = Learner(global_id='10001', name='Rajesh Kumar', department='L&D Tech')
-            learner2 = Learner(global_id='10002', name='Priya Sharma', department='Operations')
-            learner3 = Learner(global_id='10003', name='Anil Verma', department='HR')
-            db.session.add_all([learner1, learner2, learner3])
-            db.session.commit()
+            # 2. Seed Clean Learners if empty
+            if Learner.query.count() == 0:
+                learner1 = Learner(global_id='10001', name='Rajesh Kumar', department='L&D Academics')
+                learner2 = Learner(global_id='10002', name='Priya Sharma', department='Mathematics Faculty')
+                learner3 = Learner(global_id='10003', name='Anil Reddy', department='Physics Department')
+                learner4 = Learner(global_id='10004', name='Sneha Patel', department='Chemistry Department')
+                learner5 = Learner(global_id='10005', name='Vikram Verma', department='L&D Operations')
+                db.session.add_all([learner1, learner2, learner3, learner4, learner5])
+                db.session.commit()
 
             # 3. Seed Feedback Repositories
             fb_repo = FeedbackRepository(title='Standard L&D Session Feedback Survey', description='Facilitation & Course Quality Feedback')
@@ -179,10 +217,12 @@ def init_db_if_needed():
             db.session.add(mat3)
 
             # Enroll Learner 10001 in all 3 courses for demo testing
-            en1 = LearnerEnrollment(learner_id=learner1.id, course_id=c1.id, completion_status='In Progress', attempts_count=0)
-            en2 = LearnerEnrollment(learner_id=learner1.id, course_id=c2.id, class_id=cls_in1.id, completion_status='Enrolled')
-            en3 = LearnerEnrollment(learner_id=learner1.id, course_id=c3.id, class_id=cls_on1.id, completion_status='Enrolled')
-            db.session.add_all([en1, en2, en3])
+            l1 = Learner.query.filter_by(global_id='10001').first()
+            if l1:
+                en1 = LearnerEnrollment(learner_id=l1.id, course_id=c1.id, completion_status='In Progress', attempts_count=0)
+                en2 = LearnerEnrollment(learner_id=l1.id, course_id=c2.id, class_id=cls_in1.id, completion_status='Enrolled')
+                en3 = LearnerEnrollment(learner_id=l1.id, course_id=c3.id, class_id=cls_on1.id, completion_status='Enrolled')
+                db.session.add_all([en1, en2, en3])
 
             db.session.commit()
             print("Database initialized successfully!")

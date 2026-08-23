@@ -101,4 +101,63 @@
         </div>
     </div>
 </div>
+
+<!-- Learner Submitted Responses Table -->
+<div class="card border-0 shadow-sm mt-4">
+    <div class="card-header bg-navy text-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold mb-0"><i class="fa-solid fa-comments me-2 text-gold"></i> Learner Feedback Submissions ({{ responses|length }})</h5>
+        <span class="badge bg-gold text-dark font-monospace">Real-time Responses</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-muted small text-uppercase">
+                    <tr>
+                        <th>#</th>
+                        <th>Learner Name</th>
+                        <th>Submitted Date</th>
+                        <th>Class / Course Context</th>
+                        <th>Submitted Feedback Responses</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in responses %}
+                    <tr>
+                        <td class="fw-bold text-muted">{{ loop.index }}</td>
+                        <td>
+                            <strong class="text-dark d-block">{{ r.learner.name if r.learner else 'Learner #' ~ r.learner_id }}</strong>
+                            <small class="text-muted text-xs">{{ r.learner.email if r.learner else '' }}</small>
+                        </td>
+                        <td>
+                            <small class="text-dark font-monospace"><i class="fa-regular fa-clock me-1 text-primary"></i> {{ r.submitted_at.strftime('%d-%b-%Y %H:%M') if r.submitted_at else 'N/A' }}</small>
+                        </td>
+                        <td>
+                            {% if r.live_class %}
+                            <span class="badge bg-info-subtle text-info border border-info-subtle"><i class="fa-solid fa-chalkboard-user me-1"></i> {{ r.live_class.class_name }}</span>
+                            {% else %}
+                            <span class="badge bg-secondary-subtle text-dark border"><i class="fa-solid fa-book-open me-1"></i> Self-Paced Program</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% set resp_map = r.responses_json | from_json if r.responses_json else {} %}
+                            <div class="d-flex flex-column gap-1">
+                                {% for q in questions %}
+                                {% set ans = resp_map.get('q_' ~ q.id, resp_map.get(q.id|string, 'N/A')) %}
+                                <div class="small">
+                                    <strong class="text-navy">Q{{ loop.index }}:</strong> <span class="text-muted">{{ q.question_text }}</span> → <span class="badge bg-light text-dark border">{{ ans }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">No learner feedback submissions recorded for this repository yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock %}

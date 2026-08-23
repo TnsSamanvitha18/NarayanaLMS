@@ -1,4 +1,5 @@
 import os
+import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
 from datetime import datetime
 import pandas as pd
@@ -12,6 +13,7 @@ from app.models.feedback import FeedbackRepository, FeedbackQuestion, FeedbackRe
 from app.models.certificate import Certificate
 from app.services.assessment_service import evaluate_assessment
 from app.services.pdf_service import generate_certificate_pdf
+from app.services.learning_wall_service import create_completion_post
 
 learners_bp = Blueprint('learners', __name__)
 
@@ -104,12 +106,16 @@ def assign_learners():
             return redirect(url_for('learners.assign_learners'))
 
         assigned_count = 0
+        already_enrolled_count = 0
+        invalid_ids = []
+
+        from app.models.notification import LearnerNotification
+
         for gid in parsed_global_ids:
             learner = Learner.query.filter_by(global_id=gid).first()
             if not learner:
-                learner = Learner(global_id=gid, name=f"Learner {gid}", department="L&D")
-                db.session.add(learner)
-                db.session.commit()
+                invalid_ids.append(gid)
+                continue
 
             # Check if enrollment already exists
             existing_en = LearnerEnrollment.query.filter_by(learner_id=learner.id, course_id=course.id).first()
@@ -122,9 +128,30 @@ def assign_learners():
                 db.session.add(en)
                 assigned_count += 1
 
+                # Send Course Assignment notification to learner
+                notif = LearnerNotification(
+                    learner_id=learner.id,
+                    course_id=course.id,
+                    title=f"New Course Assigned: {course.name}",
+                    message=f"You have been assigned to the self-paced course '{course.name}' ({course.course_id}). Start learning now!",
+                    notification_type='COURSE_ASSIGNED'
+                )
+                db.session.add(notif)
+            else:
+                already_enrolled_count += 1
+
         db.session.commit()
-        flash(f"Successfully assigned {assigned_count} learners to course '{course.name}'.", "success")
-        return redirect(url_for('learners.list_learners'))
+
+        msg = f"Assignment Results for Course '{course.name}': {assigned_count} newly assigned."
+        if already_enrolled_count > 0:
+            msg += f" {already_enrolled_count} learner(s) were already enrolled."
+        if invalid_ids:
+            msg += f" {len(invalid_ids)} invalid/non-existing Global ID(s) could not be assigned: {', '.join(invalid_ids[:5])}{'...' if len(invalid_ids) > 5 else ''}."
+            flash(msg, "warning" if assigned_count == 0 else "info")
+        else:
+            flash(msg, "success")
+
+        return redirect(url_for('courses.view_course', course_id=course.id))
 
     return render_template('learners/assign.html', courses=courses)
 
@@ -142,7 +169,37 @@ def my_portal():
     enrollments = LearnerEnrollment.query.filter_by(learner_id=learner.id).all()
     all_courses = Course.query.all()
     
-    return render_template('learner_portal/portal.html', learner=learner, enrollments=enrollments, all_courses=all_courses)
+    from app.models.notification import LearnerNotification
+    notifications = LearnerNotification.query.filter_by(learner_id=learner.id).order_by(LearnerNotification.created_at.desc()).all()
+    
+    return render_template(
+        'learner_portal/portal.html',
+        learner=learner,
+        enrollments=enrollments,
+        all_courses=all_courses,
+        notifications=notifications
+    )
+
+
+@learners_bp.route('/notifications/mark_read/<int:notif_id>', methods=['POST'])
+def mark_notification_read(notif_id):
+    learner_id = session.get('learner_id')
+    if not learner_id:
+        return jsonify({'status': 'error'}), 401
+    
+    from app.models.notification import LearnerNotification
+    if notif_id == 0:
+        # Mark all as read
+        notifications = LearnerNotification.query.filter_by(learner_id=learner_id, is_read=False).all()
+        for n in notifications:
+            n.is_read = True
+    else:
+        notif = LearnerNotification.query.filter_by(id=notif_id, learner_id=learner_id).first()
+        if notif:
+            notif.is_read = True
+    
+    db.session.commit()
+    return jsonify({'status': 'success'})
 
 
 @learners_bp.route('/class_flow/<class_id_str>')
@@ -230,13 +287,40 @@ def self_paced_flow(course_id_str):
         db.session.add(enrollment)
         db.session.commit()
 
-    has_pre_questions = CourseAssessment.query.filter((CourseAssessment.course_id == course.id) & (CourseAssessment.assessment_type.in_(['PRE', 'LESSON_PRE']))).count() > 0
-    pre_attempt = AssessmentAttempt.query.filter((AssessmentAttempt.enrollment_id == enrollment.id) & (AssessmentAttempt.assessment_type.in_(['PRE', 'LESSON_PRE']))).first()
+    has_pre_questions = CourseAssessment.query.filter_by(course_id=course.id, assessment_type='PRE').count() > 0
+    pre_attempt = AssessmentAttempt.query.filter_by(enrollment_id=enrollment.id, assessment_type='PRE').first()
     post_attempt = AssessmentAttempt.query.filter((AssessmentAttempt.enrollment_id == enrollment.id) & (AssessmentAttempt.assessment_type.in_(['POST', 'LESSON_POST']))).order_by(AssessmentAttempt.id.desc()).first()
     course_end_attempt = AssessmentAttempt.query.filter((AssessmentAttempt.enrollment_id == enrollment.id) & (AssessmentAttempt.assessment_type == 'COURSE_END')).order_by(AssessmentAttempt.id.desc()).first()
 
+    all_attempts = AssessmentAttempt.query.filter_by(enrollment_id=enrollment.id).order_by(AssessmentAttempt.id.asc()).all()
+    lesson_pre_attempts = {}
+    lesson_post_attempts = {}
+    for att in all_attempts:
+        if att.assessment_type == 'LESSON_PRE':
+            if att.lesson_id is not None:
+                lesson_pre_attempts[att.lesson_id] = att
+            elif att.lesson_number is not None:
+                lesson_pre_attempts[att.lesson_number] = att
+        elif att.assessment_type == 'LESSON_POST':
+            if att.lesson_id is not None:
+                lesson_post_attempts[att.lesson_id] = att
+            elif att.lesson_number is not None:
+                lesson_post_attempts[att.lesson_number] = att
+
     reviewed_reviews = LessonReview.query.filter_by(enrollment_id=enrollment.id).all()
     reviewed_lesson_ids = [r.lesson_id for r in reviewed_reviews]
+
+    completed_lesson_ids = set()
+    for les in course.lessons:
+        has_les_post = CourseAssessment.query.filter_by(course_id=course.id, lesson_id=les.id, assessment_type='LESSON_POST').count() > 0
+        post_att = lesson_post_attempts.get(les.id) or lesson_post_attempts.get(les.lesson_number)
+        
+        is_cw_reviewed = les.id in reviewed_lesson_ids
+        if has_les_post:
+            if post_att and post_att.passed:
+                completed_lesson_ids.add(les.id)
+        elif is_cw_reviewed:
+            completed_lesson_ids.add(les.id)
 
     feedback_repo = course.feedback_repository or FeedbackRepository.query.first()
     feedback_resp = None
@@ -254,7 +338,10 @@ def self_paced_flow(course_id_str):
         pre_attempt=pre_attempt,
         post_attempt=post_attempt,
         course_end_attempt=course_end_attempt,
+        lesson_pre_attempts=lesson_pre_attempts,
+        lesson_post_attempts=lesson_post_attempts,
         reviewed_lesson_ids=reviewed_lesson_ids,
+        completed_lesson_ids=completed_lesson_ids,
         feedback_repo=feedback_repo,
         feedback_resp=feedback_resp,
         certificate=cert
@@ -280,14 +367,19 @@ def record_courseware_time(lesson_id):
     return jsonify({'status': 'error', 'message': 'Enrollment not found'}), 404
 
 
-@learners_bp.route('/take_assessment/<int:course_id>/<assessment_type>', methods=['GET', 'POST'])
+@learners_bp.route('/take_assessment/<course_id>/<assessment_type>', methods=['GET', 'POST'])
 def take_assessment(course_id, assessment_type):
     learner_id = session.get('learner_id')
     if not learner_id:
         return redirect(url_for('auth.learner_login'))
 
     learner = Learner.query.get_or_404(learner_id)
-    course = Course.query.get_or_404(course_id)
+    
+    # Dual lookup: support both integer ID (e.g. 1) and public string course_id (e.g. CRS-000001)
+    if str(course_id).isdigit():
+        course = Course.query.get(int(course_id)) or Course.query.filter_by(course_id=str(course_id)).first_or_404()
+    else:
+        course = Course.query.filter_by(course_id=str(course_id)).first_or_404()
     
     class_id_str = request.args.get('class_id')
     lesson_id_param = request.args.get('lesson_id')
@@ -303,8 +395,26 @@ def take_assessment(course_id, assessment_type):
     type_upper = assessment_type.upper()
     is_course_end = (type_upper == 'COURSE_END')
 
-    # Check attempt limits strictly ONLY for Course End Assessment (max 3 attempts)
+    # Check attempt limits and lesson completion strictly ONLY for Course End Assessment (max 3 attempts)
     if course.mode == 'Self Paced' and is_course_end:
+        reviewed_reviews = LessonReview.query.filter_by(enrollment_id=enrollment.id).all()
+        reviewed_lesson_ids = [r.lesson_id for r in reviewed_reviews]
+        
+        all_completed = True
+        for les in course.lessons:
+            has_les_post = CourseAssessment.query.filter_by(course_id=course.id, lesson_id=les.id, assessment_type='LESSON_POST').count() > 0
+            post_att = AssessmentAttempt.query.filter((AssessmentAttempt.enrollment_id == enrollment.id) & (AssessmentAttempt.assessment_type.in_(['LESSON_POST', 'POST'])) & ((AssessmentAttempt.lesson_id == les.id) | (AssessmentAttempt.lesson_number == les.lesson_number)) & (AssessmentAttempt.passed == True)).first()
+            is_cw_reviewed = les.id in reviewed_lesson_ids
+            
+            les_done = bool(post_att) if has_les_post else is_cw_reviewed
+            if not les_done:
+                all_completed = False
+                break
+                
+        if not all_completed:
+            flash("Course End Assessment is locked. You must complete all lessons and post-assessments first.", "warning")
+            return redirect(url_for('learners.self_paced_flow', course_id_str=course.course_id))
+
         if enrollment.attempts_count >= 3 and not (enrollment.final_score and enrollment.final_score >= course.pass_percentage):
             flash("Maximum attempt limit (3 attempts) reached for the Course End Assessment.", "danger")
             return redirect(url_for('learners.self_paced_flow', course_id_str=course.course_id))
@@ -328,24 +438,59 @@ def take_assessment(course_id, assessment_type):
             query = query.filter(CourseAssessment.assessment_type.in_(['LESSON_POST', 'POST']))
     else:
         if type_upper in ['PRE', 'LESSON_PRE']:
-            query = query.filter(CourseAssessment.assessment_type.in_(['PRE', 'LESSON_PRE']))
+            # First try course-level PRE assessments
+            pre_count = CourseAssessment.query.filter_by(course_id=course.id, assessment_type='PRE').count()
+            if pre_count > 0:
+                query = query.filter_by(assessment_type='PRE')
+            else:
+                # If only lesson-level PRE assessments exist, isolate first lesson to prevent multi-lesson duplicates
+                first_lesson = CourseLesson.query.filter_by(course_id=course.id).order_by(CourseLesson.lesson_number.asc()).first()
+                if first_lesson:
+                    query = query.filter((CourseAssessment.lesson_id == first_lesson.id) & (CourseAssessment.assessment_type.in_(['PRE', 'LESSON_PRE'])))
+                else:
+                    query = query.filter(CourseAssessment.assessment_type.in_(['PRE', 'LESSON_PRE']))
         elif is_course_end:
             query = query.filter(CourseAssessment.assessment_type == 'COURSE_END')
         else:
-            query = query.filter(CourseAssessment.assessment_type.in_(['POST', 'LESSON_POST']))
+            first_lesson = CourseLesson.query.filter_by(course_id=course.id).order_by(CourseLesson.lesson_number.asc()).first()
+            if first_lesson:
+                query = query.filter((CourseAssessment.lesson_id == first_lesson.id) & (CourseAssessment.assessment_type.in_(['POST', 'LESSON_POST'])))
+            else:
+                query = query.filter(CourseAssessment.assessment_type.in_(['POST', 'LESSON_POST']))
 
-    questions = query.order_by(CourseAssessment.serial_number.asc()).all()
+    raw_questions = query.order_by(CourseAssessment.serial_number.asc(), CourseAssessment.id.asc()).all()
+
+    # Deduplicate questions by question text to ensure no repeated questions appear
+    seen_texts = set()
+    questions = []
+    for q in raw_questions:
+        norm_text = (q.question or '').strip().lower()
+        if norm_text not in seen_texts:
+            seen_texts.add(norm_text)
+            questions.append(q)
 
     # Fallback: if specific lesson query yielded no questions, filter broadly by type without mixing types
     if not questions:
         if type_upper in ['PRE', 'LESSON_PRE']:
-            questions = CourseAssessment.query.filter((CourseAssessment.course_id == course.id) & (CourseAssessment.assessment_type.in_(['PRE', 'LESSON_PRE']))).order_by(CourseAssessment.serial_number.asc()).all()
+            raw_fallback = CourseAssessment.query.filter((CourseAssessment.course_id == course.id) & (CourseAssessment.assessment_type.in_(['PRE', 'LESSON_PRE']))).order_by(CourseAssessment.serial_number.asc()).all()
         elif is_course_end:
-            questions = CourseAssessment.query.filter((CourseAssessment.course_id == course.id) & (CourseAssessment.assessment_type.in_(['COURSE_END', 'POST']))).order_by(CourseAssessment.serial_number.asc()).all()
+            raw_fallback = CourseAssessment.query.filter((CourseAssessment.course_id == course.id) & (CourseAssessment.assessment_type.in_(['COURSE_END', 'POST']))).order_by(CourseAssessment.serial_number.asc()).all()
+        else:
+            raw_fallback = []
+        
+        seen_texts_fb = set()
+        for q in raw_fallback:
+            norm_text = (q.question or '').strip().lower()
+            if norm_text not in seen_texts_fb:
+                seen_texts_fb.add(norm_text)
+                questions.append(q)
 
     if request.method == 'POST':
         user_answers = request.form.to_dict()
         score_pct, passed, total, correct = evaluate_assessment(questions, user_answers, pass_percentage=course.pass_percentage)
+
+        if type_upper in ['PRE', 'LESSON_PRE']:
+            passed = True
 
         if is_course_end:
             enrollment.attempts_count += 1
@@ -353,12 +498,18 @@ def take_assessment(course_id, assessment_type):
         else:
             attempt_num = AssessmentAttempt.query.filter_by(enrollment_id=enrollment.id, assessment_type=type_upper).count() + 1
 
+        les_id_val = int(lesson_id_param) if lesson_id_param and str(lesson_id_param).isdigit() else None
+        les_obj_val = CourseLesson.query.get(les_id_val) if les_id_val else None
+        les_num_val = les_obj_val.lesson_number if les_obj_val else 1
+
         attempt = AssessmentAttempt(
             enrollment_id=enrollment.id,
             assessment_type=type_upper,
             score_percentage=score_pct,
             passed=passed,
-            attempt_number=attempt_num
+            attempt_number=attempt_num,
+            lesson_id=les_id_val,
+            lesson_number=les_num_val
         )
         db.session.add(attempt)
 
@@ -402,8 +553,13 @@ def submit_feedback(repo_id):
     class_id_str = request.args.get('class_id')
     course_id_param = request.args.get('course_id')
 
-    live_class = LiveClass.query.filter_by(class_id=class_id_str).first() if class_id_str else None
-    
+    live_class = None
+    if class_id_str:
+        if str(class_id_str).isdigit():
+            live_class = LiveClass.query.get(int(class_id_str))
+        if not live_class:
+            live_class = LiveClass.query.filter_by(class_id=class_id_str).first()
+
     course = None
     enrollment = None
 
@@ -413,7 +569,10 @@ def submit_feedback(repo_id):
         if not enrollment:
             enrollment = LearnerEnrollment.query.filter_by(learner_id=learner_id, course_id=course.id).first()
     elif course_id_param:
-        course = Course.query.get(int(course_id_param))
+        if str(course_id_param).isdigit():
+            course = Course.query.get(int(course_id_param))
+        if not course:
+            course = Course.query.filter_by(course_id=course_id_param).first()
         if course:
             enrollment = LearnerEnrollment.query.filter_by(learner_id=learner_id, course_id=course.id).first()
     else:
@@ -422,9 +581,18 @@ def submit_feedback(repo_id):
         if course:
             enrollment = LearnerEnrollment.query.filter_by(learner_id=learner_id, course_id=course.id).first()
 
+    # Auto-seed default feedback questions if repo has no questions defined
+    questions = FeedbackQuestion.query.filter_by(repo_id=repo.id).all()
+    if not questions:
+        q1 = FeedbackQuestion(repo_id=repo.id, question_text='How would you rate the overall quality of the course content?', question_type='MCQ', options_json=json.dumps(["Excellent", "Good", "Average", "Poor"]))
+        q2 = FeedbackQuestion(repo_id=repo.id, question_text='Was the trainer / facilitation clear and engaging?', question_type='MCQ', options_json=json.dumps(["Strongly Agree", "Agree", "Neutral", "Disagree"]))
+        q3 = FeedbackQuestion(repo_id=repo.id, question_text='Please share any additional comments or suggestions for improvement.', question_type='Text')
+        db.session.add_all([q1, q2, q3])
+        db.session.commit()
+        questions = [q1, q2, q3]
+
     if request.method == 'POST':
         resp_dict = request.form.to_dict()
-        import json
 
         existing_resp = FeedbackResponse.query.filter_by(
             repo_id=repo.id,
@@ -432,7 +600,10 @@ def submit_feedback(repo_id):
             class_id=live_class.id if live_class else None
         ).first()
 
-        if not existing_resp:
+        if existing_resp:
+            existing_resp.responses_json = json.dumps(resp_dict)
+            existing_resp.submitted_at = datetime.utcnow()
+        else:
             fb_resp = FeedbackResponse(
                 repo_id=repo.id,
                 class_id=live_class.id if live_class else None,
@@ -446,6 +617,13 @@ def submit_feedback(repo_id):
             enrollment.completion_status = 'Completed'
             enrollment.completion_date = datetime.utcnow()
 
+            # Trigger automated Learning Wall post for course completion
+            if course:
+                try:
+                    create_completion_post(learner_id, course.id, final_score=enrollment.final_score)
+                except Exception:
+                    pass
+
             # Check if certificate exists/is enabled for this course
             has_cert = getattr(course, 'has_certificate', True) if course else True
             if has_cert and course:
@@ -458,7 +636,10 @@ def submit_feedback(repo_id):
 
                     learner_obj = Learner.query.get(learner_id)
                     date_str = datetime.now().strftime('%d-%b-%Y')
-                    generate_certificate_pdf(learner_obj.name, course.name, date_str, cert_id, cert_file_path)
+                    try:
+                        generate_certificate_pdf(learner_obj.name, course.name, date_str, cert_id, cert_file_path)
+                    except Exception:
+                        pass
 
                     cert = Certificate(
                         certificate_id=cert_id,
@@ -482,5 +663,55 @@ def submit_feedback(repo_id):
         else:
             return redirect(url_for('learners.my_portal'))
 
-    questions = FeedbackQuestion.query.filter_by(repo_id=repo.id).all()
-    return render_template('learner_portal/feedback.html', repo=repo, questions=questions, live_class=live_class, course=course)
+    existing_resp = FeedbackResponse.query.filter_by(
+        repo_id=repo.id,
+        learner_id=learner_id,
+        class_id=live_class.id if live_class else None
+    ).first()
+
+    saved_responses = {}
+    if existing_resp and existing_resp.responses_json:
+        try:
+            saved_responses = json.loads(existing_resp.responses_json)
+        except Exception:
+            saved_responses = {}
+
+    return render_template(
+        'learner_portal/feedback.html',
+        repo=repo,
+        questions=questions,
+        live_class=live_class,
+        course=course,
+        saved_responses=saved_responses,
+        is_submitted=bool(existing_resp)
+    )
+
+
+@learners_bp.route('/scorm/progress', methods=['POST'])
+def save_scorm_progress():
+    learner_id = session.get('learner_id')
+    if not learner_id:
+        return jsonify({'status': 'error', 'message': 'Not logged in'}), 401
+
+    data = request.get_json() or {}
+    lesson_id = data.get('lesson_id')
+    status = data.get('status', '').lower() # 'completed', 'passed', 'failed'
+
+    if not lesson_id:
+        return jsonify({'status': 'error', 'message': 'Missing lesson_id'}), 400
+
+    lesson = CourseLesson.query.get_or_404(lesson_id)
+
+    if status in ['completed', 'passed']:
+        rev = LessonReview.query.filter_by(learner_id=learner_id, lesson_id=lesson.id).first()
+        if not rev:
+            rev = LessonReview(
+                learner_id=learner_id,
+                lesson_id=lesson.id,
+                course_id=lesson.course_id,
+                time_spent_seconds=600
+            )
+            db.session.add(rev)
+            db.session.commit()
+
+    return jsonify({'status': 'success', 'lesson_id': lesson.id, 'scorm_status': status})

@@ -65,6 +65,10 @@ document.addEventListener('DOMContentLoaded', function () {
         classModeSelect.addEventListener('change', toggleModeFields);
         toggleModeFields();
     }
+
+    // Initialize Search Functionality & Instant Live Filtering
+    setupSearchInputs();
+    setupGlobalSearchModal();
 });
 
 // Sidebar Expand / Collapse Logic
@@ -82,23 +86,24 @@ function setupSidebarToggle() {
         function setCollapsedState(collapsed) {
             if (collapsed) {
                 sidebar.classList.add('collapsed');
-                if (sidebarCol) sidebarCol.className = 'col-lg-1 col-xl-1 sidebar-col';
-                if (mainCol) mainCol.className = 'col-lg-8 col-xl-8 main-content-col';
+                if (sidebarCol) sidebarCol.className = 'col-12 col-lg-2 col-xl-2 sidebar-col';
+                if (mainCol) mainCol.className = 'col-12 col-lg-7 col-xl-7 main-content-col';
                 if (icon) icon.className = 'fa-solid fa-angles-right';
                 if (text) text.innerText = '';
                 if (footerText) footerText.innerText = 'Expand';
             } else {
                 sidebar.classList.remove('collapsed');
-                if (sidebarCol) sidebarCol.className = 'col-lg-3 col-xl-2 sidebar-col';
-                if (mainCol) mainCol.className = 'col-lg-6 col-xl-7 main-content-col';
+                if (sidebarCol) sidebarCol.className = 'col-12 col-lg-3 col-xl-3 sidebar-col';
+                if (mainCol) mainCol.className = 'col-12 col-lg-6 col-xl-6 main-content-col';
                 if (icon) icon.className = 'fa-solid fa-angles-left';
                 if (text) text.innerText = 'Collapse';
                 if (footerText) footerText.innerText = 'Collapse';
             }
         }
 
-        const isCollapsed = localStorage.getItem('sidebar_collapsed') === 'true';
-        setCollapsedState(isCollapsed);
+        // Default to uncollapsed (full 3-column 25% width)
+        localStorage.removeItem('sidebar_collapsed');
+        setCollapsedState(false);
 
         const handleToggle = function (e) {
             e.preventDefault();
@@ -109,6 +114,25 @@ function setupSidebarToggle() {
 
         if (toggleBtn) toggleBtn.addEventListener('click', handleToggle);
         if (toggleFooterBtn) toggleFooterBtn.addEventListener('click', handleToggle);
+    }
+
+    // Mobile Profile Expand / Collapse Toggle Bar Listener
+    const mobileProfileBtn = document.getElementById('mobileProfileToggleBtn');
+    const sidebarStatsContainer = document.getElementById('sidebarStatsContainer');
+    const mobileProfileIcon = document.getElementById('mobileProfileToggleIcon');
+
+    if (mobileProfileBtn && sidebarStatsContainer) {
+        mobileProfileBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            sidebarStatsContainer.classList.toggle('mobile-show');
+            if (mobileProfileIcon) {
+                if (sidebarStatsContainer.classList.contains('mobile-show')) {
+                    mobileProfileIcon.className = 'fa-solid fa-chevron-up text-teal';
+                } else {
+                    mobileProfileIcon.className = 'fa-solid fa-chevron-down text-teal';
+                }
+            }
+        });
     }
 }
 
@@ -175,10 +199,10 @@ function updateThemeToggleUI() {
     
     themeButtons.forEach(btn => {
         if (currentTheme === 'dark') {
-            btn.innerHTML = `<i class="fa-solid fa-sun text-warning me-1"></i> <span>Light Mode</span>`;
+            btn.innerHTML = `<i class="fa-solid fa-sun text-warning me-0 me-md-1"></i> <span class="d-none d-md-inline">Light Mode</span>`;
             btn.setAttribute('aria-label', 'Switch to Light Theme');
         } else {
-            btn.innerHTML = `<i class="fa-solid fa-moon text-primary me-1"></i> <span>Dark Mode</span>`;
+            btn.innerHTML = `<i class="fa-solid fa-moon text-primary me-0 me-md-1"></i> <span class="d-none d-md-inline">Dark Mode</span>`;
             btn.setAttribute('aria-label', 'Switch to Dark Theme');
         }
     });
@@ -214,4 +238,247 @@ function submitUnlockClass(classIdStr) {
     .catch(err => {
         alert('Failed to unlock class: ' + err);
     });
+}
+
+// Universal Search Inputs & Real-time Table Filtering Engine
+function setupSearchInputs() {
+    const searchBoxes = document.querySelectorAll('.ls-search-box, input[name="search"]');
+    
+    searchBoxes.forEach(container => {
+        let input = container.tagName === 'INPUT' ? container : container.querySelector('input');
+        if (!input) return;
+
+        let clearBtn = container.querySelector ? container.querySelector('.ls-search-clear') : null;
+        let form = input.closest('form');
+        let selectFilter = form ? form.querySelector('select[name="mode"], select[name="class_id"]') : null;
+
+        function filterTableRows() {
+            const tableRows = document.querySelectorAll('tbody tr');
+            const rawQuery = input.value.trim();
+            const lowerQuery = rawQuery.toLowerCase();
+            const keywords = lowerQuery.split(/\s+/).filter(k => k.length > 0);
+            const selectedMode = selectFilter ? selectFilter.value.trim().toLowerCase() : '';
+
+            // Toggle Clear Button
+            if (clearBtn) {
+                clearBtn.style.display = lowerQuery.length > 0 ? 'flex' : 'none';
+            }
+
+            if (tableRows.length > 0) {
+                let matchCount = 0;
+
+                tableRows.forEach(row => {
+                    if (row.classList.contains('no-search-results-row')) return;
+
+                    // Extract visible cell content text cleanly (case-insensitive)
+                    const cellText = Array.from(row.children)
+                        .map(td => (td.innerText || td.textContent || '').trim())
+                        .join(' ')
+                        .toLowerCase()
+                        .replace(/\s+/g, ' ');
+
+                    // Check keyword matches (all keywords must exist in cell text)
+                    const queryMatches = keywords.length === 0 || keywords.every(kw => cellText.includes(kw));
+
+                    // Check mode dropdown match if active
+                    let modeMatches = true;
+                    if (selectedMode && selectedMode !== 'all' && selectedMode !== '') {
+                        modeMatches = cellText.includes(selectedMode);
+                    }
+
+                    if (queryMatches && modeMatches) {
+                        row.style.display = '';
+                        matchCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                // Handle empty state row
+                let emptyRow = document.querySelector('.no-search-results-row');
+                if (matchCount === 0 && (keywords.length > 0 || (selectedMode && selectedMode !== 'all'))) {
+                    if (!emptyRow && tableRows[0] && tableRows[0].parentElement) {
+                        const colCount = tableRows[0].children.length || 6;
+                        const tr = document.createElement('tr');
+                        tr.className = 'no-search-results-row';
+                        tr.innerHTML = `<td colspan="${colCount}" class="text-center py-4 text-muted"><i class="fa-solid fa-magnifying-glass me-2 text-teal"></i> No matching records found for "<strong>${escapeHtml(rawQuery)}</strong>"</td>`;
+                        tableRows[0].parentElement.appendChild(tr);
+                    } else if (emptyRow) {
+                        emptyRow.style.display = '';
+                    }
+                } else if (emptyRow) {
+                    emptyRow.style.display = 'none';
+                }
+            }
+        }
+
+        // Live input & keyup events
+        input.addEventListener('input', filterTableRows);
+        input.addEventListener('keyup', filterTableRows);
+
+        // Mode dropdown live change event
+        if (selectFilter) {
+            selectFilter.addEventListener('change', filterTableRows);
+        }
+
+        // Clear button click handler
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                input.value = '';
+                if (window.location.search.includes('search=')) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('search');
+                    window.history.replaceState({}, '', url.toString());
+                }
+                filterTableRows();
+                input.focus();
+            });
+        }
+
+        // Run filter immediately on load
+        filterTableRows();
+    });
+}
+
+// Global Portal Search Modal Handler
+function setupGlobalSearchModal() {
+    const searchInput = document.getElementById('globalSearchInput');
+    const searchClear = document.getElementById('globalSearchClear');
+    const searchResults = document.getElementById('globalSearchResults');
+    const modalEl = document.getElementById('globalSearchModal');
+
+    if (!searchInput || !searchResults) return;
+
+    // Keyboard Shortcut (Ctrl+K or / to open Search)
+    document.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+            e.preventDefault();
+            if (modalEl) {
+                const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modal.show();
+            }
+        }
+    });
+
+    if (modalEl) {
+        modalEl.addEventListener('shown.bs.modal', function () {
+            searchInput.focus();
+        });
+    }
+
+    searchInput.addEventListener('input', function () {
+        const query = this.value.toLowerCase().trim();
+
+        if (searchClear) {
+            searchClear.style.display = query.length > 0 ? 'flex' : 'none';
+        }
+
+        if (!query) {
+            searchResults.innerHTML = `
+                <div class="text-center py-4 text-muted">
+                    <i class="fa-solid fa-graduation-cap display-4 text-teal opacity-50 mb-2"></i>
+                    <h6 class="fw-bold text-dark mb-1">Instant Portal Search</h6>
+                    <p class="small text-muted mb-0">Type keywords above to search across Courses, Classes, Learners, and Certificates...</p>
+                </div>`;
+            return;
+        }
+
+        // Collect all navigable items from navigation, tables, and portal options
+        let matches = [];
+
+        // 1. Navigation items
+        const navTabs = document.querySelectorAll('.ls-nav-tab, .dropdown-item');
+        navTabs.forEach(tab => {
+            const text = tab.innerText.trim();
+            const href = tab.getAttribute('href');
+            if (text && href && href !== '#' && text.toLowerCase().includes(query)) {
+                matches.push({ title: text, type: 'Page Navigation', href: href, icon: 'fa-compass' });
+            }
+        });
+
+        // 2. Table rows (Courses, Classes, Learners, Certificates)
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const text = row.innerText.trim();
+            if (text && text.toLowerCase().includes(query)) {
+                const firstLink = row.querySelector('a[href]');
+                const titleEl = row.querySelector('.fw-bold, td:first-child');
+                const titleText = titleEl ? titleEl.innerText.trim() : text.substring(0, 40);
+                const href = firstLink ? firstLink.getAttribute('href') : window.location.href;
+
+                let icon = 'fa-file-lines';
+                if (titleText.startsWith('CRS-') || text.includes('Course')) icon = 'fa-book-open';
+                else if (titleText.startsWith('CLS-') || text.includes('Class')) icon = 'fa-chalkboard-user';
+                else if (text.includes('Learner') || titleText.match(/^\d+$/)) icon = 'fa-user';
+                else if (text.includes('Cert')) icon = 'fa-certificate';
+
+                matches.push({
+                    title: titleText,
+                    type: 'Record Match',
+                    subtitle: text.substring(0, 90).replace(/\s+/g, ' '),
+                    href: href,
+                    icon: icon
+                });
+            }
+        });
+
+        // Deduplicate matches by title + href
+        const uniqueMatches = [];
+        const seen = new Set();
+        matches.forEach(m => {
+            const key = m.title + '|' + m.href;
+            if (!seen.has(key)) {
+                seen.add(key);
+                uniqueMatches.push(m);
+            }
+        });
+
+        if (uniqueMatches.length === 0) {
+            searchResults.innerHTML = `
+                <div class="text-center py-4 text-muted">
+                    <i class="fa-solid fa-face-frown fs-2 mb-2 text-warning"></i>
+                    <h6 class="fw-bold text-dark mb-1">No results found for "${escapeHtml(query)}"</h6>
+                    <p class="small text-muted mb-0">Try searching for course codes (e.g. CRS-000001), learner names, or page titles.</p>
+                </div>`;
+        } else {
+            let html = '<div class="list-group list-group-flush">';
+            uniqueMatches.slice(0, 8).forEach(item => {
+                html += `
+                <a href="${item.href}" class="list-group-item list-group-item-action p-3 rounded-3 mb-2 border text-start d-flex align-items-center justify-content-between text-decoration-none">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="badge bg-teal-subtle text-teal p-2.5 rounded-circle fs-5 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <i class="fa-solid ${item.icon}"></i>
+                        </div>
+                        <div>
+                            <div class="fw-bold text-dark fs-6 mb-0">${escapeHtml(item.title)}</div>
+                            <small class="text-muted text-xs">${escapeHtml(item.subtitle || item.type)}</small>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-teal small"></i>
+                </a>`;
+            });
+            html += '</div>';
+            searchResults.innerHTML = html;
+        }
+    });
+
+    if (searchClear) {
+        searchClear.addEventListener('click', function () {
+            searchInput.value = '';
+            searchInput.dispatchEvent(new Event('input'));
+            searchInput.focus();
+        });
+    }
+}
+
+// Utility to escape HTML strings safely
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
 }

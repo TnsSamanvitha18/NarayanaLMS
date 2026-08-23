@@ -3,13 +3,13 @@
 {% block title %}Reports - Narayana Learning Hub{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch align-items-sm-center gap-3 mb-4">
     <div>
         <h3 class="fw-bold text-gradient-primary mb-1"><i class="fa-solid fa-file-invoice me-2 text-primary"></i> Custom Reports Builder</h3>
         <p class="text-muted mb-0">Customize report columns, filter datasets, and export CSV reports using Pandas.</p>
     </div>
     {% if records %}
-    <a href="{{ url_for('reports.export_csv', search=search_query, mode=mode_filter, cols=selected_cols) }}" class="btn btn-success fw-bold shadow-sm px-4">
+    <a href="{{ url_for('reports.export_csv', search=search_query, mode=mode_filter, cols=selected_cols) }}" class="btn btn-success fw-bold shadow-sm px-4 btn-mobile-full text-nowrap">
         <i class="fa-solid fa-file-csv me-2"></i> Export to CSV File
     </a>
     {% endif %}
@@ -18,18 +18,18 @@
 <!-- Column Chooser Card -->
 <div class="card card-gradient-gold border-0 shadow-sm mb-4 p-2">
     <div class="card-header py-3 border-0">
-        <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-sliders me-2 text-primary"></i> Column Selector & Filters</h5>
+        <h5 class="fw-bold text-teal mb-0"><i class="fa-solid fa-sliders me-2 text-teal"></i> Column Selector & Filters</h5>
     </div>
-    <div class="card-body p-4">
+    <div class="card-body p-3 p-md-4">
         <form method="GET" action="{{ url_for('reports.index') }}">
             <div class="mb-3">
-                <label class="form-label fw-bold">Select Report Columns:</label>
+                <label class="form-label fw-bold text-teal">Select Report Columns:</label>
                 <div class="row g-2">
                     {% for key, label in all_columns.items() %}
-                    <div class="col-md-3 col-6">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="cols" value="{{ key }}" id="col_{{ key }}" {% if key in selected_cols %}checked{% endif %}>
-                            <label class="form-check-label small fw-medium" for="col_{{ key }}">
+                    <div class="col-6 col-sm-4 col-md-3">
+                        <div class="form-check d-flex align-items-center">
+                            <input class="form-check-input me-2" type="checkbox" name="cols" value="{{ key }}" id="col_{{ key }}" {% if key in selected_cols %}checked{% endif %}>
+                            <label class="form-check-label small fw-semibold text-truncate cursor-pointer" for="col_{{ key }}">
                                 {{ label }}
                             </label>
                         </div>
@@ -40,21 +40,25 @@
 
             <hr class="my-3 opacity-25">
 
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label fw-bold">Search Keywords</label>
-                    <input type="text" name="search" class="form-control" placeholder="Search by Course, Class Name, or Learner ID..." value="{{ search_query }}">
+            <div class="row g-3 align-items-end">
+                <div class="col-12 col-md-6">
+                    <label class="form-label fw-bold text-teal">Search Keywords</label>
+                    <div class="ls-search-box">
+                        <i class="fa-solid fa-magnifying-glass ls-search-icon"></i>
+                        <input type="text" name="search" class="ls-search-input" placeholder="Search by Course, Class Name, or Learner ID..." value="{{ search_query }}">
+                        <button type="button" class="ls-search-clear" title="Clear Search" style="display: none;"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label fw-bold">Course Mode Filter</label>
-                    <select name="mode" class="form-select">
+                <div class="col-12 col-md-4">
+                    <label class="form-label fw-bold text-teal">Course Mode Filter</label>
+                    <select name="mode" class="form-select ls-filter-select">
                         <option value="ALL" {% if mode_filter == 'ALL' %}selected{% endif %}>All Course Modes</option>
                         <option value="Live" {% if mode_filter == 'Live' %}selected{% endif %}>Live Courses Only</option>
                         <option value="Self Paced" {% if mode_filter == 'Self Paced' %}selected{% endif %}>Self Paced Courses Only</option>
                     </select>
                 </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-navy text-white w-100 fw-bold">
+                <div class="col-12 col-md-2">
+                    <button type="submit" class="btn btn-navy text-white ls-filter-btn w-100 fw-bold">
                         <i class="fa-solid fa-sync me-1"></i> Generate
                     </button>
                 </div>
@@ -66,7 +70,7 @@
 <!-- Report Results Table -->
 <div class="card card-gradient-blue border-0 shadow-sm p-2">
     <div class="card-body p-0">
-        <div class="table-responsive rounded-4 overflow-hidden">
+        <div class="table-responsive-card">
             <table class="table table-hover align-middle mb-0">
                 <thead>
                     <tr>
@@ -79,7 +83,7 @@
                     {% for row in records %}
                     <tr>
                         {% for h in headers %}
-                        <td class="small">{{ row[h] }}</td>
+                        <td data-label="{{ h }}" class="small">{{ row[h] }}</td>
                         {% endfor %}
                     </tr>
                     {% else %}

@@ -22,11 +22,11 @@
             <a href="{{ url_for('courses.download_analytics', course_id=course.id) }}" class="btn btn-outline-success btn-sm px-3 fw-bold me-2 shadow-sm" title="Download Course Performance Analytics CSV">
                 <i class="fa-solid fa-file-csv me-1"></i> Download Course Analytics
             </a>
-            <a href="{{ url_for('courses.edit_course', course_id=course.id) }}" class="btn btn-navy bg-navy text-white btn-sm px-3 shadow-sm me-2">
+            <a href="{{ url_for('courses.edit_course', course_id=course.id) }}" class="btn-action-edit me-2 fs-6 px-3.5 py-1.5" title="Edit Course">
                 <i class="fa-solid fa-pen-to-square me-1"></i> Edit Course
             </a>
             <form action="{{ url_for('courses.delete_course', course_id=course.id) }}" method="POST" class="d-inline me-2" onsubmit="return confirm('Are you sure you want to delete course {{ course.course_id }}? This will permanently delete all lessons, courseware, and assessments.');">
-                <button type="submit" class="btn btn-outline-danger btn-sm px-3 shadow-sm">
+                <button type="submit" class="btn-action-delete fs-6 px-3.5 py-1.5" title="Delete Course">
                     <i class="fa-solid fa-trash-can me-1"></i> Delete Course
                 </button>
             </form>
@@ -82,6 +82,19 @@
                         {% endif %}
                     </span>
                 </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Sequential Access:</span>
+                    <span class="fw-bold {% if course.is_sequential %}text-primary{% else %}text-muted{% endif %}">
+                        <i class="fa-solid {% if course.is_sequential %}fa-lock-keyhole text-warning{% else %}fa-unlock text-success{% endif %} me-1"></i>
+                        {{ 'ON (Strict Order)' if course.is_sequential else 'OFF (Any Order)' }}
+                    </span>
+                </div>
+                {% if course.completion_date %}
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Target Completion:</span>
+                    <span class="fw-bold text-navy"><i class="fa-regular fa-calendar-check me-1 text-success"></i>{{ course.completion_date.strftime('%d-%b-%Y') }}</span>
+                </div>
+                {% endif %}
                 <div class="d-flex justify-content-between mb-3">
                     <span class="text-muted">Created On:</span>
                     <span class="fw-bold text-dark">{{ course.created_at.strftime('%d-%b-%Y') }}</span>
@@ -136,28 +149,28 @@
                 <ul class="nav nav-tabs card-header-tabs" id="assessTab" role="tablist">
                     {% if course.mode == 'Self Paced' %}
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active fw-bold text-navy" id="lessons-tab" data-bs-toggle="tab" data-bs-target="#lessons-content" type="button">
+                        <button class="nav-link active fw-bold" id="lessons-tab" data-bs-toggle="tab" data-bs-target="#lessons-content" type="button">
                             <i class="fa-solid fa-book-reader text-primary me-1"></i> Lessons & Courseware ({{ lessons|length }})
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link fw-bold text-navy" id="course-end-tab" data-bs-toggle="tab" data-bs-target="#course-end-content" type="button">
+                        <button class="nav-link fw-bold" id="course-end-tab" data-bs-toggle="tab" data-bs-target="#course-end-content" type="button">
                             <i class="fa-solid fa-award text-warning me-1"></i> Course End Assessment
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link fw-bold text-navy" id="resources-tab" data-bs-toggle="tab" data-bs-target="#resources-content" type="button">
+                        <button class="nav-link fw-bold" id="resources-tab" data-bs-toggle="tab" data-bs-target="#resources-content" type="button">
                             <i class="fa-solid fa-folder-open text-info me-1"></i> Downloadable Resources ({{ course.materials|length }})
                         </button>
                     </li>
                     {% else %}
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active fw-bold text-navy" id="classes-tab" data-bs-toggle="tab" data-bs-target="#classes-content" type="button">
+                        <button class="nav-link active fw-bold" id="classes-tab" data-bs-toggle="tab" data-bs-target="#classes-content" type="button">
                             <i class="fa-solid fa-chalkboard-user text-success me-1"></i> Scheduled Classes & Batches ({{ live_classes|length }})
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link fw-bold text-navy" id="resources-tab" data-bs-toggle="tab" data-bs-target="#resources-content" type="button">
+                        <button class="nav-link fw-bold" id="resources-tab" data-bs-toggle="tab" data-bs-target="#resources-content" type="button">
                             <i class="fa-solid fa-folder-open text-info me-1"></i> Downloadable Course Supplements ({{ course.materials|length }})
                         </button>
                     </li>
@@ -192,17 +205,21 @@
                                     <label class="form-label small fw-bold text-navy">Lesson # (Auto)</label>
                                     <input type="number" name="lesson_number" class="form-control form-control-sm bg-white fw-bold font-monospace text-center" value="{{ lessons|length + 1 }}" readonly>
                                 </div>
-                                <div class="col-md-5">
+                                <div class="col-md-4">
                                     <label class="form-label small fw-bold">Lesson Title <span class="text-danger">*</span></label>
                                     <input type="text" name="title" class="form-control form-control-sm" placeholder="e.g. Lesson {{ lessons|length + 1 }}: Core Fundamentals" required>
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label small fw-bold">Duration (Hrs) <span class="text-danger">*</span></label>
-                                    <input type="number" step="0.25" min="0.1" name="duration_hours" class="form-control form-control-sm fw-bold text-center" value="1.0" required>
+                                    <input type="number" step="0.25" min="0" name="duration_hours" class="form-control form-control-sm fw-bold text-center" value="1.0" required>
                                 </div>
-                                <div class="col-md-3">
-                                    <label class="form-label small fw-bold text-navy"><i class="fa-solid fa-clock-rotate-left text-warning me-1"></i> Min Viewing Time (Min) <span class="text-danger">*</span></label>
-                                    <input type="number" step="0.1" min="0.1" name="min_time_minutes" class="form-control form-control-sm fw-bold text-center" value="1.0" title="Minimum time in minutes learner must spend on courseware to unlock Post-Assessment" required>
+                                <div class="col-md-2">
+                                    <label class="form-label small fw-bold text-navy"><i class="fa-solid fa-clock-rotate-left text-warning me-1"></i> Min Time (Min) <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.1" min="0.1" name="min_time_minutes" class="form-control form-control-sm fw-bold text-center" value="1.0" title="Minimum time in minutes learner must spend on courseware" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label small fw-bold text-success"><i class="fa-regular fa-calendar-check me-1"></i> Deadline</label>
+                                    <input type="date" name="deadline" class="form-control form-control-sm" title="Optional lesson completion deadline">
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label small fw-bold">Lesson Summary</label>
@@ -248,7 +265,8 @@
                                                 <input type="text" name="courseware_title" class="form-control form-control-sm" placeholder="Content Title (e.g. Video Lecture, Slide Deck)">
                                             </div>
                                             <div class="col-md-3">
-                                                <select name="courseware_type" class="form-select form-select-sm">
+                                                <select name="courseware_type" class="form-select form-select-sm fw-bold">
+                                                    <option value="Google Drive" selected>Google Drive Link (PPT / PDF / Excel / Doc / Video)</option>
                                                     <option value="Video URL">Video URL / YouTube Link</option>
                                                     <option value="Video">Video File (MP4/WebM Upload)</option>
                                                     <option value="PDF">PDF Presentation Reader</option>
@@ -262,7 +280,7 @@
                                                 <input type="file" name="courseware_file" class="form-control form-control-sm" accept=".pdf,.ppt,.pptx,.mp4,.webm,.avi,.xlsx,.xls,.zip,.rar">
                                             </div>
                                             <div class="col-md-12 mt-2">
-                                                <input type="url" name="external_url" class="form-control form-control-sm" placeholder="Video Lecture / YouTube Embed Link (e.g. https://www.youtube.com/watch?v=...)">
+                                                <input type="url" name="external_url" class="form-control form-control-sm font-monospace" placeholder="Google Drive Link / YouTube URL (e.g. https://drive.google.com/file/d/FILE_ID/view?usp=sharing)...">
                                             </div>
                                             <div class="col-12 mt-2">
                                                 <textarea name="courseware_text" class="form-control form-control-sm" rows="2" placeholder="Optional reading text, code examples, or detailed instructions..."></textarea>
@@ -328,7 +346,8 @@
                                                     <input type="text" name="title" class="form-control form-control-sm" placeholder="Courseware Title" required>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <select name="courseware_type" class="form-select form-select-sm">
+                                                    <select name="courseware_type" class="form-select form-select-sm fw-bold">
+                                                        <option value="Google Drive" selected>Google Drive Link</option>
                                                         <option value="Video URL">Video URL / YouTube Link</option>
                                                         <option value="Video">Video File (MP4)</option>
                                                         <option value="PDF">PDF Reader View</option>
@@ -337,7 +356,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <input type="url" name="external_url" class="form-control form-control-sm mb-1" placeholder="Video URL (e.g. YouTube link)...">
+                                                    <input type="url" name="external_url" class="form-control form-control-sm font-monospace mb-1" placeholder="Google Drive Link / YouTube URL...">
                                                     <input type="file" name="courseware_file" class="form-control form-control-sm" accept=".pdf,.ppt,.pptx,.mp4,.webm">
                                                 </div>
                                                 <div class="col-md-2 d-flex align-items-end">
@@ -371,8 +390,67 @@
 
                     <!-- COURSE END ASSESSMENT TAB -->
                     <div class="tab-pane fade p-3" id="course-end-content" role="tabpanel">
+                        {% if course_end_questions and course_end_questions|length > 0 %}
+                        <div class="alert alert-success border-success shadow-sm p-3 rounded-3 mb-4">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <i class="fa-solid fa-circle-check text-success fa-2x me-3"></i>
+                                    <div>
+                                        <h6 class="fw-bold text-dark mb-0">Course End Assessment Attached</h6>
+                                        <small class="text-muted">{{ course_end_questions|length }} Question(s) currently loaded into the database.</small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-outline-warning text-dark fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#replaceAssessmentCollapse">
+                                    <i class="fa-solid fa-arrows-rotate me-1"></i> Replace / Overwrite CSV
+                                </button>
+                            </div>
+                            <div class="collapse mt-3 pt-3 border-top" id="replaceAssessmentCollapse">
+                                <form action="{{ url_for('courses.upload_course_end_assessment', course_id=course.id) }}" method="POST" enctype="multipart/form-data" class="row g-2">
+                                    <div class="col-md-8">
+                                        <input type="file" name="assessment_csv" class="form-control form-control-sm" accept=".csv,.xlsx,.xls" required>
+                                        <small class="text-muted">Select new CSV to overwrite existing {{ course_end_questions|length }} question(s).</small>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="submit" class="btn btn-warning text-dark btn-sm w-100 fw-bold"><i class="fa-solid fa-upload me-1"></i> Overwrite Assessment</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white py-2.5">
+                                <h6 class="fw-bold text-navy mb-0"><i class="fa-solid fa-list-check me-1 text-primary"></i> Attached Course-End Assessment Questions ({{ course_end_questions|length }})</h6>
+                            </div>
+                            <div class="table-responsive bg-white">
+                                <table class="table table-hover table-striped align-middle mb-0 text-sm">
+                                    <thead class="bg-navy text-white">
+                                        <tr>
+                                            <th style="width: 60px;">Q#</th>
+                                            <th>Question</th>
+                                            <th>Options</th>
+                                            <th>Correct Answer</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for q in course_end_questions %}
+                                        <tr>
+                                            <td class="fw-bold font-monospace text-center">{{ q.serial_number }}</td>
+                                            <td class="fw-semibold text-dark">{{ q.question }}</td>
+                                            <td class="small text-muted">
+                                                1: {{ q.option1 }} | 2: {{ q.option2 }}<br>
+                                                3: {{ q.option3 }} | 4: {{ q.option4 }}
+                                            </td>
+                                            <td><span class="badge bg-success font-monospace">{{ q.correct_option }}</span></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% else %}
                         <div class="card bg-light border-0 p-3 mb-4">
                             <h6 class="fw-bold text-navy mb-2"><i class="fa-solid fa-file-csv text-warning me-1"></i> Upload Course End Assessment CSV Questions</h6>
+                            <p class="text-muted small mb-3">No Course End Assessment CSV has been uploaded yet. Upload a CSV question bank below.</p>
                             <form action="{{ url_for('courses.upload_course_end_assessment', course_id=course.id) }}" method="POST" enctype="multipart/form-data" class="row g-2">
                                 <div class="col-md-8">
                                     <input type="file" name="assessment_csv" class="form-control form-control-sm" accept=".csv,.xlsx,.xls" required>
@@ -382,35 +460,145 @@
                                 </div>
                             </form>
                         </div>
+                        {% endif %}
                     </div>
                     {% endif %}
 
-                    <!-- DOWNLOADABLE RESOURCES TAB -->
+                    <!-- GOOGLE DRIVE & LEARNING MATERIALS TAB -->
                     <div class="tab-pane fade p-3" id="resources-content" role="tabpanel">
-                        <div class="card bg-light border-0 p-3 mb-4">
-                            <h6 class="fw-bold text-navy mb-2"><i class="fa-solid fa-cloud-arrow-up me-1 text-primary"></i> Upload Course-Level Downloadable Resource</h6>
+                        <div class="card bg-light border-0 p-3.5 mb-4 shadow-sm rounded-3">
+                            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                                <h6 class="fw-bold text-navy mb-0 d-flex align-items-center gap-2">
+                                    <i class="fa-brands fa-google-drive text-success fs-5"></i> Add Learning Material (Google Drive Link or File)
+                                </h6>
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1">
+                                    <i class="fa-solid fa-cloud me-1"></i> Google Drive Cloud Integration
+                                </span>
+                            </div>
+                            
                             <form action="{{ url_for('courses.upload_material', course_id=course.id) }}" method="POST" enctype="multipart/form-data" class="row g-3">
-                                <div class="col-md-5">
-                                    <input type="text" name="material_title" class="form-control form-control-sm" placeholder="Resource Title (e.g. Reference Handbook)" required>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold text-navy mb-1">Material Title *</label>
+                                    <input type="text" name="material_title" class="form-control form-control-sm" placeholder="e.g. Course Slide Deck / Reference Manual" required>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold text-navy mb-1">Material Type</label>
+                                    <select name="material_type" class="form-select form-select-sm fw-bold">
+                                        <option value="Auto" selected>Auto-Detect (Google Drive / URL / File)</option>
+                                        <option value="Google Drive">Google Drive Link</option>
+                                        <option value="PPT">PowerPoint (PPT / PPTX)</option>
+                                        <option value="PDF">PDF Document</option>
+                                        <option value="Document">Word / Text Document</option>
+                                        <option value="Excel">Excel / Spreadsheet</option>
+                                        <option value="Video">Video File / Stream</option>
+                                        <option value="External Link">External Web Link</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold text-navy mb-1">
+                                        <i class="fa-brands fa-google-drive text-success me-1"></i> Google Drive Link / External URL
+                                    </label>
+                                    <input type="url" name="external_url" class="form-control form-control-sm font-monospace" placeholder="Paste Google Drive link (e.g. https://drive.google.com/file/d/FILE_ID/view?usp=sharing)...">
+                                    <small class="text-muted text-xs">The LMS will store the link and embed it directly without downloading files to the server.</small>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold text-navy mb-1">Material Description (Optional)</label>
+                                    <input type="text" name="material_description" class="form-control form-control-sm" placeholder="Brief summary or instructions for learners...">
+                                </div>
+                                <div class="col-md-7">
+                                    <label class="form-label small fw-bold text-navy mb-1">OR Upload File directly (Optional)</label>
                                     <input type="file" name="material_file" class="form-control form-control-sm" accept=".pdf,.ppt,.pptx,.mp4,.webm,.avi,.xlsx,.xls,.csv,.zip,.rar,.doc,.docx">
                                 </div>
-                                <div class="col-md-3">
-                                    <button type="submit" class="btn btn-navy bg-navy text-white btn-sm w-100 fw-bold">Upload Resource</button>
-                                </div>
-                                <div class="col-md-8">
-                                    <input type="url" name="external_url" class="form-control form-control-sm" placeholder="Or External URL...">
-                                </div>
-                                <div class="col-md-4 d-flex align-items-center">
-                                    <div class="form-check form-switch ms-2">
+                                <div class="col-md-5 d-flex align-items-end justify-content-between">
+                                    <div class="form-check form-switch mb-1">
                                         <input class="form-check-input" type="checkbox" name="allow_download" id="allow_download_res" checked>
                                         <label class="form-check-label fw-bold small text-navy" for="allow_download_res">
                                             Allow Learner Download
                                         </label>
                                     </div>
+                                    <button type="submit" class="btn btn-navy bg-navy text-white btn-sm px-4 fw-bold shadow-xs">
+                                        <i class="fa-solid fa-plus-circle me-1"></i> Save Material
+                                    </button>
                                 </div>
                             </form>
+                        </div>
+
+                        <!-- Existing Materials List in Admin View -->
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white py-2.5 d-flex justify-content-between align-items-center">
+                                <h6 class="fw-bold text-navy mb-0">
+                                    <i class="fa-solid fa-folder-open text-primary me-2"></i> Course Learning Materials ({{ course.materials|length }})
+                                </h6>
+                            </div>
+                            <div class="card-body p-0">
+                                {% if course.materials %}
+                                <div class="list-group list-group-flush">
+                                    {% for mat in course.materials %}
+                                    {% set is_gd, emb_url, gd_type, file_id = parse_gdrive_url(mat.external_url) if mat.external_url else (False, '', '', '') %}
+                                    <div class="list-group-item p-3 border-bottom d-flex justify-content-between align-items-center">
+                                        <div class="me-3">
+                                            <div class="d-flex align-items-center gap-2 mb-1">
+                                                {% if is_gd or 'Google Drive' in mat.material_type %}
+                                                <i class="fa-brands fa-google-drive text-success fs-5"></i>
+                                                {% elif 'PDF' in mat.material_type %}
+                                                <i class="fa-solid fa-file-pdf text-danger fs-5"></i>
+                                                {% elif 'PPT' in mat.material_type %}
+                                                <i class="fa-solid fa-file-powerpoint text-warning fs-5"></i>
+                                                {% elif 'Video' in mat.material_type %}
+                                                <i class="fa-solid fa-file-video text-info fs-5"></i>
+                                                {% else %}
+                                                <i class="fa-solid fa-file-lines text-primary fs-5"></i>
+                                                {% endif %}
+
+                                                <strong class="text-dark fs-6">{{ mat.title }}</strong>
+                                                <span class="badge bg-teal-subtle text-teal border border-teal-subtle text-xs">{{ mat.material_type }}</span>
+                                            </div>
+
+                                            {% if mat.description %}
+                                            <p class="text-muted text-xs mb-1.5">{{ mat.description }}</p>
+                                            {% endif %}
+
+                                            {% if mat.external_url %}
+                                            <small class="text-muted text-xs font-monospace d-block text-truncate" style="max-width: 500px;">
+                                                <i class="fa-solid fa-link me-1 text-teal"></i> {{ mat.external_url }}
+                                            </small>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                                            {% if mat.external_url %}
+                                            <a href="{{ mat.external_url }}" target="_blank" class="btn btn-sm btn-outline-teal fw-bold">
+                                                <i class="fa-solid fa-external-link me-1"></i> Open Link
+                                            </a>
+                                            {% endif %}
+
+                                            <form action="{{ url_for('courses.toggle_download', material_id=mat.id) }}" method="POST" class="d-inline">
+                                                <button type="submit" class="btn btn-sm {% if mat.allow_download %}btn-outline-success{% else %}btn-outline-secondary{% endif %}" title="Toggle Download Permission">
+                                                    {% if mat.allow_download %}
+                                                    <i class="fa-solid fa-download me-1"></i> Download Allowed
+                                                    {% else %}
+                                                    <i class="fa-solid fa-lock me-1"></i> View Only
+                                                    {% endif %}
+                                                </button>
+                                            </form>
+
+                                            <form action="{{ url_for('courses.delete_material', material_id=mat.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete material {{ mat.title }}?');">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Material">
+                                                    <i class="fa-solid fa-trash-can"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="text-center py-4 text-muted">
+                                    <i class="fa-brands fa-google-drive display-4 text-success opacity-50 mb-2"></i>
+                                    <h6 class="fw-bold text-dark mb-1">No Learning Materials Added Yet</h6>
+                                    <p class="small text-muted mb-0">Use the form above to add Google Drive links or upload learning resources for this course.</p>
+                                </div>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
 
@@ -421,11 +609,16 @@
                             <h6 class="fw-bold text-navy mb-3"><i class="fa-solid fa-calendar-plus me-1 text-success"></i> Schedule New Live Class Batch</h6>
                             <form action="{{ url_for('courses.create_course_class', course_id=course.id) }}" method="POST" enctype="multipart/form-data" class="row g-3">
                                 <div class="col-md-3">
-                                    <label class="form-label small fw-bold text-navy mb-1">Class Mode *</label>
+                                    <label class="form-label small fw-bold text-navy mb-1">Class Mode</label>
+                                    {% if 'Hybrid' in course.mode %}
                                     <select name="class_mode" class="form-select form-select-sm fw-bold">
-                                        <option value="In Person" {% if 'In Person' in course.mode %}selected{% endif %}>Live In Person</option>
-                                        <option value="Online" {% if 'Online' in course.mode %}selected{% endif %}>Live Online Class</option>
+                                        <option value="In Person">Live In Person</option>
+                                        <option value="Online">Live Online Class</option>
                                     </select>
+                                    {% else %}
+                                    <input type="text" class="form-control form-control-sm fw-bold bg-light" value="{{ course.mode }}" readonly>
+                                    <input type="hidden" name="class_mode" value="{% if 'Online' in course.mode %}Online{% else %}In Person{% endif %}">
+                                    {% endif %}
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label small fw-bold text-navy mb-1">Class Date *</label>
@@ -486,19 +679,19 @@
                                     <strong class="font-monospace text-gold me-2">{{ cls.class_id }}</strong> {{ cls.class_name }}
                                 </div>
                                 <div>
-                                    <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 fw-bold text-white me-2" data-bs-toggle="modal" data-bs-target="#assignClassModal{{ cls.id }}">
+                                    <button type="button" class="btn btn-sm btn-primary py-1 px-2.5 fw-bold me-2 shadow-xs" data-bs-toggle="modal" data-bs-target="#assignClassModal{{ cls.id }}">
                                         <i class="fa-solid fa-user-plus me-1"></i> Assign Learners
                                     </button>
-                                    <button type="button" class="btn btn-sm btn-outline-success py-0 px-2 fw-bold text-white me-2" data-bs-toggle="modal" data-bs-target="#attModal{{ cls.id }}">
+                                    <button type="button" class="btn btn-sm btn-success py-1 px-2.5 fw-bold me-2 shadow-xs" data-bs-toggle="modal" data-bs-target="#attModal{{ cls.id }}">
                                         <i class="fa-solid fa-user-check me-1"></i> Mark Attendance (CSV/IDs)
                                     </button>
-                                    <a href="{{ url_for('courses.download_attendance', class_id=cls.id) }}" class="btn btn-sm btn-outline-light py-0 px-2 fw-bold me-2" title="Download Class Attendance Log CSV">
+                                    <a href="{{ url_for('courses.download_attendance', class_id=cls.id) }}" class="btn btn-sm btn-outline-light py-1 px-2.5 fw-bold me-2" title="Download Class Attendance Log CSV">
                                         <i class="fa-solid fa-file-csv me-1 text-warning"></i> Attendance Report
                                     </a>
-                                    <button type="button" class="btn btn-sm btn-gold py-0 px-2 fw-bold text-dark me-2" data-bs-toggle="modal" data-bs-target="#qrModal{{ cls.id }}">
+                                    <button type="button" class="btn btn-sm btn-gold py-1 px-2.5 fw-bold text-dark me-2 shadow-xs" data-bs-toggle="modal" data-bs-target="#qrModal{{ cls.id }}">
                                         <i class="fa-solid fa-qrcode me-1"></i> View QR Code
                                     </button>
-                                    <a href="{{ url_for('classes.view_class', class_id=cls.id) }}" class="btn btn-sm btn-outline-info py-0 px-2 fw-bold text-white">
+                                    <a href="{{ url_for('classes.view_class', class_id=cls.id) }}" class="btn btn-sm btn-info text-white py-1 px-2.5 fw-bold shadow-xs">
                                         <i class="fa-solid fa-eye me-1"></i> Class Details
                                     </a>
                                 </div>

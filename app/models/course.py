@@ -14,6 +14,8 @@ class Course(db.Model):
     feedback_repo_id = db.Column(db.Integer, db.ForeignKey('feedback_repositories.id'), nullable=True)
     has_certificate = db.Column(db.Boolean, nullable=False, default=True)
     thumbnail_filename = db.Column(db.String(255), nullable=True)
+    is_sequential = db.Column(db.Boolean, nullable=False, default=True) # Course-level sequential lesson access toggle
+    completion_date = db.Column(db.DateTime, nullable=True) # Optional course target completion date
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     assessments = db.relationship('CourseAssessment', backref='course', lazy=True, cascade='all, delete-orphan')
@@ -67,6 +69,7 @@ class CourseLesson(db.Model):
     video_url = db.Column(db.String(500), nullable=True)
     duration_hours = db.Column(db.Float, nullable=False, default=1.0)
     min_time_minutes = db.Column(db.Float, nullable=False, default=1.0) # Admin minimum required time on courseware
+    deadline = db.Column(db.DateTime, nullable=True) # Optional lesson completion deadline
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     courseware = db.relationship('LessonCourseware', backref='lesson', lazy=True, cascade='all, delete-orphan')
@@ -98,12 +101,19 @@ class CourseMaterial(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=False)
     title = db.Column(db.String(150), nullable=False)
-    material_type = db.Column(db.String(30), nullable=False, default='PDF') # 'PDF', 'PPT', 'Video', 'Excel', 'SCORM', 'External Link', 'Document'
+    description = db.Column(db.Text, nullable=True)
+    material_type = db.Column(db.String(50), nullable=False, default='PDF') # 'Google Drive', 'PDF', 'PPT', 'Video', 'Excel', 'SCORM', 'External Link', 'Document'
     filename = db.Column(db.String(255), nullable=True) # Filename in uploads/materials
-    external_url = db.Column(db.String(500), nullable=True) # Optional URL link
+    external_url = db.Column(db.String(500), nullable=True) # Optional Google Drive / External URL link
     file_size_str = db.Column(db.String(50), nullable=True, default='N/A')
     allow_download = db.Column(db.Boolean, default=True) # Admin permission toggle: True = Downloadable, False = View-only
     uploaded_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def get_gdrive_info(self):
+        from app.services.gdrive_service import parse_gdrive_url
+        if self.external_url:
+            return parse_gdrive_url(self.external_url)
+        return False, '', self.material_type, None
 
     def __repr__(self):
         return f'<CourseMaterial {self.title} ({self.material_type})>'

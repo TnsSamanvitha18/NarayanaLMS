@@ -48,3 +48,6 @@ class FeedbackResponse(db.Model):
     learner_id = db.Column(db.Integer, db.ForeignKey('learners.id'), nullable=False)
     responses_json = db.Column(db.Text, nullable=False) # JSON dictionary of question_id -> response
     submitted_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    learner = db.relationship('Learner', backref='feedback_responses', lazy=True)
+    live_class = db.relationship('LiveClass', backref='feedback_responses', lazy=True)

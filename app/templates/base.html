@@ -2,8 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no, viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- Primary SEO & Portal Meta Tags -->
     <title>{% block title %}Narayana Learning Hub{% endblock %}</title>
+    <meta name="title" content="Narayana Learning Hub - LMS Portal">
+    <meta name="description" content="Narayana Learning & Development Portal - Enterprise LMS for interactive courses, live classes, learner tracking, certifications, and attendance analytics. Laptop compatible and mobile optimized.">
+    <meta name="keywords" content="Narayana LMS, L&D Portal, Learning Management System, Courses, Live Classes, Learner Portal, Certifications, Attendance Tracking, Interactive Learning">
+    <meta name="author" content="Narayana Learning & Development Team">
+    <meta name="application-name" content="Narayana Learning Hub">
+    <meta name="theme-color" content="#0D9488">
+    
+    <!-- Open Graph / Social Media Sharing Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Narayana Learning Hub">
+    <meta property="og:title" content="Narayana Learning Hub - LMS Portal">
+    <meta property="og:description" content="Enterprise Learning & Development Portal for interactive courses, live classes, certificates, and performance tracking.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80">
+    <meta property="og:locale" content="en_US">
+    
+    <!-- Mobile Web App & iOS Compatibility Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Narayana LMS">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    
+    {% block meta %}{% endblock %}
+
     <!-- Google Fonts Plus Jakarta Sans, Manrope & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +40,7 @@
     <!-- FontAwesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=12.0">
     <script>
         (function() {
             const savedTheme = localStorage.getItem('theme');
@@ -42,16 +69,21 @@
 
     <!-- Floating Capsule Main Navigation -->
     <header class="ls-navbar sticky-top">
-        <div class="container-fluid px-4">
+        <div class="container-fluid px-2 px-md-4">
             <div class="ls-navbar-capsule d-flex align-items-center justify-content-between">
-                <!-- Brand Logo & Capsule Navigation -->
-                <div class="d-flex align-items-center gap-4">
-                    <a href="{{ url_for('dashboard.index') if admin_logged_in else url_for('learners.my_portal') }}" class="d-flex align-items-center text-decoration-none">
-                        <i class="fa-solid fa-graduation-cap text-teal me-2" style="font-size: 22px;"></i>
-                        <span class="fw-bold tracking-tight text-dark" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 20px;">Narayana Learning Hub</span>
+                <!-- Brand Logo & Mobile Toggle -->
+                <div class="d-flex align-items-center gap-2 gap-md-4">
+                    <!-- Mobile Hamburger Button -->
+                    <button class="btn btn-link text-dark d-lg-none p-1 border-0 text-decoration-none me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNavDrawer" aria-controls="mobileNavDrawer" aria-label="Toggle navigation">
+                        <i class="fa-solid fa-bars fs-4 text-teal"></i>
+                    </button>
+
+                    <a href="{{ url_for('dashboard.index') if admin_logged_in else url_for('learners.my_portal') }}" class="d-flex align-items-center text-decoration-none min-w-0 me-1">
+                        <i class="fa-solid fa-graduation-cap text-teal me-1 me-md-2 fs-5 flex-shrink-0 brand-icon"></i>
+                        <span class="fw-bold tracking-tight text-dark brand-title text-nowrap" style="font-family: 'Plus Jakarta Sans', sans-serif;">Narayana Learning Hub</span>
                     </a>
 
-                    <!-- Capsule Nav Tabs -->
+                    <!-- Desktop Capsule Nav Tabs -->
                     <div class="d-none d-lg-flex align-items-center gap-1">
                         {% if admin_logged_in %}
                         <a href="{{ url_for('dashboard.index') }}" class="ls-nav-tab {% if request.endpoint == 'dashboard.index' %}active{% endif %}">
@@ -72,9 +104,15 @@
                         <a href="{{ url_for('reports.index') }}" class="ls-nav-tab {% if 'reports' in request.endpoint %}active{% endif %}">
                             Reports
                         </a>
+                        <a href="{{ url_for('learning_wall.index') }}" class="ls-nav-tab {% if 'learning_wall' in request.endpoint %}active{% endif %}">
+                            <i class="fa-solid fa-bullhorn me-1 text-warning"></i> Learning Wall
+                        </a>
                         {% else %}
                         <a href="{{ url_for('learners.my_portal') }}" class="ls-nav-tab {% if request.endpoint == 'learners.my_portal' %}active{% endif %}">
                             My Programs
+                        </a>
+                        <a href="{{ url_for('learning_wall.index') }}" class="ls-nav-tab {% if 'learning_wall' in request.endpoint %}active{% endif %}">
+                            <i class="fa-solid fa-bullhorn me-1 text-warning"></i> Learning Wall
                         </a>
                         <a href="#" class="ls-nav-tab dummy-nav-tab" data-tab-name="Course Catalog">
                             Catalog
@@ -87,49 +125,192 @@
                 </div>
 
                 <!-- Right Utility Bar -->
-                <div class="d-flex align-items-center gap-3">
-                    <button type="button" class="btn btn-link text-muted p-1 text-decoration-none" title="Search">
-                        <i class="fa-solid fa-magnifying-glass fs-5"></i>
+                <div class="d-flex align-items-center gap-1.5 gap-md-2.5 flex-shrink-0 ms-auto me-0">
+                    {% set is_user_logged_in = admin_logged_in or session.get('learner_id') %}
+                    {% set is_auth_page = request.endpoint and request.endpoint.startswith('auth.') %}
+                    
+                    {% if is_user_logged_in and not is_auth_page %}
+                    <!-- Search Trigger Button -->
+                    <button type="button" class="btn btn-link text-muted p-1 text-decoration-none d-none d-sm-inline-block" title="Quick Search (Ctrl+K)" data-bs-toggle="modal" data-bs-target="#globalSearchModal">
+                        <i class="fa-solid fa-magnifying-glass fs-5 text-teal"></i>
                     </button>
 
-                    <div class="position-relative">
-                        <button type="button" class="btn btn-link text-muted p-1 text-decoration-none" title="Notifications">
-                            <i class="fa-regular fa-bell fs-5"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle text-white" style="background-color: var(--teal-primary); font-size: 0.65rem; padding: 0.35em 0.55em;">
-                                3
+                    <!-- Notifications Bell Dropdown -->
+                    <div class="dropdown position-relative">
+                        <button type="button" class="btn btn-link text-muted p-1 text-decoration-none dropdown-toggle hide-arrow" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+                            <i class="fa-regular fa-bell fs-5 text-teal"></i>
+                            {% if unread_notif_count > 0 %}
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle text-white shadow-xs" style="background-color: var(--teal-primary); font-size: 0.65rem; padding: 0.35em 0.55em;">
+                                {{ unread_notif_count }}
                             </span>
+                            {% endif %}
                         </button>
+
+                        <div class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-0 rounded-4 overflow-hidden" aria-labelledby="notificationDropdown" style="width: 340px; max-width: 90vw;">
+                            <div class="p-3 bg-navy text-white d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fa-solid fa-bell text-gold"></i>
+                                    <strong class="mb-0">Notifications</strong>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    {% if unread_notif_count > 0 %}
+                                    <span class="badge bg-gold text-dark font-monospace" id="navUnreadBadge">{{ unread_notif_count }} new</span>
+                                    <button type="button" class="btn btn-link text-gold p-0 text-xs fw-bold text-decoration-none" onclick="markAllReadNav()" id="navMarkAllBtn" title="Mark all as read">
+                                        <i class="fa-solid fa-check-double me-1"></i> Read All
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="p-2" style="max-height: 320px; overflow-y: auto;" id="navNotifList">
+                                {% for n in user_notifications %}
+                                <div class="p-2.5 mb-1 rounded-3 {% if not n.is_read %}bg-teal-subtle border-start border-3 border-teal{% else %}bg-light{% endif %} d-flex align-items-start gap-2">
+                                    <i class="fa-solid {% if n.notification_type == 'COURSE_ASSIGNED' %}fa-book-open text-teal{% elif n.notification_type == 'LESSON_UPDATED' %}fa-pen-to-square text-warning{% else %}fa-circle-info text-info{% endif %} mt-1"></i>
+                                    <div class="flex-grow-1">
+                                        <strong class="d-block text-dark small">{{ n.title }}</strong>
+                                        <span class="text-muted text-xs d-block">{{ n.message }}</span>
+                                        <small class="text-muted text-xxs mt-1 d-block"><i class="fa-regular fa-clock me-1"></i>{{ n.created_at.strftime('%d %b, %H:%M') if n.created_at else '' }}</small>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <div class="text-center py-4 text-muted">
+                                    <i class="fa-solid fa-bell-slash text-teal opacity-50 display-6 mb-2 d-block"></i>
+                                    <small>No recent notifications</small>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            {% if learner_id %}
+                            <div class="p-2 bg-light border-top text-center">
+                                <a href="{{ url_for('learners.my_portal') }}" class="text-teal small fw-bold text-decoration-none">
+                                    <i class="fa-solid fa-graduation-cap me-1"></i> View My Learning Portal
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <script>
+                        function markAllReadNav() {
+                            fetch('/learners/notifications/mark_read/0', { method: 'POST' })
+                            .then(r => r.json())
+                            .then(d => {
+                                if (d.status === 'success') {
+                                    const badge = document.getElementById('navUnreadBadge');
+                                    const btn = document.getElementById('navMarkAllBtn');
+                                    const bellBadge = document.querySelector('#notificationDropdown .badge');
+                                    if (badge) badge.remove();
+                                    if (btn) btn.remove();
+                                    if (bellBadge) bellBadge.remove();
+                                    document.querySelectorAll('#navNotifList .bg-teal-subtle').forEach(el => {
+                                        el.classList.remove('bg-teal-subtle', 'border-start', 'border-3', 'border-teal');
+                                        el.classList.add('bg-light');
+                                    });
+                                }
+                            });
+                        }
+                        </script>
                     </div>
+                    {% endif %}
 
                     <!-- Theme Switcher -->
                     <button type="button" class="theme-toggle-btn ms-1" title="Toggle Light/Dark Theme">
-                        <i class="fa-solid fa-moon text-teal me-1"></i> <span>Dark Mode</span>
+                        <i class="fa-solid fa-moon text-teal me-0 me-md-1"></i> <span class="d-none d-md-inline">Dark Mode</span>
                     </button>
 
+                    {% if is_user_logged_in and not is_auth_page %}
                     <!-- Account Dropdown -->
-                    <div class="dropdown">
-                        <button class="btn p-1 border-0 d-flex align-items-center gap-2 rounded-pill bg-light shadow-xs px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Account Menu">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" alt="Profile Avatar" class="rounded-circle border border-2 border-teal" style="width: 34px; height: 34px; object-fit: cover;">
-                            <span class="fw-bold text-dark small d-none d-md-inline pe-1">{% if admin_logged_in %}{{ admin_username }}{% else %}Alex Morgan{% endif %}</span>
+                    <div class="dropdown flex-shrink-0">
+                        <button class="btn p-0.5 p-md-1 border d-flex align-items-center gap-1 gap-md-2 rounded-pill bg-white shadow-xs px-1.5 px-md-2.5 py-1 flex-shrink-0 admin-profile-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Account Menu">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" alt="Profile Avatar" class="rounded-circle border border-2 border-teal shadow-xs flex-shrink-0 admin-profile-avatar" style="width: 32px; height: 32px; object-fit: cover;">
+                            <span class="fw-bold text-dark small d-none d-xl-inline pe-1">{% if admin_logged_in %}{{ admin_username }}{% elif session.get('learner_name') %}{{ session.get('learner_name') }}{% else %}Learner Portal{% endif %}</span>
+                            <i class="fa-solid fa-chevron-down text-muted small me-0.5 d-none d-sm-inline"></i>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2">
-                            <li class="px-3 py-2 border-bottom">
-                                <span class="d-block fw-bold text-dark">{% if admin_logged_in %}{{ admin_username }}{% else %}Alex Morgan{% endif %}</span>
-                                <small class="text-muted">{% if admin_logged_in %}L&D Administrator{% else %}Learner ID: 10001{% endif %}</small>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-2" style="min-width: 220px;">
+                            <li class="px-3 py-2.5 border-bottom mb-1 bg-light rounded-3">
+                                <span class="d-block fw-bold text-dark fs-6">{% if admin_logged_in %}{{ admin_username }}{% elif session.get('learner_name') %}{{ session.get('learner_name') }}{% else %}Learner Portal{% endif %}</span>
+                                <span class="badge bg-teal-light text-teal border border-teal-subtle mt-1">{% if admin_logged_in %}L&D Administrator{% elif session.get('learner_global_id') %}Learner ID: {{ session.get('learner_global_id') }}{% else %}Learner Portal{% endif %}</span>
                             </li>
                             {% if not admin_logged_in %}
-                            <li><a class="dropdown-item fw-semibold" href="{{ url_for('learners.my_portal') }}"><i class="fa-solid fa-user me-2 text-teal"></i> My Profile</a></li>
+                            <li><a class="dropdown-item fw-semibold py-2" href="{{ url_for('learners.my_portal') }}"><i class="fa-solid fa-id-badge me-2 text-teal fs-6"></i> My Profile & Portal</a></li>
+                            {% else %}
+                            <li><a class="dropdown-item fw-semibold py-2" href="{{ url_for('dashboard.index') }}"><i class="fa-solid fa-user-shield me-2 text-teal fs-6"></i> Admin Profile</a></li>
                             {% endif %}
-                            <li><a class="dropdown-item text-danger fw-semibold" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+                            <li><hr class="dropdown-divider my-1"></li>
+                            <li><a class="dropdown-item text-danger fw-semibold py-2" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket me-2 text-danger fs-6"></i> Logout</a></li>
                         </ul>
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </header>
 
+    <!-- Responsive Mobile Offcanvas Drawer -->
+    <div class="offcanvas offcanvas-start mobile-nav-offcanvas d-lg-none" tabindex="-1" id="mobileNavDrawer" aria-labelledby="mobileNavDrawerLabel">
+        <div class="offcanvas-header border-bottom py-3">
+            <div class="d-flex align-items-center">
+                <i class="fa-solid fa-graduation-cap text-teal fs-3 me-2"></i>
+                <h5 class="offcanvas-title fw-bold text-dark" id="mobileNavDrawerLabel">Narayana LMS</h5>
+            </div>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body py-3 px-3">
+            <div class="mobile-nav-user-badge p-3 rounded-4 mb-3 border d-flex align-items-center gap-3">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120" alt="Avatar" class="rounded-circle border border-2 border-teal" style="width: 44px; height: 44px; object-fit: cover;">
+                <div>
+                    <div class="fw-bold text-dark">{% if admin_logged_in %}{{ admin_username }}{% elif session.get('learner_name') %}{{ session.get('learner_name') }}{% else %}Learner Portal{% endif %}</div>
+                    <span class="badge bg-teal-light text-teal">{% if admin_logged_in %}L&D Admin{% elif session.get('learner_global_id') %}Learner ID: {{ session.get('learner_global_id') }}{% else %}Learner{% endif %}</span>
+                </div>
+            </div>
+
+            <div class="mobile-nav-links d-flex flex-column gap-2">
+                {% if admin_logged_in %}
+                <a href="{{ url_for('dashboard.index') }}" class="mobile-nav-item {% if request.endpoint == 'dashboard.index' %}active{% endif %}">
+                    <i class="fa-solid fa-house me-3 text-teal"></i> Home Dashboard
+                </a>
+                <a href="{{ url_for('courses.list_courses') }}" class="mobile-nav-item {% if 'courses' in request.endpoint or 'classes' in request.endpoint %}active{% endif %}">
+                    <i class="fa-solid fa-book-open me-3 text-teal"></i> Course & Classes
+                </a>
+                <a href="{{ url_for('learners.list_learners') }}" class="mobile-nav-item {% if 'learners' in request.endpoint and request.endpoint != 'learners.my_portal' %}active{% endif %}">
+                    <i class="fa-solid fa-users me-3 text-teal"></i> Learners Directory
+                </a>
+                <a href="{{ url_for('attendance.list_attendance') }}" class="mobile-nav-item {% if 'attendance' in request.endpoint %}active{% endif %}">
+                    <i class="fa-solid fa-clipboard-user me-3 text-teal"></i> Attendance Logs
+                </a>
+                <a href="{{ url_for('certificates.list_certificates') }}" class="mobile-nav-item {% if 'certificates' in request.endpoint %}active{% endif %}">
+                    <i class="fa-solid fa-award me-3 text-teal"></i> Certificates
+                </a>
+                <a href="{{ url_for('reports.index') }}" class="mobile-nav-item {% if 'reports' in request.endpoint %}active{% endif %}">
+                    <i class="fa-solid fa-chart-pie me-3 text-teal"></i> Reports & Analytics
+                </a>
+                <a href="{{ url_for('learning_wall.index') }}" class="mobile-nav-item {% if 'learning_wall' in request.endpoint %}active{% endif %}">
+                    <i class="fa-solid fa-bullhorn me-3 text-warning"></i> Learning Wall Feed
+                </a>
+                {% else %}
+                <a href="{{ url_for('learners.my_portal') }}" class="mobile-nav-item {% if request.endpoint == 'learners.my_portal' %}active{% endif %}">
+                    <i class="fa-solid fa-graduation-cap me-3 text-teal"></i> My Programs
+                </a>
+                <a href="{{ url_for('learning_wall.index') }}" class="mobile-nav-item {% if 'learning_wall' in request.endpoint %}active{% endif %}">
+                    <i class="fa-solid fa-bullhorn me-3 text-warning"></i> Learning Wall Feed
+                </a>
+                <a href="#" class="mobile-nav-item dummy-nav-tab" data-tab-name="Course Catalog">
+                    <i class="fa-solid fa-layer-group me-3 text-teal"></i> Course Catalog
+                </a>
+                <a href="#" class="mobile-nav-item dummy-nav-tab" data-tab-name="My Certifications">
+                    <i class="fa-solid fa-certificate me-3 text-teal"></i> Certificates
+                </a>
+                {% endif %}
+
+                <hr class="my-2 text-muted">
+                <a href="{{ url_for('auth.logout') }}" class="mobile-nav-item text-danger">
+                    <i class="fa-solid fa-right-from-bracket me-3 text-danger"></i> Logout
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Content Container -->
-    <main class="container-fluid py-4 px-4">
+    <main class="container-fluid py-3 py-md-4 px-2 px-sm-3 px-md-4">
         <!-- Toast Container -->
         <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
             {% with messages = get_flashed_messages(with_categories=true) %}
@@ -154,6 +335,33 @@
             {% block public_content %}{% endblock %}
         {% endif %}
     </main>
+
+    <!-- Global Portal Search Modal -->
+    <div class="modal fade" id="globalSearchModal" tabindex="-1" aria-labelledby="globalSearchModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden" style="background: var(--bg-surface);">
+                <div class="modal-header border-bottom p-3">
+                    <div class="ls-search-box w-100 me-2">
+                        <i class="fa-solid fa-magnifying-glass ls-search-icon"></i>
+                        <input type="text" id="globalSearchInput" class="ls-search-input" placeholder="Search courses, live classes, learners, certificates, reports..." autofocus>
+                        <button type="button" class="ls-search-clear" id="globalSearchClear" title="Clear Search" style="display:none;"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-3" style="max-height: 420px; overflow-y: auto;" id="globalSearchResults">
+                    <div class="text-center py-4 text-muted">
+                        <i class="fa-solid fa-graduation-cap display-4 text-teal opacity-50 mb-2"></i>
+                        <h6 class="fw-bold text-dark mb-1">Instant Portal Search</h6>
+                        <p class="small text-muted mb-0">Type keywords above to search across Courses, Classes, Learners, and Certificates...</p>
+                    </div>
+                </div>
+                <div class="modal-footer border-top py-2 px-3 justify-content-between">
+                    <small class="text-muted"><i class="fa-solid fa-bolt text-teal me-1"></i> Real-time Portal Filter</small>
+                    <small class="text-muted"><kbd class="bg-light text-dark px-2 py-1 rounded border">ESC</kbd> to close</small>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

@@ -17,8 +17,13 @@ class Config:
     # Maximum allowed payload size (50 MB for videos/PPT/PDF)
     MAX_CONTENT_LENGTH = 50 * 1024 * 1024  # 50 MB
 
+    TEMPLATES_AUTO_RELOAD = True
+    SEND_FILE_MAX_AGE_DEFAULT = 0
+
     @staticmethod
     def init_app(app):
+        app.config['TEMPLATES_AUTO_RELOAD'] = True
+        app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
         os.makedirs(Config.UPLOAD_FOLDER, exist_ok=True)
         os.makedirs(Config.QR_FOLDER, exist_ok=True)
         os.makedirs(Config.CERT_FOLDER, exist_ok=True)

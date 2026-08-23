@@ -82,6 +82,29 @@
                     {% endif %}
                 </div>
 
+                <div class="col-md-6">
+                    <label for="completion_date" class="form-label fw-bold"><i class="fa-regular fa-calendar-check text-success me-1"></i> Course Completion Target Date <span class="badge bg-outline-secondary border text-muted">Optional</span></label>
+                    <input type="date" class="form-control" id="completion_date" name="completion_date" value="{{ course.completion_date.strftime('%Y-%m-%d') if course and course.completion_date else '' }}">
+                    <small class="text-muted">Target completion date for learners (Optional)</small>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="card p-3 bg-light border-0">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <label for="is_sequential" class="form-label fw-bold mb-0 text-navy">
+                                    <i class="fa-solid fa-arrows-split-up-and-left text-primary me-2"></i> Sequential Lesson Access Control
+                                </label>
+                                <p class="text-muted small mb-0">When ON, learners must complete each lesson in order before unlocking the next. When OFF, learners can access lessons in any order.</p>
+                            </div>
+                            <div class="form-check form-switch fs-4">
+                                <input class="form-check-input ms-0" type="checkbox" id="is_sequential_toggle" role="switch" name="is_sequential_check" {% if not course or course.is_sequential %}checked{% endif %} onchange="document.getElementById('is_sequential_val').value = this.checked ? '1' : '0';">
+                                <input type="hidden" id="is_sequential_val" name="is_sequential" value="{{ '1' if (not course or course.is_sequential) else '0' }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="col-12">
                     <label for="description" class="form-label fw-bold">Brief Description</label>
                     <textarea class="form-control" id="description" name="description" rows="3" placeholder="Provide overview of learning objectives...">{{ course.description if course else '' }}</textarea>

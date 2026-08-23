@@ -58,25 +58,42 @@ def learner_login():
         if not global_id:
             error = "Please enter your Global ID."
         else:
-            # Find or auto-register Learner for POC testing
-            learner = Learner.query.filter_by(global_id=global_id).first()
+            # Map learner01-learner05 aliases to 10001-10005
+            alias_map = {
+                'learner01': '10001',
+                'learner02': '10002',
+                'learner03': '10003',
+                'learner04': '10004',
+                'learner05': '10005',
+            }
+            target_gid = alias_map.get(global_id.lower(), global_id)
+
+            # Find Learner in database
+            learner = Learner.query.filter(
+                (Learner.global_id == target_gid) | (Learner.global_id == global_id)
+            ).first()
+
             if not learner:
-                from app.models import db
-                learner = Learner(global_id=global_id, name=f"Learner {global_id}", department="L&D")
-                db.session.add(learner)
-                db.session.commit()
+                # Case-insensitive fallback lookup
+                learner = Learner.query.filter(
+                    (Learner.global_id.ilike(target_gid)) | (Learner.global_id.ilike(global_id))
+                ).first()
 
-            session['learner_id'] = learner.id
-            session['learner_global_id'] = learner.global_id
-            session['learner_name'] = learner.name
-
-            flash(f"Welcome, {learner.name}!", "success")
-
-            if class_id_str:
-                return redirect(url_for('learners.class_flow', class_id_str=class_id_str))
-            elif course_id_str:
-                return redirect(url_for('learners.self_paced_flow', course_id_str=course_id_str))
+            if not learner:
+                error = f"Learner with Global ID '{global_id}' not found. Please use a valid learner login (e.g., 10001)."
             else:
-                return redirect(url_for('learners.my_portal'))
+                session['learner_id'] = learner.id
+                session['learner_global_id'] = learner.global_id
+                session['learner_name'] = learner.name
+
+                flash(f"Welcome, {learner.name}!", "success")
+
+                if class_id_str:
+                    return redirect(url_for('learners.class_flow', class_id_str=class_id_str))
+                elif course_id_str:
+                    return redirect(url_for('learners.self_paced_flow', course_id_str=course_id_str))
+                else:
+                    return redirect(url_for('learners.my_portal'))
 
     return render_template('auth/learner_login.html', class_id=class_id_str, course_id=course_id_str, error=error)
+

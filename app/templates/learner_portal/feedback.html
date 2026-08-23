@@ -1,17 +1,35 @@
 {% extends 'base.html' %}
 
 {% block public_content %}
-<div class="bg-navy text-white py-3 px-4 shadow-sm mb-4">
-    <div class="container d-flex justify-content-between align-items-center">
+<div class="bg-navy text-white py-3 px-3 px-md-4 shadow-sm mb-4">
+    <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
         <div>
-            <h5 class="fw-bold mb-0"><i class="fa-solid fa-comments text-gold me-2"></i> {{ repo.title }}</h5>
-            <small class="text-white-50">L&D Quality & Facilitation Feedback Survey</small>
+            <h5 class="fw-bold mb-0 text-white"><i class="fa-solid fa-comments text-gold me-2"></i> {{ repo.title }}</h5>
+            <small class="text-white-50">L&D Quality & Facilitation Feedback Survey {% if course %}• {{ course.name }}{% endif %}</small>
         </div>
-        <span class="badge bg-gold text-dark font-monospace">Feedback Repository</span>
+        <div>
+            {% if is_submitted %}
+            <span class="badge bg-success p-2 fs-6 shadow-sm"><i class="fa-solid fa-circle-check me-1"></i> Feedback Previously Submitted</span>
+            {% else %}
+            <span class="badge bg-gold text-dark font-monospace p-2">Course Feedback Form</span>
+            {% endif %}
+        </div>
     </div>
 </div>
 
 <div class="container mb-5" style="max-width: 750px;">
+    {% if is_submitted %}
+    <div class="alert alert-success border-success-subtle bg-success-subtle mb-4 shadow-sm">
+        <div class="d-flex align-items-center">
+            <i class="fa-solid fa-circle-check text-success fs-3 me-3"></i>
+            <div>
+                <strong class="text-success fs-6">Feedback Recorded!</strong>
+                <p class="mb-0 text-dark small">You have already submitted feedback for this program. You can update your responses below if desired.</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <form method="POST">
         {% for q in questions %}
         <div class="card border-0 shadow-sm mb-4">
@@ -21,31 +39,34 @@
                 </h6>
             </div>
             <div class="card-body pt-0">
-                {% if q.question_type == 'MCQ' %}
+                {% if q.question_type | upper in ['MCQ', 'CHOICE', 'RADIO'] %}
                     {% for opt in q.get_options() %}
                     <div class="form-check mb-2">
-                        <input class="form-check-input" type="radio" name="q_{{ q.id }}" id="fb_q_{{ q.id }}_{{ loop.index }}" value="{{ opt }}" required>
-                        <label class="form-check-label" for="fb_q_{{ q.id }}_{{ loop.index }}">
+                        <input class="form-check-input" type="radio" name="q_{{ q.id }}" id="fb_q_{{ q.id }}_{{ loop.index }}" value="{{ opt }}" {% if saved_responses and saved_responses.get('q_' ~ q.id) == opt %}checked{% elif loop.first and not saved_responses %}checked{% endif %} required>
+                        <label class="form-check-label text-dark fw-medium" for="fb_q_{{ q.id }}_{{ loop.index }}">
                             {{ opt }}
                         </label>
                     </div>
                     {% endfor %}
                 {% else %}
-                    <textarea class="form-control" name="q_{{ q.id }}" rows="3" placeholder="Provide your detailed feedback..." required></textarea>
+                    <textarea class="form-control" name="q_{{ q.id }}" rows="3" placeholder="Provide your detailed feedback..." required>{% if saved_responses %}{{ saved_responses.get('q_' ~ q.id, '') }}{% endif %}</textarea>
                 {% endif %}
             </div>
         </div>
         {% else %}
-        <div class="alert alert-info">No feedback questions defined in this template.</div>
+        <div class="alert alert-info shadow-sm py-4 text-center">
+            <i class="fa-solid fa-comments text-primary display-5 mb-2 d-block opacity-50"></i>
+            <h6 class="fw-bold text-navy">Default Feedback Form</h6>
+            <p class="small text-muted mb-0">No specific questions configured yet. Standard course feedback will be recorded upon submission.</p>
+        </div>
         {% endfor %}
 
-        {% if questions %}
-        <div class="d-grid gap-2">
+        <div class="d-grid gap-2 mt-4">
             <button type="submit" class="btn btn-navy bg-navy text-white btn-lg fw-bold shadow">
-                <i class="fa-solid fa-check-to-slot me-2"></i> Submit Feedback
+                <i class="fa-solid fa-check-to-slot me-2 text-warning"></i> {% if is_submitted %}Update Feedback Responses{% else %}Submit Course Feedback Form{% endif %}
             </button>
+            <small class="text-center text-muted text-xs mt-1"><i class="fa-solid fa-shield-halved text-success me-1"></i> Submitting feedback marks your course as COMPLETED and generates your Certificate.</small>
         </div>
-        {% endif %}
     </form>
 </div>
 {% endblock %}

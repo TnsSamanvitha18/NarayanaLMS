@@ -30,6 +30,7 @@ class AssessmentAttempt(db.Model):
     enrollment_id = db.Column(db.Integer, db.ForeignKey('learner_enrollments.id'), nullable=False)
     assessment_type = db.Column(db.String(20), nullable=False) # 'PRE', 'POST', 'LESSON'
     lesson_number = db.Column(db.Integer, nullable=True, default=1)
+    lesson_id = db.Column(db.Integer, db.ForeignKey('course_lessons.id'), nullable=True)
     score_percentage = db.Column(db.Float, nullable=False)
     passed = db.Column(db.Boolean, nullable=False, default=False)
     attempt_number = db.Column(db.Integer, nullable=False, default=1)

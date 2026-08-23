@@ -4,25 +4,25 @@
 
 {% block content %}
 <!-- Page Header -->
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch align-items-sm-center gap-3 mb-4">
     <div>
         <h3 class="fw-bold mb-1"><i class="fa-solid fa-gauge-high me-2 text-teal"></i> L&D Dashboard</h3>
         <p class="text-muted mb-0">Overview of courses, live classes, learners, and facilitation metrics.</p>
     </div>
-    <div>
-        <a href="{{ url_for('courses.create_course') }}" class="btn btn-navy text-white btn-sm px-3.5 py-2 me-2">
+    <div class="d-flex flex-column flex-sm-row gap-2">
+        <a href="{{ url_for('courses.create_course') }}" class="btn btn-navy text-white btn-sm px-3.5 py-2 btn-mobile-full text-nowrap">
             <i class="fa-solid fa-plus me-1"></i> New Course
         </a>
-        <a href="{{ url_for('classes.create_class') }}" class="btn btn-teal text-white btn-sm px-3.5 py-2">
+        <a href="{{ url_for('classes.create_class') }}" class="btn btn-teal text-white btn-sm px-3.5 py-2 btn-mobile-full text-nowrap">
             <i class="fa-solid fa-calendar-plus me-1"></i> Schedule Class
         </a>
     </div>
 </div>
 
-<!-- Stat Cards Grid - Electric Teal Aesthetic -->
-<div class="row g-3 mb-4">
-    <div class="col-xl-3 col-md-6">
-        <div class="card card-stat card-stat-interactive p-3 shadow-sm" onclick="window.location.href='{{ url_for('courses.list_courses') }}';" title="Click to view Course Management">
+<!-- Stat Cards Grid 1 - Horizontal Mobile & iPad Swiping Carousel -->
+<div class="row g-3 mb-4 horizontal-card-row">
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card card-stat card-stat-interactive p-3 shadow-sm h-100" onclick="window.location.href='{{ url_for('courses.list_courses') }}';" title="Click to view Course Management">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <span class="text-uppercase text-muted fw-bold small">Total Courses</span>
@@ -31,49 +31,49 @@
                         <i class="fa-solid fa-book me-1"></i> Active Repository <i class="fa-solid fa-arrow-right ms-1"></i>
                     </span>
                 </div>
-                <div class="text-white rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs" style="width: 48px; height: 48px; background: linear-gradient(135deg, #0D9488 0%, #06B6D4 100%);">
+                <div class="text-white rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs flex-shrink-0" style="width: 48px; height: 48px; background: linear-gradient(135deg, #0D9488 0%, #06B6D4 100%);">
                     <i class="fa-solid fa-book-open fs-4"></i>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-md-6">
-        <div class="card card-stat card-stat-interactive p-3 shadow-sm" onclick="window.location.href='{{ url_for('courses.list_courses') }}';" title="Click to view Course Modes">
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card card-stat card-stat-interactive p-3 shadow-sm h-100" onclick="window.location.href='{{ url_for('courses.list_courses') }}';" title="Click to view Course Modes">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <span class="text-uppercase text-muted fw-bold small">Self Paced / Live</span>
                     <h2 class="fw-extrabold text-dark my-1">{{ self_paced_courses }} / {{ live_courses }}</h2>
                     <span class="badge bg-info-subtle text-info border border-info-subtle">Course Modes <i class="fa-solid fa-arrow-right ms-1"></i></span>
                 </div>
-                <div class="bg-info text-white rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs" style="width: 48px; height: 48px;">
+                <div class="bg-info text-white rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs flex-shrink-0" style="width: 48px; height: 48px;">
                     <i class="fa-solid fa-laptop-code fs-4"></i>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-md-6">
-        <div class="card card-stat card-stat-interactive p-3 shadow-sm" onclick="window.location.href='{{ url_for('courses.list_courses') }}';" title="Click to view Classes & Batches">
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card card-stat card-stat-interactive p-3 shadow-sm h-100" onclick="window.location.href='{{ url_for('courses.list_courses') }}';" title="Click to view Classes & Batches">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <span class="text-uppercase text-muted fw-bold small">Total / Upcoming Classes</span>
+                    <span class="text-uppercase text-muted fw-bold small">Total / Upcoming</span>
                     <h2 class="fw-extrabold text-dark my-1">{{ total_classes }} ({{ upcoming_classes_count }})</h2>
                     <span class="badge bg-success-subtle text-success border border-success-subtle">Live Batches <i class="fa-solid fa-arrow-right ms-1"></i></span>
                 </div>
-                <div class="bg-success text-white rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs" style="width: 48px; height: 48px;">
+                <div class="bg-success text-white rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs flex-shrink-0" style="width: 48px; height: 48px;">
                     <i class="fa-solid fa-chalkboard-user fs-4"></i>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-md-6">
-        <div class="card card-stat card-stat-interactive p-3 shadow-sm" onclick="window.location.href='{{ url_for('learners.list_learners') }}';" title="Click to view Learner Directory">
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card card-stat card-stat-interactive p-3 shadow-sm h-100" onclick="window.location.href='{{ url_for('learners.list_learners') }}';" title="Click to view Learner Directory">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <span class="text-uppercase text-muted fw-bold small">Total Learners</span>
                     <h2 class="fw-extrabold text-dark my-1">{{ total_learners }}</h2>
-                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle">Global ID Directory <i class="fa-solid fa-arrow-right ms-1"></i></span>
+                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle">Global Directory <i class="fa-solid fa-arrow-right ms-1"></i></span>
                 </div>
-                <div class="bg-warning text-dark rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs" style="width: 48px; height: 48px;">
+                <div class="bg-warning text-dark rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs flex-shrink-0" style="width: 48px; height: 48px;">
                     <i class="fa-solid fa-user-graduate fs-4"></i>
                 </div>
             </div>
@@ -81,54 +81,55 @@
     </div>
 </div>
 
-<div class="row g-3 mb-4">
-    <div class="col-xl-3 col-md-6">
-        <div class="card card-stat card-stat-interactive p-3 shadow-sm" onclick="window.location.href='{{ url_for('attendance.list_attendance') }}';" title="Click to view Attendance Logs">
+<!-- Stat Cards Grid 2 - Horizontal Mobile & iPad Swiping Carousel -->
+<div class="row g-3 mb-4 horizontal-card-row">
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card card-stat card-stat-interactive p-3 shadow-sm h-100" onclick="window.location.href='{{ url_for('attendance.list_attendance') }}';" title="Click to view Attendance Logs">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <span class="text-uppercase text-muted fw-bold small">Attendance Rate</span>
                     <h2 class="fw-extrabold text-dark my-1">{{ attendance_pct }}%</h2>
                     <span class="badge bg-danger-subtle text-danger border border-danger-subtle">Overall Participation <i class="fa-solid fa-arrow-right ms-1"></i></span>
                 </div>
-                <div class="bg-danger text-white rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs" style="width: 48px; height: 48px;">
+                <div class="bg-danger text-white rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs flex-shrink-0" style="width: 48px; height: 48px;">
                     <i class="fa-solid fa-clipboard-check fs-4"></i>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-xl-3 col-md-6">
-        <div class="card card-stat card-stat-interactive p-3 shadow-sm" onclick="window.location.href='{{ url_for('certificates.list_certificates') }}';" title="Click to view Certificates Issued">
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card card-stat card-stat-interactive p-3 shadow-sm h-100" onclick="window.location.href='{{ url_for('certificates.list_certificates') }}';" title="Click to view Certificates Issued">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <span class="text-uppercase text-muted fw-bold small">Certificates Issued</span>
                     <h2 class="fw-extrabold text-dark my-1">{{ certificates_count }}</h2>
                     <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">ReportLab PDF <i class="fa-solid fa-arrow-right ms-1"></i></span>
                 </div>
-                <div class="bg-secondary text-white rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs" style="width: 48px; height: 48px;">
+                <div class="bg-secondary text-white rounded-circle p-3 d-flex align-items-center justify-content-center shadow-xs flex-shrink-0" style="width: 48px; height: 48px;">
                     <i class="fa-solid fa-certificate fs-4"></i>
                 </div>
             </div>
         </div>
     </div>
     <!-- Facilitation Credits Summary -->
-    <div class="col-xl-6 col-md-12">
-        <div class="card card-stat card-stat-interactive p-3 shadow-sm" onclick="window.location.href='{{ url_for('reports.index') }}';" title="Click to view Facilitation Reports">
+    <div class="col-12 col-xl-6">
+        <div class="card card-stat card-stat-interactive p-3 shadow-sm h-100" onclick="window.location.href='{{ url_for('reports.index') }}';" title="Click to view Facilitation Reports">
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <span class="text-uppercase text-muted fw-bold small"><i class="fa-solid fa-clock-rotate-left me-1 text-teal"></i> Facilitation Credits Summary</span>
                 <span class="badge bg-warning-subtle text-warning border border-warning-subtle font-monospace fw-bold">Auto-Calculated <i class="fa-solid fa-arrow-right ms-1"></i></span>
             </div>
             <div class="row text-center pt-2">
                 <div class="col-4 border-end">
-                    <h4 class="fw-extrabold text-dark mb-0">{{ current_month_hours }} hrs</h4>
-                    <small class="text-muted fw-semibold">Current Month</small>
+                    <h4 class="fw-extrabold text-dark mb-0 fs-5 fs-sm-4">{{ current_month_hours }} hrs</h4>
+                    <small class="text-muted fw-semibold text-xs">Current Month</small>
                 </div>
                 <div class="col-4 border-end">
-                    <h4 class="fw-extrabold text-teal mb-0">{{ overall_facilitator_hours }} hrs</h4>
-                    <small class="text-muted fw-semibold">Facilitator</small>
+                    <h4 class="fw-extrabold text-teal mb-0 fs-5 fs-sm-4">{{ overall_facilitator_hours }} hrs</h4>
+                    <small class="text-muted fw-semibold text-xs">Facilitator</small>
                 </div>
                 <div class="col-4">
-                    <h4 class="fw-extrabold text-cyan mb-0">{{ overall_co_facilitator_hours }} hrs</h4>
-                    <small class="text-muted fw-semibold">Co-Facilitator</small>
+                    <h4 class="fw-extrabold text-cyan mb-0 fs-5 fs-sm-4">{{ overall_co_facilitator_hours }} hrs</h4>
+                    <small class="text-muted fw-semibold text-xs">Co-Facilitator</small>
                 </div>
             </div>
         </div>
@@ -138,59 +139,52 @@
 <!-- Main Section: Upcoming Classes & Recent Audit Trail -->
 <div class="row g-4">
     <!-- Upcoming Classes -->
-    <div class="col-lg-7">
+    <div class="col-12 col-xl-7">
         <div class="card border-0 shadow-sm p-3">
             <div class="d-flex align-items-center justify-content-between mb-3">
-                <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-calendar-days me-2 text-teal"></i> Upcoming Live Classes</h5>
+                <div>
+                    <h5 class="fw-bold text-dark mb-1"><i class="fa-solid fa-calendar-days me-2 text-teal"></i> Upcoming Live Classes</h5>
+                    <span class="badge bg-teal-subtle text-teal border border-teal-subtle"><i class="fa-solid fa-arrows-left-right me-1"></i> Swipe Batches Horizontally</span>
+                </div>
                 <a href="{{ url_for('classes.list_classes') }}" class="btn btn-sm btn-teal text-white fw-bold">View All</a>
             </div>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th>Class Code & Name</th>
-                            <th>Mode</th>
-                            <th>Date & Session</th>
-                            <th>Facilitator</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for c in upcoming_classes_list %}
-                        <tr>
-                            <td>
-                                <div class="fw-bold text-dark">{{ c.class_name }}</div>
-                                <small class="text-muted fw-semibold">{{ c.class_id }}</small>
-                            </td>
-                            <td>
-                                <span class="badge {% if c.class_mode == 'Online' %}bg-info-subtle text-info{% else %}bg-success-subtle text-success{% endif %}">
-                                    {{ c.class_mode }}
-                                </span>
-                            </td>
-                            <td>
-                                <div class="fw-semibold">{{ c.class_date.strftime('%d-%b-%Y') }}</div>
-                                <small class="text-muted fw-semibold">{{ c.session_time }}</small>
-                            </td>
-                            <td>{{ c.facilitator_name }}</td>
-                            <td>
-                                <a href="{{ url_for('classes.view_class', class_id=c.id) }}" class="btn btn-sm btn-light border">
-                                    <i class="fa-solid fa-qrcode text-teal"></i> QR
-                                </a>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="5" class="text-center py-4 text-muted fw-semibold">No upcoming live classes scheduled.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            
+            <!-- Horizontal Swiping Scheduled Live Batches Cards Carousel -->
+            <div class="scheduled-batches-carousel mb-2">
+                {% for c in upcoming_classes_list %}
+                <div class="batch-card-item">
+                    <div class="live-batch-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="badge {% if c.class_mode == 'Online' %}bg-info-subtle text-info border border-info-subtle{% else %}bg-success-subtle text-success border border-success-subtle{% endif %}">
+                                <i class="fa-solid {% if c.class_mode == 'Online' %}fa-video{% else %}fa-building{% endif %} me-1"></i> {{ c.class_mode }}
+                            </span>
+                            <small class="font-monospace text-muted fw-bold">{{ c.class_id }}</small>
+                        </div>
+                        <h6 class="fw-bold text-dark mb-2 text-truncate" title="{{ c.class_name }}">{{ c.class_name }}</h6>
+                        <div class="d-flex align-items-center text-muted small mb-2">
+                            <i class="fa-regular fa-calendar-days text-teal me-2"></i>
+                            <span class="fw-semibold text-dark">{{ c.class_date.strftime('%d-%b-%Y') }}</span>
+                            <span class="mx-2">•</span>
+                            <i class="fa-regular fa-clock me-1"></i> {{ c.session_time }}
+                        </div>
+                        <div class="d-flex align-items-center text-muted small mb-3">
+                            <i class="fa-solid fa-user-tie me-2 text-teal"></i>
+                            <span>Facilitator: <strong class="text-dark">{{ c.facilitator_name }}</strong></span>
+                        </div>
+                        <a href="{{ url_for('classes.view_class', class_id=c.id) }}" class="btn btn-sm btn-teal text-white fw-bold w-100 shadow-xs">
+                            <i class="fa-solid fa-qrcode me-1"></i> QR Code & Details
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="text-center py-4 text-muted fw-semibold w-100">No upcoming live classes scheduled.</div>
+                {% endfor %}
             </div>
         </div>
     </div>
 
     <!-- Recent Audit Activities -->
-    <div class="col-lg-5">
+    <div class="col-12 col-xl-5">
         <div class="card border-0 shadow-sm p-3">
             <div class="mb-3">
                 <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-list-check me-2 text-warning"></i> Recent Audit & Lock Activities</h5>
@@ -198,7 +192,7 @@
             <div class="timeline">
                 {% for act in recent_activities %}
                 <div class="d-flex mb-3 pb-3 border-bottom">
-                    <div class="me-3">
+                    <div class="me-3 flex-shrink-0">
                         {% if act.action == 'UNLOCK' %}
                         <span class="badge bg-warning text-dark p-2 rounded-circle"><i class="fa-solid fa-lock-open"></i></span>
                         {% elif act.action == 'AUTO_LOCK' %}

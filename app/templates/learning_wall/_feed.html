@@ -1,0 +1,224 @@
+<div class="container-fluid px-2 px-md-4 py-3">
+    <!-- Page Header & Banner -->
+    <div class="card card-gradient-teal border-0 shadow-sm p-4 mb-4 rounded-4 position-relative overflow-hidden">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 position-relative" style="z-index: 2;">
+            <div>
+                <span class="badge bg-teal text-white text-uppercase font-monospace mb-2 px-3 py-1.5 rounded-pill shadow-xs">
+                    <i class="fa-solid fa-bullhorn me-1"></i> Live News Bulletin Feed
+                </span>
+                <h2 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-newspaper text-teal"></i> LMS Learning Wall
+                </h2>
+                <p class="text-muted mb-0">Automated real-time updates on course completions, learner birthdays, and milestone achievements.</p>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                {% if session.get('admin_logged_in') and posts_data|length > 0 %}
+                <form action="{{ url_for('learning_wall.clear_wall') }}" method="POST" onsubmit="return confirm('Are you sure you want to remove all events from the Learning Wall?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger fw-bold px-3 py-1.5 rounded-pill shadow-xs">
+                        <i class="fa-solid fa-trash-can me-1"></i> Clear All Events
+                    </button>
+                </form>
+                {% endif %}
+                <div class="d-flex align-items-center gap-2 bg-white-50 p-2 rounded-pill border shadow-xs">
+                    <span class="badge bg-teal-subtle text-teal rounded-circle p-2.5 fs-5">
+                        <i class="fa-solid fa-bolt"></i>
+                    </span>
+                    <div class="pe-2">
+                        <small class="text-muted fw-bold d-block text-uppercase" style="font-size: 0.65rem;">System Bulletin</small>
+                        <span class="fw-extrabold text-dark fs-6 font-monospace">{{ posts_data|length }} Automated Posts</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Main News Feed Column -->
+        <div class="col-12 col-lg-8 col-xl-8 mx-auto">
+            <div class="learning-wall-feed">
+                {% for item in posts_data %}
+                {% set post = item.post %}
+                {% set counts = item.counts %}
+                {% set user_rxn = item.user_reaction %}
+
+                <div class="card border-0 shadow-sm mb-4 rounded-4 overflow-hidden post-card" id="post-card-{{ post.id }}">
+                    <!-- Card Top Header -->
+                    <div class="card-header bg-surface border-bottom p-3.5 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="badge {{ post.badge_color or 'bg-teal-subtle text-teal border-teal-subtle' }} p-3 rounded-circle fs-4 d-flex align-items-center justify-content-center shadow-xs" style="width: 48px; height: 48px;">
+                                <i class="fa-solid {{ post.icon or 'fa-bullhorn' }}"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-0 fs-6">{{ post.title }}</h6>
+                                <small class="text-muted text-xs d-flex align-items-center gap-1">
+                                    <i class="fa-regular fa-clock text-teal"></i> {{ post.created_at.strftime('%d-%b-%Y %H:%M') }}
+                                    <span class="mx-1">•</span>
+                                    <span class="badge bg-secondary-subtle text-secondary py-0.5 px-2">Automated Bulletin</span>
+                                </small>
+                            </div>
+                        </div>
+
+                        <span class="badge bg-teal-subtle text-teal font-monospace text-xs">
+                            <i class="fa-solid fa-robot me-1"></i> System Event
+                        </span>
+                    </div>
+
+                    <!-- Post Body Content -->
+                    <div class="card-body p-4 bg-surface">
+                        <div class="post-content text-dark fs-6 lh-base mb-3">
+                            {{ post.content|replace('\n', '<br>')|safe }}
+                        </div>
+
+                        {% if post.course %}
+                        <div class="p-3 bg-light rounded-3 border d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-book-open text-teal fs-5"></i>
+                                <div>
+                                    <span class="fw-bold text-dark d-block fs-6">{{ post.course.name }}</span>
+                                    <small class="text-muted text-xs">Mode: {{ post.course.mode }} • {{ post.course.duration_hours }} hrs</small>
+                                </div>
+                            </div>
+                            <a href="{{ url_for('learners.self_paced_flow', course_id_str=post.course.course_id) if post.course.mode == 'Self Paced' else url_for('courses.list_courses') }}" class="btn btn-sm btn-outline-teal text-teal fw-bold">
+                                View Course <i class="fa-solid fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                        {% endif %}
+
+                        <!-- Reaction summary bar -->
+                        <div class="d-flex align-items-center justify-content-between pt-2 border-top text-muted text-xs">
+                            <div class="d-flex align-items-center gap-2" id="reaction-summary-{{ post.id }}">
+                                <span class="d-flex align-items-center gap-1">
+                                    <span class="rxn-icon">👍</span> <strong class="text-dark count-like">{{ counts['like'] }}</strong>
+                                </span>
+                                <span class="d-flex align-items-center gap-1">
+                                    <span class="rxn-icon">❤️</span> <strong class="text-dark count-love">{{ counts['love'] }}</strong>
+                                </span>
+                                <span class="d-flex align-items-center gap-1">
+                                    <span class="rxn-icon">🎉</span> <strong class="text-dark count-celebrate">{{ counts['celebrate'] }}</strong>
+                                </span>
+                                <span class="d-flex align-items-center gap-1">
+                                    <span class="rxn-icon">👏</span> <strong class="text-dark count-clap">{{ counts['clap'] }}</strong>
+                                </span>
+                                <span class="d-flex align-items-center gap-1">
+                                    <span class="rxn-icon">🔥</span> <strong class="text-dark count-fire">{{ counts['fire'] }}</strong>
+                                </span>
+                            </div>
+
+                            <span class="fw-bold text-teal" id="total-rxns-{{ post.id }}">
+                                {{ item.total_reactions }} Reactions
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Reaction Action Buttons -->
+                    <div class="card-footer bg-light p-2.5 d-flex align-items-center justify-content-around gap-1 border-top">
+                        <button type="button" class="btn btn-sm rxn-btn flex-grow-1 {% if user_rxn == 'like' %}active-rxn{% endif %}" onclick="submitReaction({{ post.id }}, 'like');" data-post-id="{{ post.id }}" data-rxn="like">
+                            <span class="fs-5 me-1">👍</span> <span class="d-none d-sm-inline">Like</span>
+                        </button>
+
+                        <button type="button" class="btn btn-sm rxn-btn flex-grow-1 {% if user_rxn == 'love' %}active-rxn{% endif %}" onclick="submitReaction({{ post.id }}, 'love');" data-post-id="{{ post.id }}" data-rxn="love">
+                            <span class="fs-5 me-1">❤️</span> <span class="d-none d-sm-inline">Love</span>
+                        </button>
+
+                        <button type="button" class="btn btn-sm rxn-btn flex-grow-1 {% if user_rxn == 'celebrate' %}active-rxn{% endif %}" onclick="submitReaction({{ post.id }}, 'celebrate');" data-post-id="{{ post.id }}" data-rxn="celebrate">
+                            <span class="fs-5 me-1">🎉</span> <span class="d-none d-sm-inline">Celebrate</span>
+                        </button>
+
+                        <button type="button" class="btn btn-sm rxn-btn flex-grow-1 {% if user_rxn == 'clap' %}active-rxn{% endif %}" onclick="submitReaction({{ post.id }}, 'clap');" data-post-id="{{ post.id }}" data-rxn="clap">
+                            <span class="fs-5 me-1">👏</span> <span class="d-none d-sm-inline">Clap</span>
+                        </button>
+
+                        <button type="button" class="btn btn-sm rxn-btn flex-grow-1 {% if user_rxn == 'fire' %}active-rxn{% endif %}" onclick="submitReaction({{ post.id }}, 'fire');" data-post-id="{{ post.id }}" data-rxn="fire">
+                            <span class="fs-5 me-1">🔥</span> <span class="d-none d-sm-inline">Fire</span>
+                        </button>
+                    </div>
+                </div>
+                {% else %}
+                <div class="card border-0 shadow-sm p-5 text-center rounded-4">
+                    <i class="fa-solid fa-newspaper text-teal display-3 opacity-50 mb-3"></i>
+                    <h5 class="fw-bold text-dark mb-1">Learning Wall Feed Empty</h5>
+                    <p class="text-muted mb-0">System bulletin posts will automatically generate here when learners complete courses and celebrate milestones.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.rxn-btn {
+    border-radius: 50px !important;
+    font-weight: 600 !important;
+    color: var(--text-muted) !important;
+    background-color: transparent !important;
+    border: 1.5px solid transparent !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    padding: 0.4rem 0.75rem !important;
+}
+
+.rxn-btn:hover {
+    background-color: var(--teal-light) !important;
+    color: var(--teal-primary) !important;
+    transform: translateY(-2px);
+}
+
+.rxn-btn.active-rxn {
+    background-color: var(--teal-light) !important;
+    color: var(--teal-primary) !important;
+    border-color: var(--teal-primary) !important;
+    box-shadow: 0 4px 12px var(--teal-glow) !important;
+}
+
+.post-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.post-card:hover {
+    box-shadow: var(--card-hover-shadow) !important;
+}
+</style>
+
+<script>
+function submitReaction(postId, rxnType) {
+    const formData = new FormData();
+    formData.append('post_id', postId);
+    formData.append('reaction_type', rxnType);
+
+    fetch("{{ url_for('learning_wall.react') }}", {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update counts in UI dynamically
+            const counts = data.counts;
+            const container = document.getElementById(`reaction-summary-${postId}`);
+            if (container) {
+                for (let key in counts) {
+                    const el = container.querySelector(`.count-${key}`);
+                    if (el) el.innerText = counts[key];
+                }
+            }
+
+            const totalEl = document.getElementById(`total-rxns-${postId}`);
+            if (totalEl) totalEl.innerText = `${data.total_reactions} Reactions`;
+
+            // Update button active state
+            const buttons = document.querySelectorAll(`#post-card-${postId} .rxn-btn`);
+            buttons.forEach(btn => {
+                if (btn.getAttribute('data-rxn') === data.user_reaction) {
+                    btn.classList.add('active-rxn');
+                } else {
+                    btn.classList.remove('active-rxn');
+                }
+            });
+        } else {
+            alert(data.message || 'Failed to submit reaction.');
+        }
+    })
+    .catch(err => {
+        console.error('Reaction error:', err);
+    });
+}
+</script>

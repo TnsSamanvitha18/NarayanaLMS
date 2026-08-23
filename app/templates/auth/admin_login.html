@@ -21,14 +21,14 @@
             <form method="POST" action="{{ url_for('auth.admin_login') }}">
                 <div class="login-field mb-3">
                     <label for="username" class="login-label">
-                        <i class="fa-solid fa-user text-primary"></i> Username
+                        <i class="fa-solid fa-user text-teal"></i> Username
                     </label>
                     <input type="text" class="form-control-login" id="username" name="username" placeholder="Enter admin username" required value="admin">
                 </div>
 
                 <div class="login-field mb-4">
                     <label for="password" class="login-label">
-                        <i class="fa-solid fa-lock text-primary"></i> Password
+                        <i class="fa-solid fa-lock text-teal"></i> Password
                     </label>
                     <input type="password" class="form-control-login" id="password" name="password" placeholder="Enter password" required value="admin">
                 </div>
@@ -41,7 +41,7 @@
             <div class="mt-4 pt-3 border-top text-center">
                 <small class="text-muted">Temporary L&D Admin Credentials (admin / admin)</small>
                 <div class="mt-2">
-                    <a href="{{ url_for('auth.learner_login') }}" class="text-primary text-decoration-none small fw-bold">
+                    <a href="{{ url_for('auth.learner_login') }}" class="text-teal text-decoration-none small fw-bold">
                         <i class="fa-solid fa-user-graduate me-1"></i> Switch to Learner Login Portal
                     </a>
                 </div>

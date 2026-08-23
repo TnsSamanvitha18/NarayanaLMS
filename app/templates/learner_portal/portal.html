@@ -4,75 +4,69 @@
 
 {% block public_content %}
 <div class="row g-4">
-    <!-- Collapsible Learner Profile Sidebar (Left) -->
-    <div class="col-lg-3 col-xl-2 sidebar-col" id="sidebarCol">
-        <div class="profile-sidebar card border-0 shadow-sm text-center position-relative h-100" id="learnerSidebar">
-            <!-- Collapse / Expand Trigger Button -->
-            <button class="btn btn-sm btn-light border position-absolute top-0 end-0 m-2 rounded-circle" id="toggleSidebarBtn" title="Toggle Sidebar">
-                <i class="fa-solid fa-angles-left" id="toggleSidebarIcon"></i>
-                <span class="d-none d-xl-inline ms-1" id="toggleSidebarText">Collapse</span>
-            </button>
-
-            <!-- Profile Avatar & Status -->
-            <div class="position-relative d-inline-block mt-3 mb-3 mx-auto">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Alex Morgan" class="avatar-profile">
-                <span class="online-dot"></span>
+    <!-- Learner Profile Sidebar (Left) -->
+    <div class="col-12 col-lg-3 col-xl-3 sidebar-col" id="sidebarCol">
+        <div class="profile-sidebar card border-0 shadow-sm text-center position-relative h-100 p-3" id="learnerSidebar">
+            <!-- Desktop / Mobile Profile Header -->
+            <div class="desktop-profile-header text-center">
+                <div class="position-relative d-inline-block mt-2 mb-2 mx-auto">
+                    <div class="avatar-profile bg-teal text-white rounded-circle d-flex align-items-center justify-content-center mx-auto shadow-sm" style="width: 72px; height: 72px; font-size: 1.8rem; font-weight: bold;">
+                        {{ learner.name[0] | upper if learner.name else 'L' }}
+                    </div>
+                    <span class="online-dot"></span>
+                </div>
+                
+                <h5 class="fw-bold text-dark mb-1 fs-6">{{ learner.name }}</h5>
+                <span class="badge bg-teal-subtle text-teal border border-teal-subtle mb-2 text-xs">ID: {{ learner.global_id }}</span>
+                <p class="text-muted text-xs mb-3"><i class="fa-solid fa-building me-1 text-teal"></i> {{ learner.department or 'L&D Department' }}</p>
+                <hr class="my-2 text-muted opacity-25">
             </div>
             
-            <div class="sidebar-info-block">
-                <h5 class="fw-bold text-dark mb-0">Alex Morgan</h5>
-                <span class="badge bg-teal-subtle text-teal border border-teal-subtle mt-1 mb-2">ID: 10001</span>
-                <p class="text-muted small mb-3"><i class="fa-solid fa-briefcase me-1"></i> Senior Developer</p>
-                
-                <hr class="my-3 text-muted">
-                
-                <!-- Quick Stats Grid -->
-                <div class="row text-center g-2 mb-3">
-                    <div class="col-6">
-                        <div class="bg-light p-2 rounded-3 border">
-                            <span class="text-muted text-xs d-block">Programs</span>
-                            <strong class="fw-bold text-dark fs-6">4 Active</strong>
-                        </div>
+            <!-- Quick Stats Container -->
+            <div class="sidebar-stats-container d-flex flex-column gap-2 mb-2 text-start" id="sidebarStatsContainer">
+                <div class="p-2.5 rounded-3 bg-light border">
+                    <div class="fw-bold text-dark text-xs text-uppercase mb-1">
+                        <i class="fa-solid fa-book-open text-teal me-1"></i> Enrolled Courses
                     </div>
-                    <div class="col-6">
-                        <div class="bg-light p-2 rounded-3 border">
-                            <span class="text-muted text-xs d-block">Attendance</span>
-                            <strong class="fw-bold text-teal fs-6">94%</strong>
-                        </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <small class="text-muted text-xs">Active Enrollments</small>
+                        <span class="badge bg-teal-subtle text-teal border border-teal-subtle fw-bold">{{ enrollments|length }} Courses</span>
                     </div>
                 </div>
 
-                <div class="d-flex align-items-center justify-content-between p-2.5 rounded-3 bg-light border mb-3">
-                    <div class="d-flex align-items-center">
-                        <i class="fa-solid fa-award text-teal fs-4 me-2"></i>
-                        <div class="text-start">
-                            <span class="d-block fw-bold text-dark small">Certificates</span>
-                            <small class="text-muted text-xs">2 Verified PDFs</small>
-                        </div>
+                <div class="p-2.5 rounded-3 bg-light border">
+                    <div class="fw-bold text-dark text-xs text-uppercase mb-1">
+                        <i class="fa-solid fa-user-check text-teal me-1"></i> Attendance Log
                     </div>
-                    <span class="badge bg-success text-white">Earned</span>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <small class="text-muted text-xs">Classes Attended</small>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle fw-bold">{{ learner.attendances|length }} Sessions</span>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Footer Sidebar Expand/Collapse Toggle -->
-            <div class="mt-auto pt-3 border-top w-100">
-                <button class="btn btn-sm btn-outline-teal w-100 fw-semibold" id="toggleSidebarFooterBtn">
-                    <i class="fa-solid fa-arrows-left-right me-1"></i> <span id="toggleSidebarFooterText">Collapse Sidebar</span>
-                </button>
+                <div class="p-2.5 rounded-3 bg-light border">
+                    <div class="fw-bold text-dark text-xs text-uppercase mb-1">
+                        <i class="fa-solid fa-award text-teal me-1"></i> Certificates
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <small class="text-muted text-xs">PDF Downloads</small>
+                        <span class="badge bg-success text-white fw-bold">{{ learner.certificates|length }} Issued</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Main Content Area: Enrolled Programs & Live Schedule (Middle) -->
-    <div class="col-lg-6 col-xl-7 main-content-col" id="mainContentCol">
+    <!-- Main Content Area: Enrolled Programs & Available Courses -->
+    <div class="col-12 col-lg-6 col-xl-6 main-content-col" id="mainContentCol">
         <!-- Hero Welcome Banner -->
-        <div class="card p-4 mb-4 border-0 text-white shadow-sm overflow-hidden position-relative" style="background: linear-gradient(135deg, #0D9488 0%, #06B6D4 100%);">
+        <div class="card p-4 mb-4 border-0 text-white shadow-sm overflow-hidden position-relative" style="background: linear-gradient(135deg, #0D9488 0%, #06B6D4 100%); border-radius: 20px;">
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <h3 class="fw-extrabold mb-1">Welcome back, Alex! 👋</h3>
-                    <p class="mb-3 text-white-50">Continue your interactive learning path. You have 2 live sessions upcoming this week.</p>
+                    <h3 class="fw-extrabold mb-1">Welcome back, {{ learner.name }}! 👋</h3>
+                    <p class="mb-3 text-white-50">Continue your active learning paths and explore assigned courses below.</p>
                     <a href="#enrolledPrograms" class="btn btn-light text-teal fw-bold btn-sm shadow-xs">
-                        <i class="fa-solid fa-play me-1"></i> Resume Learning
+                        <i class="fa-solid fa-play me-1"></i> View My Programs
                     </a>
                 </div>
                 <div class="col-md-4 text-center d-none d-md-block">
@@ -81,185 +75,211 @@
             </div>
         </div>
 
-        <!-- Circular Program Cards Grid -->
+        <!-- Enrolled Programs Grid -->
         <div class="d-flex justify-content-between align-items-center mb-3" id="enrolledPrograms">
-            <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-circle-play me-2 text-teal"></i> My Circular Enrolled Programs</h5>
-            <span class="text-muted small">4 Programs Enrolled</span>
+            <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-graduation-cap me-2 text-teal"></i> My Enrolled Programs</h5>
+            <span class="text-muted small fw-semibold">{{ enrollments|length }} Enrolled</span>
         </div>
 
         <div class="row g-3 mb-4">
-            <!-- Program 1: Full Stack Web Development -->
-            <div class="col-md-6 col-xl-3">
-                <div class="card card-circular shadow-sm h-100">
-                    <div class="hexagon-icon hexagon-blue">
-                        <i class="fa-solid fa-code"></i>
-                    </div>
-                    <h6 class="fw-bold text-dark mb-1 mt-2">Full Stack Web Development</h6>
-                    <span class="status-pill pill-in-progress mb-2">In Progress</span>
-
-                    <!-- SVG Circular Progress Ring Gauge -->
-                    <div class="progress-ring-wrapper">
-                        <svg class="progress-ring-svg" width="76" height="76">
-                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="32" cx="38" cy="38"/>
-                            <circle class="progress-ring-fill" stroke="url(#tealGradient)" stroke-width="6" stroke-dasharray="201" stroke-dashoffset="70" fill="transparent" r="32" cx="38" cy="38"/>
-                        </svg>
-                        <div class="progress-ring-text">65%</div>
+            {% for en in enrollments %}
+            <div class="col-12 col-sm-6">
+                <div class="card card-circular border-0 shadow-sm h-100 p-3">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge font-monospace bg-dark text-gold">{{ en.course.course_id }}</span>
+                        <span class="status-pill {% if en.completion_status == 'Completed' %}pill-completed{% elif en.completion_status == 'Failed' %}bg-danger text-white{% else %}pill-in-progress{% endif %}">
+                            {{ en.completion_status }}
+                        </span>
                     </div>
 
-                    <a href="{{ url_for('learners.self_paced_flow', course_id_str='CRS-000001') }}" class="btn btn-teal btn-sm w-100 mt-2 fw-bold">
-                        Continue <i class="fa-solid fa-arrow-right ms-1"></i>
+                    <h6 class="fw-bold text-dark mb-2">{{ en.course.name }}</h6>
+                    <small class="text-muted d-block mb-3"><i class="fa-regular fa-clock me-1"></i> Mode: {{ en.course.mode }} ({{ en.course.duration_hours }} hrs)</small>
+
+                    {% if en.final_score %}
+                    <div class="mb-2">
+                        <small class="text-muted">Final Exam Score:</small>
+                        <strong class="text-success ms-1">{{ en.final_score }}%</strong>
+                    </div>
+                    {% endif %}
+
+                    {% if en.course.mode == 'Self Paced' %}
+                    <a href="{{ url_for('learners.self_paced_flow', course_id_str=en.course.course_id) }}" class="btn btn-teal btn-sm w-100 mt-auto fw-bold">
+                        Open Course <i class="fa-solid fa-arrow-right ms-1"></i>
                     </a>
+                    {% else %}
+                        {% set cls_id = en.live_class.class_id if en.live_class else (en.course.classes[0].class_id if en.course.classes else '') %}
+                        {% if cls_id %}
+                        <a href="{{ url_for('learners.class_flow', class_id_str=cls_id) }}" class="btn btn-teal btn-sm w-100 mt-auto fw-bold">
+                            Go to Class Flow <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
+                        {% else %}
+                        <button class="btn btn-secondary btn-sm w-100 mt-auto" disabled>Class Pending</button>
+                        {% endif %}
+                    {% endif %}
                 </div>
             </div>
-
-            <!-- Program 2: Data Science & AI -->
-            <div class="col-md-6 col-xl-3">
-                <div class="card card-circular shadow-sm h-100">
-                    <div class="hexagon-icon hexagon-purple">
-                        <i class="fa-solid fa-brain"></i>
-                    </div>
-                    <h6 class="fw-bold text-dark mb-1 mt-2">Data Science & AI</h6>
-                    <span class="status-pill pill-in-progress mb-2">In Progress</span>
-
-                    <div class="progress-ring-wrapper">
-                        <svg class="progress-ring-svg" width="76" height="76">
-                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="32" cx="38" cy="38"/>
-                            <circle class="progress-ring-fill" stroke="url(#tealGradient)" stroke-width="6" stroke-dasharray="201" stroke-dashoffset="120" fill="transparent" r="32" cx="38" cy="38"/>
-                        </svg>
-                        <div class="progress-ring-text">40%</div>
-                    </div>
-
-                    <a href="{{ url_for('learners.self_paced_flow', course_id_str='CRS-000002') }}" class="btn btn-teal btn-sm w-100 mt-2 fw-bold">
-                        Continue <i class="fa-solid fa-arrow-right ms-1"></i>
-                    </a>
+            {% else %}
+            <div class="col-12">
+                <div class="alert alert-info border-info p-4 text-center rounded-3">
+                    <i class="fa-solid fa-circle-info fa-2x mb-2 text-info"></i>
+                    <h6 class="fw-bold text-dark mb-1">No Active Enrollments Yet</h6>
+                    <p class="small text-muted mb-3">You are not assigned to any self-paced courses or live classes currently.</p>
                 </div>
             </div>
-
-            <!-- Program 3: Cloud Architecture & DevOps -->
-            <div class="col-md-6 col-xl-3">
-                <div class="card card-circular shadow-sm h-100">
-                    <div class="hexagon-icon hexagon-emerald">
-                        <i class="fa-solid fa-cloud"></i>
-                    </div>
-                    <h6 class="fw-bold text-dark mb-1 mt-2">Cloud DevOps Architecture</h6>
-                    <span class="status-pill pill-completed mb-2">Completed</span>
-
-                    <div class="progress-ring-wrapper">
-                        <svg class="progress-ring-svg" width="76" height="76">
-                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="32" cx="38" cy="38"/>
-                            <circle class="progress-ring-fill" stroke="#10B981" stroke-width="6" stroke-dasharray="201" stroke-dashoffset="0" fill="transparent" r="32" cx="38" cy="38"/>
-                        </svg>
-                        <div class="progress-ring-text text-success">100%</div>
-                    </div>
-
-                    <a href="{{ url_for('learners.self_paced_flow', course_id_str='CRS-000003') }}" class="btn btn-outline-teal btn-sm w-100 mt-2 fw-bold">
-                        Review <i class="fa-solid fa-check ms-1"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Program 4: Enterprise UI/UX Design System -->
-            <div class="col-md-6 col-xl-3">
-                <div class="card card-circular shadow-sm h-100">
-                    <div class="hexagon-icon hexagon-coral">
-                        <i class="fa-solid fa-palette"></i>
-                    </div>
-                    <h6 class="fw-bold text-dark mb-1 mt-2">Enterprise UI/UX Design System</h6>
-                    <span class="status-pill pill-pending mb-2">Pending</span>
-
-                    <div class="progress-ring-wrapper">
-                        <svg class="progress-ring-svg" width="76" height="76">
-                            <circle class="progress-ring-bg" stroke-width="6" fill="transparent" r="32" cx="38" cy="38"/>
-                            <circle class="progress-ring-fill" stroke="#F59E0B" stroke-width="6" stroke-dasharray="201" stroke-dashoffset="160" fill="transparent" r="32" cx="38" cy="38"/>
-                        </svg>
-                        <div class="progress-ring-text text-warning">20%</div>
-                    </div>
-
-                    <a href="{{ url_for('learners.self_paced_flow', course_id_str='CRS-000004') }}" class="btn btn-teal btn-sm w-100 mt-2 fw-bold">
-                        Start <i class="fa-solid fa-arrow-right ms-1"></i>
-                    </a>
-                </div>
-            </div>
+            {% endfor %}
         </div>
 
-        <!-- Upcoming Live Classes Table Section -->
-        <div class="card border-0 shadow-sm p-3">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-                <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-calendar-check me-2 text-teal"></i> Scheduled Live Batches</h5>
-                <span class="badge bg-teal-subtle text-teal border border-teal-subtle">Online Zoom & Teams</span>
+        <!-- Available Courses Catalog -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-layer-group me-2 text-teal"></i> Available Courses Catalog</h5>
+            <span class="text-muted small fw-semibold">{{ all_courses|length }} Courses</span>
+        </div>
+
+        <div class="row g-3 mb-4">
+            {% for c in all_courses %}
+            <div class="col-12 col-sm-6">
+                <div class="card border-0 shadow-sm h-100 p-3">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge font-monospace bg-secondary text-white">{{ c.course_id }}</span>
+                        <span class="badge {% if c.mode == 'Self Paced' %}bg-info{% else %}bg-success{% endif %}">{{ c.mode }}</span>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-1">{{ c.name }}</h6>
+                    <p class="text-muted text-xs mb-3 text-truncate-2">{{ c.description or 'Course catalog module.' }}</p>
+
+                    {% if c.mode == 'Self Paced' %}
+                    <a href="{{ url_for('learners.self_paced_flow', course_id_str=c.course_id) }}" class="btn btn-outline-teal btn-sm w-100 mt-auto fw-bold">
+                        Start Learning <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                    {% else %}
+                        {% set cls_id = c.classes[0].class_id if c.classes else '' %}
+                        {% if cls_id %}
+                        <a href="{{ url_for('learners.class_flow', class_id_str=cls_id) }}" class="btn btn-outline-teal btn-sm w-100 mt-auto fw-bold">
+                            View Class <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
+                        {% else %}
+                        <button class="btn btn-light border btn-sm w-100 mt-auto text-muted" disabled>Batch Scheduling</button>
+                        {% endif %}
+                    {% endif %}
+                </div>
             </div>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead>
-                        <tr>
-                            <th>Class Name</th>
-                            <th>Mode</th>
-                            <th>Date & Time</th>
-                            <th>Facilitator</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div class="fw-bold text-dark">React Native Masterclass</div>
-                                <small class="text-muted fw-semibold">CLS-2026-001</small>
-                            </td>
-                            <td><span class="badge bg-info-subtle text-info">Online</span></td>
-                            <td>
-                                <div class="fw-semibold">08-Aug-2026</div>
-                                <small class="text-muted">10:00 AM - 12:00 PM</small>
-                            </td>
-                            <td>Dr. Rajesh Sharma</td>
-                            <td>
-                                <a href="#" class="btn btn-sm btn-teal text-white fw-bold">Join Class</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="fw-bold text-dark">Advanced System Architecture</div>
-                                <small class="text-muted fw-semibold">CLS-2026-002</small>
-                            </td>
-                            <td><span class="badge bg-success-subtle text-success">In Person</span></td>
-                            <td>
-                                <div class="fw-semibold">10-Aug-2026</div>
-                                <small class="text-muted">02:00 PM - 04:30 PM</small>
-                            </td>
-                            <td>Priya Ananth</td>
-                            <td>
-                                <a href="#" class="btn btn-sm btn-outline-teal fw-bold">View Venue</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            {% else %}
+            <div class="col-12 text-muted text-center py-3">No courses available in catalog.</div>
+            {% endfor %}
         </div>
     </div>
 
-    <!-- Right Side Widgets Area (Right) -->
-    <div class="col-lg-3 col-xl-3">
-        <!-- Certificate Download Quick Widget -->
+    <!-- Right Side Widgets Area (3 Cols) -->
+    <div class="col-12 col-lg-3 col-xl-3">
+        <!-- Learner Notifications Widget -->
+        <div class="card p-3 mb-4 border-0 shadow-sm text-start">
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                <h6 class="fw-bold text-dark mb-0">
+                    <i class="fa-solid fa-bell text-teal me-1"></i> Notifications
+                    {% set unread_count = notifications | selectattr('is_read', 'equalto', false) | list | length if notifications else 0 %}
+                    {% if unread_count > 0 %}
+                    <span class="badge bg-danger rounded-pill ms-1" id="unreadBadge">{{ unread_count }}</span>
+                    {% endif %}
+                </h6>
+                {% if unread_count > 0 %}
+                <button type="button" class="btn btn-link btn-sm text-teal p-0 text-xs fw-bold" onclick="markAllRead()">Mark all read</button>
+                {% endif %}
+            </div>
+
+            <div class="notification-list" style="max-height: 280px; overflow-y: auto;">
+                {% for n in notifications %}
+                <div class="p-2.5 mb-2 rounded-3 border {% if not n.is_read %}bg-light border-teal-subtle{% else %}bg-white{% endif %} text-xs" id="notif-{{ n.id }}">
+                    <div class="d-flex align-items-start gap-2">
+                        {% if n.notification_type == 'COURSE_ASSIGNED' %}
+                        <i class="fa-solid fa-graduation-cap text-teal fa-lg mt-1"></i>
+                        {% elif n.notification_type == 'LESSON_UPDATED' %}
+                        <i class="fa-solid fa-book-open text-primary fa-lg mt-1"></i>
+                        {% elif n.notification_type == 'ASSESSMENT_UNLOCKED' %}
+                        <i class="fa-solid fa-award text-warning fa-lg mt-1"></i>
+                        {% else %}
+                        <i class="fa-solid fa-bell text-info fa-lg mt-1"></i>
+                        {% endif %}
+                        <div class="flex-grow-1">
+                            <strong class="d-block text-dark mb-0.5">{{ n.title }}</strong>
+                            <p class="text-muted mb-1 text-xs lh-sm">{{ n.message }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted text-xxs">{{ n.created_at.strftime('%d-%b %H:%M') }}</span>
+                                {% if n.course %}
+                                <a href="{{ url_for('learners.self_paced_flow', course_id_str=n.course.course_id) }}" class="btn btn-teal text-white py-0 px-2 fw-bold text-xxs">View Course</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="text-center py-3 text-muted text-xs">
+                    <i class="fa-solid fa-bell-slash fa-2x mb-2 opacity-50 d-block"></i>
+                    No notifications yet.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <script>
+        function markAllRead() {
+            fetch('/learners/notifications/mark_read/0', { method: 'POST' })
+            .then(r => r.json())
+            .then(d => {
+                if (d.status === 'success') {
+                    const badge = document.getElementById('unreadBadge');
+                    if (badge) badge.remove();
+                    document.querySelectorAll('.notification-list .border-teal-subtle').forEach(el => {
+                        el.classList.remove('bg-light', 'border-teal-subtle');
+                        el.classList.add('bg-white');
+                    });
+                    const markBtn = document.querySelector('button[onclick="markAllRead()"]');
+                    if (markBtn) markBtn.remove();
+                }
+            });
+        }
+        </script>
+
+        <!-- Learning Wall Highlights Widget -->
+        <div class="card p-3 mb-4 border-0 shadow-sm rounded-4 card-gradient-teal">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <h6 class="fw-bold text-dark mb-0 d-flex align-items-center gap-1.5">
+                    <i class="fa-solid fa-bullhorn text-warning"></i> Learning Wall
+                </h6>
+                <a href="{{ url_for('learning_wall.index') }}" class="btn btn-sm btn-outline-teal text-teal py-0 px-2 fw-bold text-xs">
+                    View Feed <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+            <p class="text-muted text-xs mb-3">Live system news bulletin: course completions, birthdays, and learning milestones!</p>
+            <a href="{{ url_for('learning_wall.index') }}" class="btn btn-teal text-white btn-sm w-100 fw-bold shadow-xs">
+                <i class="fa-solid fa-newspaper me-1"></i> Open Learning Wall Feed
+            </a>
+        </div>
+
+        <!-- Certificate Quick Download Widget -->
         <div class="card p-3 mb-4 border-0 shadow-sm text-center">
             <div class="bg-teal-subtle text-teal rounded-circle p-3 d-inline-flex mx-auto mb-2">
                 <i class="fa-solid fa-award fs-3"></i>
             </div>
-            <h6 class="fw-bold text-dark mb-1">Download Verified Certificate</h6>
-            <p class="text-muted small mb-3">Cloud DevOps Architecture certification is ready for download.</p>
-            <a href="#" class="btn btn-teal text-white btn-sm w-100 fw-bold">
-                <i class="fa-solid fa-download me-1"></i> Download PDF
-            </a>
+            <h6 class="fw-bold text-dark mb-1">My Certificates</h6>
+            {% if learner.certificates %}
+                {% set latest_cert = learner.certificates[-1] %}
+                <p class="text-muted small mb-3">Issued: <strong>{{ latest_cert.course.name }}</strong></p>
+                <a href="{{ url_for('certificates.download_certificate', cert_id_str=latest_cert.certificate_id) }}" class="btn btn-teal text-white btn-sm w-100 fw-bold">
+                    <i class="fa-solid fa-download me-1"></i> Download PDF ({{ latest_cert.certificate_id }})
+                </a>
+            {% else %}
+                <p class="text-muted small mb-3">Complete course assessments and submit feedback to earn verified certificates.</p>
+                <button class="btn btn-light border text-muted btn-sm w-100 fw-bold" disabled>No Certificates Yet</button>
+            {% endif %}
         </div>
 
-        <!-- Assessment Quiz Quick Widget -->
+        <!-- Quick Attendance Summary Widget -->
         <div class="card p-3 border-0 shadow-sm text-center">
-            <div class="bg-warning-subtle text-warning rounded-circle p-3 d-inline-flex mx-auto mb-2">
-                <i class="fa-solid fa-clipboard-question fs-3"></i>
+            <div class="bg-success-subtle text-success rounded-circle p-3 d-inline-flex mx-auto mb-2">
+                <i class="fa-solid fa-qrcode fs-3"></i>
             </div>
-            <h6 class="fw-bold text-dark mb-1">Assessment Pending</h6>
-            <p class="text-muted small mb-3">Enterprise UI/UX Design System Quiz 1 is active.</p>
-            <a href="{{ url_for('learners.take_assessment', course_id=1, assessment_type='COURSE_END') }}" class="btn btn-outline-teal btn-sm w-100 fw-bold">
-                <i class="fa-solid fa-pen-to-square me-1"></i> Take Quiz Now
-            </a>
+            <h6 class="fw-bold text-dark mb-1">Attendance Record</h6>
+            <p class="text-muted small mb-3">You have attended <strong>{{ learner.attendances|length }}</strong> class session(s).</p>
+            <span class="badge bg-success py-2 px-3 fs-6 rounded-pill"><i class="fa-solid fa-check-circle me-1"></i> Verified Account</span>
         </div>
     </div>
 </div>
