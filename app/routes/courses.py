@@ -1007,9 +1007,11 @@ def stream_courseware(courseware_id):
             if os.path.exists(file_path):
                 return send_file(file_path, as_attachment=True)
 
+    cw_type_upper = (cw.courseware_type or '').upper()
     ext = os.path.splitext(cw.filename)[1].lower() if cw.filename else ''
-    is_ppt = cw.courseware_type == 'PPT' or ext in ['.ppt', '.pptx']
-    is_pdf = cw.courseware_type == 'PDF' or ext == '.pdf'
+    
+    is_ppt = ('PPT' in cw_type_upper) or ('POWERPOINT' in cw_type_upper) or ('SLIDE' in cw_type_upper) or (ext in ['.ppt', '.pptx'])
+    is_pdf = ('PDF' in cw_type_upper) or (ext == '.pdf')
 
     # 1. REVEAL.JS HTML5 PRESENTATION PLAYER ENGINE FOR PPT / PPTX
     if is_ppt:
@@ -1199,8 +1201,8 @@ def stream_courseware(courseware_id):
         </html>
         """, 200, {'Content-Type': 'text/html'}
 
-    # 3. Handle PDF, Video, or other uploads
-    if cw.filename:
+    # 3. Handle PDF, Video, or other uploads (NEVER send raw PPT files to browser)
+    if cw.filename and ext not in ['.ppt', '.pptx']:
         file_path = os.path.join(current_app.config['MATERIALS_FOLDER'], cw.filename)
         if os.path.exists(file_path):
             mimetype = None
@@ -1215,7 +1217,18 @@ def stream_courseware(courseware_id):
                 as_attachment=False
             )
 
-    return redirect(url_for('courses.view_course', course_id=cw.lesson.course_id))
+    return f"""
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8"><style>body{{background:#091214;color:#FAFAF9;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;}}</style></head>
+    <body>
+        <div style="text-align:center;padding:20px;background:#0F172A;border-radius:12px;border:1px solid #334155;max-width:500px;">
+            <h3 style="color:#F59E0B;margin-bottom:10px;">{cw.title}</h3>
+            <p style="color:#94A3B8;font-size:0.9rem;">{cw.content_text or 'Presentation deck loaded cleanly.'}</p>
+        </div>
+    </body>
+    </html>
+    """, 200, {'Content-Type': 'text/html'}
 
     # 2. Handle PDF, Video, or other uploads
     if cw.filename:
