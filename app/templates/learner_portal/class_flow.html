@@ -207,7 +207,7 @@
                                     </div>
                                     {% elif mat.filename %}
                                     <div class="ratio ratio-16x9" style="min-height: 520px;">
-                                        <iframe src="{{ url_for('courses.download_material', material_id=mat.id) }}" allowfullscreen class="w-100 h-100 border-0"></iframe>
+                                        <iframe data-src="{{ url_for('courses.download_material', material_id=mat.id) }}" allowfullscreen class="w-100 h-100 border-0"></iframe>
                                     </div>
                                     {% else %}
                                     <div class="p-5 text-center text-white">
