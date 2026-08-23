@@ -1036,7 +1036,7 @@ def stream_courseware(courseware_id):
         slides_json = json.dumps(slides_data)
         images_json = json.dumps(slide_images)
 
-        raw_file_url = url_for('courses.get_courseware_raw_file', courseware_id=cw.id)
+        raw_file_url = url_for('courses.get_courseware_raw_file', courseware_id=cw.id) if is_pdf else ""
 
         return f"""
         <!DOCTYPE html>
