@@ -1011,32 +1011,50 @@ def stream_courseware(courseware_id):
     is_ppt = cw.courseware_type == 'PPT' or ext in ['.ppt', '.pptx']
     is_pdf = cw.courseware_type == 'PDF' or ext == '.pdf'
 
-    # 1. MOZILLA PDF.JS & VECTOR PRESENTATION ENGINE
-    if is_pdf or is_ppt:
+    # 1. REVEAL.JS HTML5 PRESENTATION PLAYER ENGINE FOR PPT / PPTX
+    if is_ppt:
         file_path = os.path.join(current_app.config['MATERIALS_FOLDER'], cw.filename) if cw.filename else ''
         img_out_dir = os.path.join(current_app.config['MATERIALS_FOLDER'], 'slides', str(cw.id))
         img_rel_prefix = f"/courses/courseware/{cw.id}/slide_img"
 
-        slide_images = []
-        if file_path and os.path.exists(file_path):
-            if is_pdf:
-                slide_images = render_pdf_to_slide_images(file_path, img_out_dir, img_rel_prefix)
-
-        # Fallback to PPTX shape parser if no rendered slide images yet
         slides_data = []
-        if not slide_images and file_path and os.path.exists(file_path) and is_ppt:
+        if file_path and os.path.exists(file_path):
             slides_data = parse_pptx_slides(file_path, output_img_dir=img_out_dir, rel_img_prefix=img_rel_prefix)
 
-        if not slide_images and not slides_data:
+        if not slides_data:
             text_bullets = [line.strip() for line in (cw.content_text or "").split('\n') if line.strip()]
             if not text_bullets:
                 text_bullets = [f"Overview of {cw.title}", "Key Concepts Breakdown", "Summary & Best Practices"]
             slides_data = [{"slide_number": 1, "title": cw.title, "bullets": text_bullets, "images": [], "notes": ""}]
 
-        slides_json = json.dumps(slides_data)
-        images_json = json.dumps(slide_images)
+        # Construct Reveal.js <section> slides HTML
+        sections_html = []
+        for s in slides_data:
+            title_html = f'<h3 style="color:#F59E0B; font-weight:700; margin-bottom:20px; font-size:1.6rem;">{s.get("title") or cw.title}</h3>'
+            
+            bullets_html = ""
+            if s.get("bullets"):
+                items = "".join([f'<li style="margin-bottom:12px; font-size:1.05rem; color:#E2E8F0;">{b}</li>' for b in s["bullets"]])
+                bullets_html = f'<ul style="text-align:left; display:inline-block; max-width:90%; font-size:1rem; margin-bottom:20px;">{items}</ul>'
 
-        raw_file_url = url_for('courses.get_courseware_raw_file', courseware_id=cw.id) if is_pdf else ""
+            images_html = ""
+            if s.get("images"):
+                img_tags = "".join([f'<img src="{img_url}" style="max-height:280px; max-width:90%; border-radius:10px; border:1px solid #334155; margin:10px auto; display:block; box-shadow:0 10px 30px rgba(0,0,0,0.5);">' for img_url in s["images"]])
+                images_html = f'<div style="margin-top:15px;">{img_tags}</div>'
+
+            notes_html = f'<aside class="notes">{s.get("notes")}</aside>' if s.get("notes") else ""
+
+            section = f"""
+            <section style="padding: 20px; box-sizing: border-box;">
+                {title_html}
+                {bullets_html}
+                {images_html}
+                {notes_html}
+            </section>
+            """
+            sections_html.append(section)
+
+        slides_content = "\n".join(sections_html)
 
         return f"""
         <!DOCTYPE html>
@@ -1044,7 +1062,59 @@ def stream_courseware(courseware_id):
         <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>{cw.title} - Mozilla Presentation Viewer</title>
+            <title>{cw.title} - Reveal.js Presentation Deck</title>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/dracula.min.css">
+            <style>
+                body {{ background: #091214; margin: 0; padding: 0; overflow: hidden; }}
+                .reveal {{ font-family: system-ui, -apple-system, sans-serif; }}
+                .reveal h1, .reveal h2, .reveal h3, .reveal h4 {{ font-family: system-ui, sans-serif; text-transform: none; }}
+                .reveal .controls {{ color: #F59E0B; }}
+                .reveal .progress {{ color: #F59E0B; height: 5px; }}
+                .reveal .slide-number {{ font-family: monospace; color: #F59E0B; font-weight: 700; background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; padding: 4px 10px; border-radius: 6px; }}
+            </style>
+        </head>
+        <body>
+            <div class="reveal">
+                <div class="slides">
+                    {slides_content}
+                </div>
+            </div>
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/notes/notes.min.js"></script>
+            <script>
+                Reveal.initialize({{
+                    hash: true,
+                    slideNumber: 'c / t',
+                    controls: true,
+                    progress: true,
+                    center: true,
+                    transition: 'slide', // none/fade/slide/convex/concave/zoom
+                    plugins: [ RevealNotes ]
+                }});
+            </script>
+        </body>
+        </html>
+        """, 200, {'Content-Type': 'text/html'}
+
+    # 2. MOZILLA PDF.JS VECTOR PRESENTATION ENGINE FOR PDF
+    if is_pdf:
+        file_path = os.path.join(current_app.config['MATERIALS_FOLDER'], cw.filename) if cw.filename else ''
+        img_out_dir = os.path.join(current_app.config['MATERIALS_FOLDER'], 'slides', str(cw.id))
+        img_rel_prefix = f"/courses/courseware/{cw.id}/slide_img"
+        slide_images = render_pdf_to_slide_images(file_path, img_out_dir, img_rel_prefix) if (file_path and os.path.exists(file_path)) else []
+
+        raw_file_url = url_for('courses.get_courseware_raw_file', courseware_id=cw.id)
+
+        return f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>{cw.title} - Mozilla PDF Viewer</title>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
             <style>
@@ -1052,163 +1122,84 @@ def stream_courseware(courseware_id):
                 body {{ background: #091214; color: #FAFAF9; font-family: system-ui, sans-serif; min-height: 100vh; display: flex; flex-direction: column; overflow: hidden; }}
                 .deck-header {{ background: #0F172A; padding: 10px 16px; border-bottom: 1px solid #1E293B; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }}
                 .deck-title {{ font-size: 0.95rem; font-weight: 700; color: #FFFFFF; display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-                
                 .nav-controls {{ display: flex; align-items: center; gap: 10px; }}
                 .btn-nav {{ background: #F59E0B; color: #0F172A; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 6px; }}
                 .btn-nav:hover:not(:disabled) {{ background: #D97706; color: #FFFFFF; }}
                 .btn-nav:disabled {{ opacity: 0.35; cursor: not-allowed; background: #334155; color: #94A3B8; }}
                 .slide-counter {{ font-size: 0.85rem; font-weight: 700; color: #F59E0B; font-family: monospace; background: rgba(245, 158, 11, 0.15); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(245, 158, 11, 0.3); }}
-
                 .slide-stage {{ flex: 1; padding: 12px; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at center, #1E293B 0%, #091214 100%); overflow: auto; height: calc(100vh - 52px); }}
                 #pdfCanvas {{ max-width: 100%; max-height: calc(100vh - 70px); border-radius: 8px; box-shadow: 0 12px 32px rgba(0,0,0,0.6); background: #FFFFFF; display: block; margin: 0 auto; }}
-
-                .slide-card {{ background: #0F172A; border: 1px solid #334155; border-radius: 12px; padding: 20px; width: 100%; max-width: 820px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); display: flex; flex-direction: column; text-align: center; }}
-                .slide-card-header {{ font-size: 1.2rem; font-weight: 700; color: #F59E0B; margin-bottom: 14px; border-bottom: 1px solid rgba(245, 158, 11, 0.2); padding-bottom: 8px; text-align: left; }}
-                .bullet-list {{ list-style: none; padding: 0; margin: 0 0 16px 0; text-align: left; }}
-                .bullet-list li {{ position: relative; padding-left: 22px; margin-bottom: 10px; font-size: 0.92rem; line-height: 1.5; color: #E2E8F0; word-break: break-word; }}
-                .bullet-list li::before {{ content: "✦"; position: absolute; left: 0; color: #0D9488; font-size: 0.95rem; }}
-                .slide-img-item {{ max-width: 100%; max-height: 280px; border-radius: 8px; border: 1px solid #334155; object-fit: contain; display: block; margin: 0 auto; }}
             </style>
         </head>
         <body>
             <div class="deck-header">
                 <div class="deck-title">
-                    <i class="fa-solid fa-chalkboard-user" style="color:#F59E0B;"></i> {cw.title}
+                    <i class="fa-solid fa-file-pdf" style="color:#F59E0B;"></i> {cw.title}
                 </div>
                 <div class="nav-controls">
-                    <button class="btn-nav" id="btnPrev" onclick="prevSlide()"><i class="fa-solid fa-arrow-left"></i> Prev</button>
-                    <span class="slide-counter" id="slideCounter">Slide 1 of 1</span>
-                    <button class="btn-nav" id="btnNext" onclick="nextSlide()">Next <i class="fa-solid fa-arrow-right"></i></button>
+                    <button class="btn-nav" id="btnPrev" onclick="prevPage()"><i class="fa-solid fa-arrow-left"></i> Prev</button>
+                    <span class="slide-counter" id="slideCounter">Page 1 of 1</span>
+                    <button class="btn-nav" id="btnNext" onclick="nextPage()">Next <i class="fa-solid fa-arrow-right"></i></button>
                 </div>
             </div>
 
             <div class="slide-stage">
-                <!-- Mozilla PDF.js Canvas Viewport -->
-                <canvas id="pdfCanvas" style="display:none;"></canvas>
-
-                <!-- High-Res Page Viewport -->
-                <div id="highresContainer" style="display:none; text-align:center;">
-                    <img id="highresImg" style="max-width:100%; max-height:520px; border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,0.5);" src="" alt="Slide Page">
-                </div>
-                
-                <!-- Native Text/Shape Fallback Viewport -->
-                <div id="nativeTextContainer" class="slide-card" style="display:none;">
-                    <div class="slide-card-header" id="slideTitle">Loading Slide...</div>
-                    <ul class="bullet-list" id="bulletList"></ul>
-                    <div id="slideImages"></div>
-                </div>
+                <canvas id="pdfCanvas"></canvas>
             </div>
 
             <script>
-                const isPdfFile = {'true' if is_pdf else 'false'};
-                const rawFileUrl = "{raw_file_url}";
-                const slideImages = {images_json};
-                const slides = {slides_json};
-                let currIdx = 0;
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
                 let pdfDoc = null;
-                let pdfPageRendering = false;
+                let pageNum = 1;
+                const canvas = document.getElementById('pdfCanvas');
+                const ctx = canvas.getContext('2d');
 
-                if (isPdfFile) {{
-                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-                    const canvas = document.getElementById('pdfCanvas');
-                    const ctx = canvas.getContext('2d');
+                pdfjsLib.getDocument('{raw_file_url}').promise.then(function(doc) {{
+                    pdfDoc = doc;
+                    renderPage(1);
+                }});
 
-                    pdfjsLib.getDocument(rawFileUrl).promise.then(function(doc) {{
-                        pdfDoc = doc;
-                        document.getElementById('pdfCanvas').style.display = 'block';
-                        renderPdfPage(1);
-                    }}).catch(function(err) {{
-                        console.error("PDF.js load error:", err);
-                        fallbackToImages();
+                function renderPage(num) {{
+                    pdfDoc.getPage(num).then(function(page) {{
+                        const viewport = page.getViewport({{ scale: 1.4 }});
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        page.render({{ canvasContext: ctx, viewport: viewport }});
                     }});
-
-                    function renderPdfPage(num) {{
-                        pdfPageRendering = true;
-                        pdfDoc.getPage(num).then(function(page) {{
-                            const viewport = page.getViewport({{ scale: 1.4 }});
-                            canvas.height = viewport.height;
-                            canvas.width = viewport.width;
-
-                            const renderContext = {{ canvasContext: ctx, viewport: viewport }};
-                            page.render(renderContext).promise.then(function() {{
-                                pdfPageRendering = false;
-                            }});
-                        }});
-
-                        document.getElementById('slideCounter').textContent = 'Slide ' + num + ' of ' + pdfDoc.numPages;
-                        document.getElementById('btnPrev').disabled = (num <= 1);
-                        document.getElementById('btnNext').disabled = (num >= pdfDoc.numPages);
-                    }}
-                }} else {{
-                    fallbackToImages();
+                    document.getElementById('slideCounter').textContent = 'Page ' + num + ' of ' + pdfDoc.numPages;
+                    document.getElementById('btnPrev').disabled = (num <= 1);
+                    document.getElementById('btnNext').disabled = (num >= pdfDoc.numPages);
                 }}
 
-                function fallbackToImages() {{
-                    const totalSlides = slideImages.length > 0 ? slideImages.length : slides.length;
-                    document.getElementById('slideCounter').textContent = 'Slide ' + (currIdx + 1) + ' of ' + (totalSlides || 1);
-
-                    if (slideImages.length > 0) {{
-                        document.getElementById('highresContainer').style.display = 'block';
-                        document.getElementById('nativeTextContainer').style.display = 'none';
-                        document.getElementById('highresImg').src = slideImages[currIdx];
-                    }} else if (slides.length > 0) {{
-                        document.getElementById('highresContainer').style.display = 'none';
-                        document.getElementById('nativeTextContainer').style.display = 'block';
-
-                        const s = slides[currIdx];
-                        document.getElementById('slideTitle').textContent = s.title || '{cw.title}';
-                        
-                        const list = document.getElementById('bulletList');
-                        list.innerHTML = '';
-                        if (s.bullets && s.bullets.length > 0) {{
-                            s.bullets.forEach(b => {{
-                                const li = document.createElement('li');
-                                li.textContent = b;
-                                list.appendChild(li);
-                            }});
-                        }}
-
-                        const imgBox = document.getElementById('slideImages');
-                        imgBox.innerHTML = '';
-                        if (s.images && s.images.length > 0) {{
-                            s.images.forEach(imgUrl => {{
-                                const img = document.createElement('img');
-                                img.src = imgUrl;
-                                img.className = 'slide-img-item';
-                                imgBox.appendChild(img);
-                            }});
-                        }}
-                    }}
-
-                    document.getElementById('btnPrev').disabled = (currIdx === 0);
-                    document.getElementById('btnNext').disabled = (currIdx === totalSlides - 1 || totalSlides === 0);
-                }}
-
-                function prevSlide() {{
-                    if (isPdfFile && pdfDoc) {{
-                        if (currIdx > 0) {{ currIdx--; renderPdfPage(currIdx + 1); }}
-                    }} else {{
-                        if (currIdx > 0) {{ currIdx--; fallbackToImages(); }}
-                    }}
-                }}
-
-                function nextSlide() {{
-                    if (isPdfFile && pdfDoc) {{
-                        if (currIdx < pdfDoc.numPages - 1) {{ currIdx++; renderPdfPage(currIdx + 1); }}
-                    }} else {{
-                        const total = slideImages.length > 0 ? slideImages.length : slides.length;
-                        if (currIdx < total - 1) {{ currIdx++; fallbackToImages(); }}
-                    }}
-                }}
+                function prevPage() {{ if (pageNum > 1) {{ pageNum--; renderPage(pageNum); }} }}
+                function nextPage() {{ if (pageNum < pdfDoc.numPages) {{ pageNum++; renderPage(pageNum); }} }}
 
                 document.addEventListener('keydown', (e) => {{
-                    if (e.key === 'ArrowLeft') prevSlide();
-                    if (e.key === 'ArrowRight') nextSlide();
+                    if (e.key === 'ArrowLeft') prevPage();
+                    if (e.key === 'ArrowRight') nextPage();
                 }});
             </script>
         </body>
         </html>
         """, 200, {'Content-Type': 'text/html'}
+
+    # 3. Handle PDF, Video, or other uploads
+    if cw.filename:
+        file_path = os.path.join(current_app.config['MATERIALS_FOLDER'], cw.filename)
+        if os.path.exists(file_path):
+            mimetype = None
+            if ext == '.pdf':
+                mimetype = 'application/pdf'
+            elif ext in ['.mp4', '.webm', '.ogg', '.mov']:
+                mimetype = f'video/{ext[1:]}'
+
+            return send_file(
+                file_path,
+                mimetype=mimetype,
+                as_attachment=False
+            )
+
+    return redirect(url_for('courses.view_course', course_id=cw.lesson.course_id))
 
     # 2. Handle PDF, Video, or other uploads
     if cw.filename:
