@@ -1067,12 +1067,23 @@ def stream_courseware(courseware_id):
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/dracula.min.css">
             <style>
-                body {{ background: #091214; margin: 0; padding: 0; overflow: hidden; }}
-                .reveal {{ font-family: system-ui, -apple-system, sans-serif; }}
-                .reveal h1, .reveal h2, .reveal h3, .reveal h4 {{ font-family: system-ui, sans-serif; text-transform: none; }}
-                .reveal .controls {{ color: #F59E0B; }}
-                .reveal .progress {{ color: #F59E0B; height: 5px; }}
-                .reveal .slide-number {{ font-family: monospace; color: #F59E0B; font-weight: 700; background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; padding: 4px 10px; border-radius: 6px; }}
+                * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+                html, body, .reveal {{ width: 100%; height: 100%; background: #091214; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; }}
+                .reveal h1, .reveal h2, .reveal h3, .reveal h4 {{ font-family: system-ui, sans-serif; text-transform: none; word-break: break-word; }}
+                .reveal .slides {{ text-align: center; }}
+                .reveal .slides section {{
+                    padding: 12px !important;
+                    box-sizing: border-box !important;
+                    max-height: 100% !important;
+                    overflow-y: auto !important;
+                }}
+                .reveal h3 {{ color: #F59E0B !important; font-weight: 700 !important; font-size: 1.6rem !important; margin-bottom: 16px !important; border-bottom: 1px solid rgba(245, 158, 11, 0.2); padding-bottom: 8px; }}
+                .reveal ul {{ max-width: 92% !important; text-align: left !important; display: inline-block !important; font-size: 1.05rem !important; line-height: 1.6 !important; margin-bottom: 16px !important; color: #E2E8F0 !important; }}
+                .reveal ul li {{ margin-bottom: 10px !important; word-break: break-word !important; }}
+                .reveal img {{ max-width: 95% !important; max-height: 380px !important; object-fit: contain !important; margin: 12px auto !important; display: block !important; border-radius: 10px !important; border: 1px solid #334155 !important; box-shadow: 0 10px 30px rgba(0,0,0,0.6) !important; }}
+                .reveal .controls {{ color: #F59E0B !important; }}
+                .reveal .progress {{ color: #F59E0B !important; height: 5px !important; }}
+                .reveal .slide-number {{ font-family: monospace !important; color: #F59E0B !important; font-weight: 700 !important; background: rgba(15, 23, 42, 0.9) !important; border: 1px solid #334155 !important; padding: 4px 10px !important; border-radius: 6px !important; }}
             </style>
         </head>
         <body>
@@ -1086,12 +1097,17 @@ def stream_courseware(courseware_id):
             <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/notes/notes.min.js"></script>
             <script>
                 Reveal.initialize({{
+                    width: "100%",
+                    height: "100%",
+                    margin: 0.04,
+                    minScale: 0.2,
+                    maxScale: 2.0,
                     hash: true,
                     slideNumber: 'c / t',
                     controls: true,
                     progress: true,
                     center: true,
-                    transition: 'slide', // none/fade/slide/convex/concave/zoom
+                    transition: 'slide',
                     plugins: [ RevealNotes ]
                 }});
             </script>
