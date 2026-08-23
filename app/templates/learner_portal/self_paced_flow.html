@@ -548,6 +548,10 @@
             }).catch(err => console.error('Failed to record time:', err));
         }
     }, 1000);
+    })();
+    {% endif %}
+    {% endfor %}
+
     document.querySelectorAll('.modal').forEach(function(modal) {
         modal.addEventListener('show.bs.modal', function() {
             var iframe = this.querySelector('iframe[data-src]');
