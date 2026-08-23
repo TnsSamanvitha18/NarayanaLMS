@@ -1149,11 +1149,15 @@ def stream_courseware(courseware_id):
 
                     if (slideImages.length > 0) {{
                         document.getElementById('highresContainer').style.display = 'block';
+                        document.getElementById('nativeTextContainer').style.display = 'none';
                         document.getElementById('highresImg').src = slideImages[currIdx];
                     }} else if (slides.length > 0) {{
+                        document.getElementById('highresContainer').style.display = 'none';
                         document.getElementById('nativeTextContainer').style.display = 'block';
+
                         const s = slides[currIdx];
                         document.getElementById('slideTitle').textContent = s.title || '{cw.title}';
+                        
                         const list = document.getElementById('bulletList');
                         list.innerHTML = '';
                         if (s.bullets && s.bullets.length > 0) {{
@@ -1161,6 +1165,17 @@ def stream_courseware(courseware_id):
                                 const li = document.createElement('li');
                                 li.textContent = b;
                                 list.appendChild(li);
+                            }});
+                        }}
+
+                        const imgBox = document.getElementById('slideImages');
+                        imgBox.innerHTML = '';
+                        if (s.images && s.images.length > 0) {{
+                            s.images.forEach(imgUrl => {{
+                                const img = document.createElement('img');
+                                img.src = imgUrl;
+                                img.className = 'slide-img-item';
+                                imgBox.appendChild(img);
                             }});
                         }}
                     }}

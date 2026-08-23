@@ -3,37 +3,46 @@ from pptx import Presentation
 from pptx.enum.shapes import MSO_SHAPE_TYPE
 
 def extract_shape_data(shape, bullets, title_box, images, output_img_dir, rel_img_prefix, slide_num, img_counter):
+    # 1. Text extraction
     if shape.has_text_frame:
         for p in shape.text_frame.paragraphs:
             txt = p.text.strip()
-            if not txt:
-                continue
-            if not title_box['title']:
-                title_box['title'] = txt
-            elif txt != title_box['title'] and txt not in bullets:
-                bullets.append(txt)
-    elif shape.has_table:
+            if txt:
+                if not title_box['title']:
+                    title_box['title'] = txt
+                elif txt != title_box['title'] and txt not in bullets:
+                    bullets.append(txt)
+
+    # 2. Table extraction
+    if shape.has_table:
         for row in shape.table.rows:
             row_txt = [cell.text.strip() for cell in row.cells if cell.text.strip()]
             if row_txt:
                 line = " | ".join(row_txt)
                 if line not in bullets:
                     bullets.append(line)
-    elif shape.shape_type == MSO_SHAPE_TYPE.PICTURE:
+
+    # 3. Picture & Image extraction
+    if output_img_dir and rel_img_prefix:
         try:
-            image = shape.image
-            ext = image.ext or 'png'
-            img_filename = f"slide_{slide_num}_img_{img_counter[0]}.{ext}"
-            img_save_path = os.path.join(output_img_dir, img_filename)
-            
-            with open(img_save_path, 'wb') as f:
-                f.write(image.blob)
-            
-            images.append(f"{rel_img_prefix}/{img_filename}")
-            img_counter[0] += 1
-        except Exception as e:
+            if hasattr(shape, 'image') and shape.image:
+                image = shape.image
+                ext = image.ext or 'png'
+                img_filename = f"slide_{slide_num}_img_{img_counter[0]}.{ext}"
+                img_save_path = os.path.join(output_img_dir, img_filename)
+                
+                with open(img_save_path, 'wb') as f:
+                    f.write(image.blob)
+                
+                rel_url = f"{rel_img_prefix}/{img_filename}"
+                if rel_url not in images:
+                    images.append(rel_url)
+                    img_counter[0] += 1
+        except Exception:
             pass
-    elif shape.shape_type == MSO_SHAPE_TYPE.GROUP:
+
+    # 4. Grouped shapes recursion
+    if shape.shape_type == MSO_SHAPE_TYPE.GROUP:
         for sub_shape in shape.shapes:
             extract_shape_data(sub_shape, bullets, title_box, images, output_img_dir, rel_img_prefix, slide_num, img_counter)
 
