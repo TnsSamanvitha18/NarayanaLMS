@@ -949,18 +949,78 @@ def download_material(material_id):
         file_path = os.path.join(current_app.config['MATERIALS_FOLDER'], mat.filename)
         if os.path.exists(file_path):
             ext = os.path.splitext(mat.filename)[1].lower()
+            is_ppt = ext in ['.ppt', '.pptx'] or ('PPT' in (mat.material_type or '').upper()) or ('POWERPOINT' in (mat.material_type or '').upper())
             as_attach = force_download if is_admin or mat.allow_download else False
-            
-            # Determine correct MIME type for browser inline preview vs download
+
+            # If user explicitly requested download AND download is allowed:
+            if force_download and (is_admin or mat.allow_download):
+                return send_file(
+                    file_path,
+                    as_attachment=True,
+                    download_name=f"{mat.title}{ext}"
+                )
+
+            # For PowerPoint inline viewing: Render Reveal.js HTML presentation (NEVER send raw ppt binary!)
+            if is_ppt:
+                img_out_dir = os.path.join(current_app.config['MATERIALS_FOLDER'], 'slides', f"mat_{mat.id}")
+                img_rel_prefix = f"/courses/material/{mat.id}/slide_img"
+                slides_data = parse_pptx_slides(file_path, output_img_dir=img_out_dir, rel_img_prefix=img_rel_prefix)
+
+                if not slides_data:
+                    text_bullets = [line.strip() for line in (mat.description or "").split('\n') if line.strip()]
+                    if not text_bullets:
+                        text_bullets = [f"Overview of {mat.title}", "Key Concepts Breakdown", "Summary & Best Practices"]
+                    slides_data = [{"slide_number": 1, "title": mat.title, "bullets": text_bullets, "images": [], "notes": ""}]
+
+                sections_html = []
+                for s in slides_data:
+                    title_html = f'<h3 style="color:#F59E0B; font-weight:700; margin-bottom:16px; font-size:1.6rem;">{s.get("title") or mat.title}</h3>'
+                    bullets_html = ""
+                    if s.get("bullets"):
+                        items = "".join([f'<li style="margin-bottom:10px; font-size:1.05rem; color:#E2E8F0;">{b}</li>' for b in s["bullets"]])
+                        bullets_html = f'<ul style="text-align:left; display:inline-block; max-width:90%; font-size:1rem; margin-bottom:16px;">{items}</ul>'
+
+                    images_html = ""
+                    if s.get("images"):
+                        img_tags = "".join([f'<img src="{img_url}" style="max-height:280px; max-width:90%; border-radius:10px; border:1px solid #334155; margin:10px auto; display:block; box-shadow:0 10px 30px rgba(0,0,0,0.5);">' for img_url in s["images"]])
+                        images_html = f'<div style="margin-top:15px;">{img_tags}</div>'
+
+                    sections_html.append(f'<section style="padding:15px; box-sizing:border-box;">{title_html}{bullets_html}{images_html}</section>')
+
+                slides_content = "\n".join(sections_html)
+                return f"""
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                    <title>{mat.title} - Reveal.js Viewer</title>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/dracula.min.css">
+                    <style>
+                        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+                        html, body, .reveal {{ width: 100%; height: 100%; background: #091214; overflow: hidden; font-family: system-ui, sans-serif; }}
+                        .reveal h3 {{ color: #F59E0B !important; font-weight: 700 !important; }}
+                        .reveal img {{ max-width: 95% !important; max-height: 380px !important; object-fit: contain !important; margin: 12px auto !important; border-radius: 10px !important; }}
+                    </style>
+                </head>
+                <body>
+                    <div class="reveal"><div class="slides">{slides_content}</div></div>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+                    <script>
+                        Reveal.initialize({{ width: "100%", height: "100%", margin: 0.04, minScale: 0.2, maxScale: 2.0, hash: true, slideNumber: 'c / t', controls: true, progress: true, center: true, transition: 'slide' }});
+                    </script>
+                </body>
+                </html>
+                """, 200, {'Content-Type': 'text/html'}
+
+            # Determine MIME type for PDF, Video, Image
             mimetype = None
-            if ext == '.pptx':
-                mimetype = 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
-            elif ext == '.ppt':
-                mimetype = 'application/vnd.ms-powerpoint'
-            elif ext == '.pdf':
+            if ext == '.pdf':
                 mimetype = 'application/pdf'
-            elif ext == '.mp4':
-                mimetype = 'video/mp4'
+            elif ext in ['.mp4', '.webm', '.mov']:
+                mimetype = f'video/{ext[1:]}'
 
             return send_file(
                 file_path,
@@ -990,6 +1050,15 @@ def get_courseware_raw_file(courseware_id):
 @courses_bp.route('/courseware/<int:courseware_id>/slide_img/<filename>')
 def serve_slide_image(courseware_id, filename):
     img_folder = os.path.join(current_app.config['MATERIALS_FOLDER'], 'slides', str(courseware_id))
+    img_path = os.path.join(img_folder, filename)
+    if os.path.exists(img_path):
+        return send_file(img_path)
+    return jsonify({'error': 'Image not found'}), 404
+
+
+@courses_bp.route('/material/<int:material_id>/slide_img/<filename>')
+def serve_material_slide_image(material_id, filename):
+    img_folder = os.path.join(current_app.config['MATERIALS_FOLDER'], 'slides', f"mat_{material_id}")
     img_path = os.path.join(img_folder, filename)
     if os.path.exists(img_path):
         return send_file(img_path)
