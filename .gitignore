@@ -4,9 +4,6 @@ __pycache__/
 .venv/
 env/
 venv/
-*.db
-*.sqlite3
-instance/
 .pytest_cache/
 .vscode/
 .idea/
