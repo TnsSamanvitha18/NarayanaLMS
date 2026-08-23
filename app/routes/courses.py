@@ -997,12 +997,17 @@ def download_material(material_id):
                     <title>{mat.title} - Reveal.js Viewer</title>
                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
-                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/dracula.min.css">
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
                     <style>
                         * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-                        html, body, .reveal {{ width: 100%; height: 100%; background: #091214; overflow: hidden; font-family: system-ui, sans-serif; }}
-                        .reveal h3 {{ color: #F59E0B !important; font-weight: 700 !important; }}
-                        .reveal img {{ max-width: 95% !important; max-height: 380px !important; object-fit: contain !important; margin: 12px auto !important; border-radius: 10px !important; }}
+                        html, body, .reveal {{ width: 100%; height: 100%; background: #FFFFFF !important; color: #0F172A !important; overflow: hidden; font-family: system-ui, sans-serif; }}
+                        .reveal h3 {{ color: #0A4B5C !important; font-weight: 700 !important; border-bottom: 2px solid #E2E8F0 !important; padding-bottom: 8px !important; }}
+                        .reveal ul {{ color: #1E293B !important; }}
+                        .reveal ul li {{ color: #1E293B !important; }}
+                        .reveal img {{ max-width: 95% !important; max-height: 380px !important; object-fit: contain !important; margin: 12px auto !important; border-radius: 10px !important; border: 1px solid #E2E8F0 !important; box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important; }}
+                        .reveal .controls {{ color: #0A4B5C !important; }}
+                        .reveal .progress {{ color: #0A4B5C !important; background: #E2E8F0 !important; }}
+                        .reveal .slide-number {{ font-family: monospace !important; color: #0A4B5C !important; font-weight: 700 !important; background: #F8FAFC !important; border: 1px solid #CBD5E1 !important; }}
                     </style>
                 </head>
                 <body>
@@ -1136,25 +1141,26 @@ def stream_courseware(courseware_id):
             <title>{cw.title} - Reveal.js Presentation Deck</title>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/dracula.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
             <style>
                 * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-                html, body, .reveal {{ width: 100%; height: 100%; background: #091214; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; }}
-                .reveal h1, .reveal h2, .reveal h3, .reveal h4 {{ font-family: system-ui, sans-serif; text-transform: none; word-break: break-word; }}
-                .reveal .slides {{ text-align: center; }}
+                html, body, .reveal {{ width: 100%; height: 100%; background: #FFFFFF !important; color: #0F172A !important; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; }}
+                .reveal h1, .reveal h2, .reveal h3, .reveal h4 {{ font-family: system-ui, sans-serif; text-transform: none; word-break: break-word; color: #0A4B5C !important; }}
+                .reveal .slides {{ text-align: center; background: #FFFFFF !important; }}
                 .reveal .slides section {{
-                    padding: 12px !important;
+                    padding: 16px !important;
                     box-sizing: border-box !important;
                     max-height: 100% !important;
                     overflow-y: auto !important;
+                    background: #FFFFFF !important;
                 }}
-                .reveal h3 {{ color: #F59E0B !important; font-weight: 700 !important; font-size: 1.6rem !important; margin-bottom: 16px !important; border-bottom: 1px solid rgba(245, 158, 11, 0.2); padding-bottom: 8px; }}
-                .reveal ul {{ max-width: 92% !important; text-align: left !important; display: inline-block !important; font-size: 1.05rem !important; line-height: 1.6 !important; margin-bottom: 16px !important; color: #E2E8F0 !important; }}
-                .reveal ul li {{ margin-bottom: 10px !important; word-break: break-word !important; }}
-                .reveal img {{ max-width: 95% !important; max-height: 380px !important; object-fit: contain !important; margin: 12px auto !important; display: block !important; border-radius: 10px !important; border: 1px solid #334155 !important; box-shadow: 0 10px 30px rgba(0,0,0,0.6) !important; }}
-                .reveal .controls {{ color: #F59E0B !important; }}
-                .reveal .progress {{ color: #F59E0B !important; height: 5px !important; }}
-                .reveal .slide-number {{ font-family: monospace !important; color: #F59E0B !important; font-weight: 700 !important; background: rgba(15, 23, 42, 0.9) !important; border: 1px solid #334155 !important; padding: 4px 10px !important; border-radius: 6px !important; }}
+                .reveal h3 {{ color: #0A4B5C !important; font-weight: 700 !important; font-size: 1.6rem !important; margin-bottom: 16px !important; border-bottom: 2px solid #E2E8F0 !important; padding-bottom: 8px !important; }}
+                .reveal ul {{ max-width: 92% !important; text-align: left !important; display: inline-block !important; font-size: 1.05rem !important; line-height: 1.6 !important; margin-bottom: 16px !important; color: #1E293B !important; }}
+                .reveal ul li {{ margin-bottom: 10px !important; word-break: break-word !important; color: #1E293B !important; }}
+                .reveal img {{ max-width: 95% !important; max-height: 380px !important; object-fit: contain !important; margin: 12px auto !important; display: block !important; border-radius: 10px !important; border: 1px solid #E2E8F0 !important; box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important; }}
+                .reveal .controls {{ color: #0A4B5C !important; }}
+                .reveal .progress {{ color: #0A4B5C !important; height: 5px !important; background: #E2E8F0 !important; }}
+                .reveal .slide-number {{ font-family: monospace !important; color: #0A4B5C !important; font-weight: 700 !important; background: #F8FAFC !important; border: 1px solid #CBD5E1 !important; padding: 4px 10px !important; border-radius: 6px !important; }}
             </style>
         </head>
         <body>
